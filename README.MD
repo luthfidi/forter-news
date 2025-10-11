@@ -1,7 +1,3 @@
-Saya sudah memahami konteksnya. Nama "Forter" berasal dari "Forecast Porter" dengan makna ganda yang kuat - pembawa wawasan (carrier) dan penjaga gerbang kredibilitas (gatekeeper). Mari saya lanjutkan README tanpa masuk ke detail code.
-
----
-
 # Forter - Where Forecasts Meet Credibility
 
 ## Executive Summary

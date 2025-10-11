@@ -66,6 +66,35 @@ Forter menggabungkan dua konsep kunci:
 
 ## How It Works
 
+### User Journey Flow
+
+```mermaid
+flowchart TD
+    Start[User Connects Wallet + Farcaster] --> Browse[Browse Active Markets]
+    Browse --> Choice{User Action?}
+    
+    Choice -->|Become Informer| WriteAnalysis[Write Analysis + Arguments]
+    WriteAnalysis --> StakeAnalysis[Stake USDC on Analysis Accuracy]
+    StakeAnalysis --> PostFarcaster[Post to Farcaster]
+    PostFarcaster --> RegisterCast[Register Cast in App]
+    
+    Choice -->|Stake on Outcome| StakeOutcome[Stake USDC on YES/NO]
+    
+    Choice -->|Stake on Informer| ViewInformers[View Informer Analyses]
+    ViewInformers --> StakeInformer[Stake USDC on Specific Informer]
+    
+    RegisterCast --> MarketResolve[Market Resolution Period]
+    StakeOutcome --> MarketResolve
+    StakeInformer --> MarketResolve
+    
+    MarketResolve --> Oracle[Oracle/Mock Resolution]
+    Oracle --> Distribute[Distribute Rewards]
+    
+    Distribute --> UpdateRep[Update Reputation NFT]
+    UpdateRep --> Leaderboard[Update Global Leaderboard]
+    Leaderboard --> SocialProof[Visible on Farcaster Profile]
+```
+
 ### User Roles
 
 **1. Informers (The Porters)**

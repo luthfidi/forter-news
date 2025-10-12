@@ -168,7 +168,7 @@ export default function MarketFilters({
                 )}
                 {searchQuery && (
                   <Badge variant="secondary" className="bg-accent/10 text-accent">
-                    Search: "{searchQuery}"
+                    Search: &quot;{searchQuery}&quot;
                     <button
                       onClick={() => onSearchChange('')}
                       className="ml-1 hover:text-foreground transition-colors"

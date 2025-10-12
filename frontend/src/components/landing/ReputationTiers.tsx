@@ -110,7 +110,7 @@ export default function ReputationTiers() {
             <div className="text-3xl mb-4">🔒</div>
             <h3 className="font-bold mb-2">Soulbound</h3>
             <p className="text-sm text-muted-foreground">
-              Non-transferable tokens tied to your identity. Your reputation can't be bought or sold.
+              Non-transferable tokens tied to your identity. Your reputation can&apos;t be bought or sold.
             </p>
           </CardContent>
         </Card>
@@ -138,7 +138,7 @@ export default function ReputationTiers() {
 
       <div className="mt-8 text-center">
         <p className="text-muted-foreground italic">
-          "Your credibility becomes a financial primitive — measurable, portable, and yield-bearing."
+          &quot;Your credibility becomes a financial primitive — measurable, portable, and yield-bearing.&quot;
         </p>
       </div>
     </div>

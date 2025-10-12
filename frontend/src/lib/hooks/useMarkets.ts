@@ -147,6 +147,7 @@ export function useMarkets() {
     if (markets.length === 0) {
       fetchMarkets();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

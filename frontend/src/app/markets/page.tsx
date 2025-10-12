@@ -5,7 +5,6 @@ import { useGlobalStore } from '@/store/useGlobalStore';
 import { Market } from '@/types';
 import MarketCard from '@/components/markets/MarketCard';
 import MarketFilters from '@/components/markets/MarketFilters';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 

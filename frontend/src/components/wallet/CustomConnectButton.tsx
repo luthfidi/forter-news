@@ -10,7 +10,6 @@ import {
   Wallet,
   AlertTriangle,
   ChevronDown,
-  Network,
 } from 'lucide-react'
 
 export default function CustomConnectButton() {

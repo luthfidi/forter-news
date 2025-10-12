@@ -55,7 +55,7 @@ export default function DualStaking() {
                 <span className="text-sm font-medium">Example</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                "Will BTC hit $100k by Dec 2024?" → Stake $100 on YES → Earn proportional rewards if correct
+                &quot;Will BTC hit $100k by Dec 2024?&quot; → Stake $100 on YES → Earn proportional rewards if correct
               </p>
             </div>
           </CardContent>
@@ -99,7 +99,7 @@ export default function DualStaking() {
                 <span className="text-sm font-medium">Example</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Alice has 87% accuracy → Stake $50 on Alice's BTC analysis → Earn if Alice's prediction is correct
+                Alice has 87% accuracy → Stake $50 on Alice&apos;s BTC analysis → Earn if Alice&apos;s prediction is correct
               </p>
             </div>
           </CardContent>
@@ -141,7 +141,7 @@ export default function DualStaking() {
 
       <div className="mt-8 text-center">
         <p className="text-muted-foreground italic">
-          "Balance market wisdom with human intelligence — credibility drives the majority of rewards."
+          &quot;Balance market wisdom with human intelligence — credibility drives the majority of rewards.&quot;
         </p>
       </div>
     </div>

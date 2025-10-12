@@ -8,7 +8,6 @@ import { cn } from '@/lib/utils'
 // Lucide icons
 import {
   Wallet,
-  AlertTriangle,
   ChevronDown,
 } from 'lucide-react'
 
@@ -23,7 +22,7 @@ export default function CustomConnectButton() {
     return (
       <Button
         onClick={openConnectModal}
-        className="bg-gradient-to-r from-primary/70 to-secondary/70 text-white font-medium border border-border/40 
+        className="bg-gradient-to-r from-primary/70 to-secondary/70 text-white font-medium border border-border/40
                    hover:from-primary hover:to-secondary shadow-sm transition-colors"
       >
         <Wallet className="w-4 h-4 mr-2" />
@@ -32,19 +31,8 @@ export default function CustomConnectButton() {
     )
   }
 
-  // --- Wrong Network ---
-  if (chain?.unsupported) {
-    return (
-      <Button
-        onClick={openChainModal}
-        variant="destructive"
-        className="bg-destructive text-destructive-foreground hover:bg-destructive/90 font-medium"
-      >
-        <AlertTriangle className="w-4 h-4 mr-2" />
-        Wrong Network
-      </Button>
-    )
-  }
+  // Note: Wrong network detection removed - RainbowKit handles this in their built-in UI
+  // The chain switcher button below allows users to change networks if needed
 
   // --- Connected ---
   return (

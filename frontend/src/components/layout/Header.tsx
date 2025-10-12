@@ -12,18 +12,6 @@ export default function Header() {
         </span>
       </div>
       <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-        <a href="#pillars" className="text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform">
-          Pillars
-        </a>
-        <a href="#dual-staking" className="text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform">
-          Dual Staking
-        </a>
-        <a href="#reputation" className="text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform">
-          Reputation
-        </a>
-        <a href="#how" className="text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform">
-          How it Works
-        </a>
         <a href="/markets" className="text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform font-medium">
           Markets
         </a>

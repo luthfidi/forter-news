@@ -1,4 +1,4 @@
-# Forter - Finance for Truth
+# Forter - Farcaster Porter
 
 ## Executive Summary
 Forter adalah **Information Finance Protocol** - platform Web3 yang mengubah informasi kredibel menjadi aset finansial. Kami bukan prediction market untuk gambling - kami adalah infrastruktur untuk memverifikasi, memonetisasi, dan membangun reputasi berbasis analisis yang akurat.
@@ -63,7 +63,7 @@ Forter menggabungkan dua konsep kunci:
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                   FORTER MVP                     │
+│                   Forter MVP                     │
 ├─────────────────────────────────────────────────┤
 │                                                  │
 │  1. Market Discovery    2. Analysis Submission   │
@@ -85,7 +85,7 @@ Forter menggabungkan dua konsep kunci:
 
 ## Our Unique Value Proposition
 
-### 🎯 Forter's USP: "Finance for Truth"
+### 🎯 Forter's USP: "Farcaster Porter"
 
 **One-liner:** Forter transforms information into a financial asset — enabling people to stake, verify, and earn from credible insights, not speculation.
 
@@ -685,7 +685,7 @@ We're building:
 - ✅ A financial system for knowledge workers
 - ✅ A trust infrastructure for Web3 decision-making
 
-### The Vision: "Finance for Truth"
+### The Vision: "Farcaster Porter"
 
 Imagine a world where:
 - DAOs use Forter reputation scores for governance weights

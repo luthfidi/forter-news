@@ -1,15 +1,22 @@
 # Forter - Farcaster Porter
 
 ## Executive Summary
-Forter adalah **Information Finance Protocol** - platform Web3 yang mengubah informasi kredibel menjadi aset finansial. Kami bukan prediction market untuk gambling - kami adalah infrastruktur untuk memverifikasi, memonetisasi, dan membangun reputasi berbasis analisis yang akurat.
+Forter adalah **Information Finance Protocol** - platform Web3 yang mengubah informasi kredibel menjadi aset finansial. Kami bukan prediction market untuk gambling - kami adalah infrastruktur **permissionless** untuk memverifikasi, memonetisasi, dan membangun reputasi berbasis analisis yang akurat.
 
 **Tagline**: "Stake on Credibility, Not Luck"
 
-**Core Innovation**: Dual-staking mechanism yang memungkinkan users untuk:
-1. Stake pada outcome (YES/NO) - traditional prediction
-2. Stake pada specific informer - backing analyst credibility
+**Core Innovation**: Permissionless News + Independent Pool mechanism:
+1. **Anyone can create NEWS** - Prediksi/statement dengan timeline jelas (permissionless)
+2. **Anyone can create POOL** - Analisis dengan reasoning + own stake pool per news
+3. **Stake on specific pool** - Back reasoning yang paling kredibel (Setuju/Tidak Setuju)
 
-Platform ini lahir dari konsep "Forecast Porter" - di mana para analis menjadi "porter" yang membawa wawasan berharga, sementara platform menjadi "gatekeeper" yang menjaga kredibilitas informasi.
+**Key Difference from Traditional Markets:**
+- Bukan 1 market dengan shared pool
+- Tapi 1 NEWS dengan banyak INDEPENDENT POOLS
+- Setiap pool punya stake pool sendiri
+- Semua pool resolve di waktu yang sama
+
+Platform ini lahir dari konsep "Forecast Porter" - di mana para analis menjadi "porter" yang membawa wawasan berharga dalam ekosistem yang fully permissionless.
 
 ## Table of Contents
 1. [Problem Statement](#problem-statement)
@@ -62,50 +69,63 @@ Forter menggabungkan dua konsep kunci:
 ### Core Features
 
 ```
-┌─────────────────────────────────────────────────┐
-│                   Forter MVP                     │
-├─────────────────────────────────────────────────┤
-│                                                  │
-│  1. Market Discovery    2. Analysis Submission   │
-│     Browse Markets         Write Reasoning       │
-│     Filter by Category     Stake on Analysis     │
-│     View Past Performance  Post to Farcaster     │
-│                                                  │
-│  3. Dual Staking        4. Resolution           │
-│     Stake on Outcome       Oracle Verification  │
-│     Stake on Informer      Reward Distribution  │
-│     View Staking Pools     Update Reputation    │
-│                                                  │
-│  5. Dynamic Reputation System                   │
-│     Soulbound NFT Updates (Image Changes!)      │
-│     Global Leaderboard                          │
-│     Category-Specific Rankings                  │
-└─────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│                   Forter MVP                      │
+├──────────────────────────────────────────────────┤
+│                                                   │
+│  1. Create NEWS         2. Create POOL            │
+│     Permissionless          Write Analysis        │
+│     Set Timeline            Reasoning + Evidence  │
+│     Auto-cast              Own Stake Pool         │
+│     Post to Farcaster      Post to Farcaster     │
+│                                                   │
+│  3. Browse & Filter     4. Stake on Pools        │
+│     Discover News          Setuju / Tidak Setuju │
+│     View All Pools         Back Specific Pool    │
+│     Filter by Category     View Pool Stats       │
+│     Informer Profiles      Real-time Updates     │
+│                                                   │
+│  5. Resolution & Rewards                         │
+│     Oracle Verification    Per-Pool Distribution │
+│     Same-Time Resolution   Update Reputation NFT │
+│     Challenge Period       Dynamic Badge Update  │
+└──────────────────────────────────────────────────┘
 ```
 
 ## Our Unique Value Proposition
 
-### 🎯 Forter's USP: "Farcaster Porter"
+### 🎯 Forter's USP: "Permissionless Information Finance"
 
-**One-liner:** Forter transforms information into a financial asset — enabling people to stake, verify, and earn from credible insights, not speculation.
+**One-liner:** Forter is the first **fully permissionless** information finance protocol where anyone can create predictions (NEWS), anyone can submit analysis (POOLS), and credibility is measured through independent, verifiable stake pools.
 
 ### The 5 Pillars of Forter's Differentiation
 
-#### 1. 💎 Dual-Staking Credibility Model
-Unlike Polymarket or other prediction platforms that only let users stake on outcomes, Forter introduces **dual staking**:
-- Users stake on **informers (analysts)** to signal trust
-- Informers stake on **their own analysis** to prove conviction
+#### 1. 🌐 Fully Permissionless Architecture
+Unlike admin-curated prediction markets, Forter is **fully open**:
+- **Anyone can create NEWS** - No approval needed, instant publishing
+- **Anyone can create POOL** - Multiple independent analyses per news
+- **Anyone can stake** - Back the reasoning you believe in
 
-✅ **Result**: Incentivizes truth and expertise, not lucky guesses
-❌ **Prevents**: Reckless predictions and information spam
+✅ **Result**: True information democracy, not gatekeeped curation
+✅ **Benefit**: Faster market creation, more diverse perspectives
+⚠️ **Trade-off**: Allow spam initially, but filter via stake amounts and reputation
 
-#### 2. 🧠 Information-as-a-Financial-Primitive
-Forter makes information **financeable** — analysts can tokenize their credibility and earn yield based on verified accuracy.
-- Each analysis becomes an **on-chain financial position**
-- Credibility = measurable performance, not social hype
-- Creates a new asset class: **Credibility Yield Instruments**
+#### 2. 🧠 Independent Pool Economics
+Each POOL is an **independent financial instrument** with its own stake pool:
+- Not a shared pot where everyone competes
+- Each pool = unique position + reasoning + own stakes
+- Stakers back **specific arguments**, not just outcomes
+- Multiple pools can coexist with different reasoning
 
-**Example:** An analyst with 85% accuracy becomes a "yield-bearing asset" that others can stake on.
+**Example:**
+```
+NEWS: "ETH to $5000 by Dec 2024"
+├─ Pool A: "YES because ETF approval" → Own stake pool
+├─ Pool B: "NO because regulation unclear" → Own stake pool
+└─ Pool C: "YES because DeFi growth" → Own stake pool
+
+All resolve at same time, but independent rewards!
+```
 
 #### 3. 🔗 On-Chain Reputation & Accountability
 Every analyst builds a **permanent, verifiable track record** on-chain via **Dynamic Soulbound NFTs (SBTs)**:
@@ -167,81 +187,163 @@ Forter connects **people who know** (analysts) with **people who decide** (inves
 
 ## How It Works
 
+### Architecture Overview: News → Pools → Stakes
+
+```
+┌─────────────────────────────────────────┐
+│ NEWS (User-created, permissionless)     │
+│ "ETH akan ke $5000 desember ini"        │
+│ Resolution: Dec 31, 2024                │
+│ Creator: @alice                         │
+└─────────────────────────────────────────┘
+              ↓
+    ┌─────────────────┐
+    │ Multiple POOLS  │ (Independent)
+    └─────────────────┘
+              ↓
+┌──────────────────────────────────────────┐
+│ POOL 1 by @bob                           │
+│ Position: YES                            │
+│ Reasoning: "Setuju karena ETF approval"  │
+│                                          │
+│ Stakes:                                  │
+│ - Setuju: $1000 (10 users)              │
+│ - Tidak Setuju: $200 (3 users)          │
+│                                          │
+│ Resolution: Same as NEWS (Dec 31)        │
+│ If ETH ≥ $5000 → "Setuju" wins          │
+└──────────────────────────────────────────┘
+
+┌──────────────────────────────────────────┐
+│ POOL 2 by @carol                         │
+│ Position: NO                             │
+│ Reasoning: "Tidak setuju, regulasi"      │
+│                                          │
+│ Stakes:                                  │
+│ - Setuju: $500 (7 users)                │
+│ - Tidak Setuju: $800 (9 users)          │
+│                                          │
+│ Resolution: Same as NEWS (Dec 31)        │
+│ If ETH < $5000 → "Setuju" wins          │
+└──────────────────────────────────────────┘
+
+Dec 31: ETH = $4800
+→ Pool 1 (said YES) → WRONG → "Tidak Setuju" wins
+→ Pool 2 (said NO) → CORRECT → "Setuju" wins
+```
+
 ### User Journey Flow
 
 ```mermaid
 flowchart TD
-    Start[User Connects Wallet + Farcaster] --> Browse[Browse Active Markets]
-    Browse --> Choice{User Action?}
-    
-    Choice -->|Become Informer| WriteAnalysis[Write Analysis + Arguments]
-    WriteAnalysis --> StakeAnalysis[Stake USDC on Analysis Accuracy]
-    StakeAnalysis --> PostFarcaster[Post to Farcaster]
-    PostFarcaster --> RegisterCast[Register Cast in App]
-    
-    Choice -->|Stake on Outcome| StakeOutcome[Stake USDC on YES/NO]
-    
-    Choice -->|Stake on Informer| ViewInformers[View Informer Analyses]
-    ViewInformers --> StakeInformer[Stake USDC on Specific Informer]
-    
-    RegisterCast --> MarketResolve[Market Resolution Period]
-    StakeOutcome --> MarketResolve
-    StakeInformer --> MarketResolve
-    
-    MarketResolve --> Oracle[Oracle/Mock Resolution]
-    Oracle --> Distribute[Distribute Rewards]
-    
-    Distribute --> UpdateRep[Update Reputation NFT]
-    UpdateRep --> Leaderboard[Update Global Leaderboard]
-    Leaderboard --> SocialProof[Visible on Farcaster Profile]
+    Start[User Connects Wallet + Farcaster] --> Choice{User Action?}
+
+    Choice -->|Create NEWS| NewsForm[Fill News Form]
+    NewsForm --> SetTimeline[Set Resolution Date + Criteria]
+    SetTimeline --> PublishNews[Publish + Auto-cast]
+    PublishNews --> NewsLive[NEWS Live on Platform]
+
+    Choice -->|Create POOL| BrowseNews[Browse Existing NEWS]
+    BrowseNews --> SelectNews[Select NEWS]
+    SelectNews --> PoolForm[Write Analysis + Position]
+    PoolForm --> StakePool[Stake on Own Pool]
+    StakePool --> PublishPool[Publish + Auto-cast]
+
+    Choice -->|Stake on Pool| ViewPools[View Pools under NEWS]
+    ViewPools --> SelectPool[Select Pool to Back]
+    SelectPool --> ChoosePosition[Setuju or Tidak Setuju?]
+    ChoosePosition --> StakeAmount[Enter Stake Amount]
+    StakeAmount --> ConfirmStake[Confirm Transaction]
+
+    PublishPool --> WaitResolve[Wait for Resolution Date]
+    ConfirmStake --> WaitResolve
+
+    WaitResolve --> CheckDate[Resolution Date Arrives]
+    CheckDate --> Oracle[Oracle Checks Outcome]
+    Oracle --> ResolveAll[Resolve ALL Pools under NEWS]
+
+    ResolveAll --> DistributePools[Distribute Rewards Per Pool]
+    DistributePools --> UpdateNFT[Update Reputation NFTs]
+    UpdateNFT --> Leaderboard[Update Global Leaderboard]
 ```
 
 ### User Roles
 
-**1. Informers (The Porters)**
-- Submit analysis dengan reasoning yang jelas
-- Stake USDC pada akurasi analisis mereka
-- Build on-chain reputation over time
-- Earn 70% dari reward pool jika terbukti akurat
+**1. NEWS Creators**
+- Anyone can create news/prediction (permissionless)
+- Set clear resolution criteria + timeline
+- Auto-posted to Farcaster dengan link
+- No reward untuk news creation (pure contribution)
+- Build reputation if create quality news
 
-**2. Stakers** 
-- Dapat stake pada outcome (YES/NO)
-- Dapat stake pada specific informer yang dipercaya
-- Earn rewards proportional dengan stake mereka
+**2. POOL Creators (Analysts)**
+- Create analysis dengan position (YES/NO)
+- Write detailed reasoning + evidence
+- Stake USDC on own pool (prove conviction)
+- Earn rewards if pool position correct
+- Build on-chain reputation NFT
 
-**3. Readers**
-- Browse analisis tanpa perlu stake
-- Follow top informers di Farcaster
+**3. Pool Stakers**
+- Browse pools under any news
+- Stake on "Setuju" (back the pool's position)
+- Stake on "Tidak Setuju" (against the pool)
+- Earn rewards if on winning side
+- Can stake on multiple pools
+
+**4. Readers/Researchers**
+- Browse news + pools tanpa stake
+- Follow top analysts di Farcaster
 - Use platform sebagai research tool
+- Track historical accuracy
 
-### Market Lifecycle
+### News + Pool Lifecycle
 
-#### Phase 1: Market Creation (Day 0)
-- Admin creates curated markets (MVP)
-- Set parameters: duration, min stake, category
-- Markets fokus pada verifiable outcomes
+#### Phase 1: NEWS Creation (Day 0)
+- **Anyone** creates NEWS (permissionless)
+- Set parameters:
+  - Title/statement (e.g., "ETH to $5000 by Dec 2024")
+  - Resolution date (e.g., Dec 31, 2024)
+  - Resolution criteria (e.g., "ETH price >= $5000 on CoinGecko")
+  - Category (Crypto, Macro, Tech, etc.)
+- Auto-posted ke Farcaster dengan link
+- NEWS goes live immediately
 
-#### Phase 2: Analysis Period (Day 1-12)
-- Informers submit analisis dengan evidence
-- Minimum stake requirement untuk filter spam
-- Analisis harus include reasoning (wajib)
-- Auto-post ke Farcaster untuk visibility
+#### Phase 2: POOL Creation Period (Day 0 - Resolution Date -1)
+- **Anyone** can create POOL under any NEWS
+- Pool requirements:
+  - Position: YES or NO
+  - Detailed reasoning (min 100 chars)
+  - Evidence links (optional)
+  - Initial stake (min $1 USDC untuk filter spam)
+- Each POOL gets own stake pool (Setuju vs Tidak Setuju)
+- Auto-posted ke Farcaster
+- Multiple pools can coexist under same NEWS
 
-#### Phase 3: Staking Period (Day 1-13)
-- Users stake pada outcomes atau informers
-- Quadratic staking untuk influence calculation
-- Real-time pool updates
+#### Phase 3: Staking Period (Day 0 - Resolution Date -1)
+- Users browse pools under NEWS
+- Stake on specific pools:
+  - "Setuju" = back the pool's position + reasoning
+  - "Tidak Setuju" = against the pool
+- Real-time pool stats update
+- Can stake on multiple different pools
 
-#### Phase 4: Resolution (Day 14)
-- Mock oracle untuk MVP demo
-- Future: Chainlink/UMA integration
-- 24-hour challenge period
+#### Phase 4: Resolution (Resolution Date)
+- Oracle checks verifiable outcome
+- ALL pools under the NEWS resolve simultaneously
+- Per-pool resolution:
+  - If pool said YES and outcome is YES → "Setuju" wins
+  - If pool said YES but outcome is NO → "Tidak Setuju" wins
+  - If pool said NO and outcome is NO → "Setuju" wins
+  - If pool said NO but outcome is YES → "Tidak Setuju" wins
+- 24-hour challenge period for disputes
 
-#### Phase 5: Settlement
-- Platform fee 2% untuk sustainability
-- 70% rewards ke informer ecosystem
-- 30% rewards ke outcome stakers
-- Reputation NFT updates
+#### Phase 5: Settlement (Per Pool)
+- **Each pool distributes independently:**
+  - Platform fee 2% dari pool total
+  - 70% ke pool creator (if correct position)
+  - 30% distributed ke winning stakers (Setuju or Tidak Setuju)
+- Reputation NFT updates for pool creators
+- Leaderboard updates
 
 ### Reputation System (Overview)
 
@@ -504,46 +606,84 @@ Each tier has a unique visual design reflecting credibility level.
 
 ### Reward Distribution
 
+**Per-Pool Distribution Model:**
+
+Each POOL is independent dengan reward structure sendiri:
+
 ```
-Total Pool (100%)
+Single Pool Total Stakes (100%)
     │
     ├── Platform Fee (2%)
     │
     └── Reward Pool (98%)
          │
-         ├── Informer Ecosystem (70%)
-         │    ├── Correct Informers (50%)
-         │    └── Informer Stakers (20%)
+         ├── Pool Creator (70%)
+         │    └── If pool position CORRECT
          │
-         └── Outcome Stakers (30%)
+         └── Winning Stakers (30%)
+              ├── "Setuju" stakers (if pool correct)
+              └── OR "Tidak Setuju" stakers (if pool wrong)
 ```
 
-#### Understanding the 3 Types of Stakers
+#### Example Scenario:
 
-| Type | Who They Are | What They Stake On | Reward Pool | Philosophy |
-|------|--------------|-------------------|-------------|-----------|
-| **Informer** | Analyst/creator | Their own analysis | 50% | Reward for accurate knowledge creation |
-| **Informer Staker** | Supporter/backer | Specific informer's credibility | 20% | Reward for identifying trustworthy analysts |
-| **Outcome Staker** | General participant | YES/NO outcome directly | 30% | Reward for market liquidity & participation |
+```
+NEWS: "ETH to $5000 by Dec 2024"
+Resolution Date: Dec 31, 2024
 
-**Key Difference Between Informer Stakers vs Outcome Stakers:**
+POOL 1 by Alice:
+├─ Position: YES
+├─ Reasoning: "ETF approval imminent"
+├─ Pool stakes:
+│   ├─ Alice's initial stake: $100
+│   ├─ "Setuju" stakes: $900 (9 users back Alice)
+│   └─ "Tidak Setuju" stakes: $200 (2 users against Alice)
+├─ Total pool: $1,200
+│
+└─ Resolution: ETH = $5,200 on Dec 31 ✅
 
-- **Informer Stakers (20%)**:
-  - You believe **Alice is a consistently accurate analyst**
-  - You stake 10 USDC **on Alice's analysis** (not on YES/NO)
-  - If Alice's prediction is correct → you earn from the 20% pool
-  - 💡 Think: "Backing good fund managers"
+Outcome: Alice was CORRECT (said YES, outcome was YES)
+Distribution:
+├─ Platform fee: $24 (2%)
+├─ Alice (pool creator): $823 (70% of remaining)
+└─ "Setuju" stakers: $353 (30% split proportionally among 9 users)
+    "Tidak Setuju" stakers get nothing (they were wrong)
 
-- **Outcome Stakers (30%)**:
-  - You believe **the outcome will be YES**
-  - You stake 10 USDC **on YES** (regardless of who predicted it)
-  - If the market resolves TRUE → you earn from the 30% pool
-  - 💡 Think: "Market sentiment staking"
 
-**Why This Split Matters:**
-- Balances speculation with credibility
-- Gives weight to human intelligence (informer system) while still letting market's collective intelligence play a role
-- Prevents "whales" from dominating purely through betting power — **informer quality drives most rewards**
+POOL 2 by Bob:
+├─ Position: NO
+├─ Reasoning: "Regulation will block growth"
+├─ Pool stakes:
+│   ├─ Bob's initial stake: $50
+│   ├─ "Setuju" stakes: $500 (5 users back Bob)
+│   └─ "Tidak Setuju" stakes: $800 (8 users against Bob)
+├─ Total pool: $1,350
+│
+└─ Resolution: ETH = $5,200 on Dec 31 ❌
+
+Outcome: Bob was WRONG (said NO, outcome was YES)
+Distribution:
+├─ Platform fee: $27 (2%)
+├─ Bob gets nothing (was wrong)
+└─ "Tidak Setuju" stakers: $1,323 (98% split among 8 users who bet against Bob)
+    "Setuju" stakers get nothing (they backed wrong position)
+```
+
+#### Understanding Pool Staking
+
+| Stake Type | Meaning | Win Condition | Reward Share |
+|------------|---------|---------------|--------------|
+| **Pool Creator Stake** | Creator's conviction | Pool position correct | 70% of pool |
+| **"Setuju" Stake** | Back the pool's position | Pool position correct | Split 30% proportionally |
+| **"Tidak Setuju" Stake** | Bet against the pool | Pool position wrong | Take 98% (all stakes minus fee) |
+
+**Key Points:**
+- Each pool is **fully independent**
+- Pool creator gets 70% **only if their position is correct**
+- "Setuju" stakers = backing the pool's position + reasoning
+- "Tidak Setuju" stakers = betting the pool will be wrong
+- All pools under same NEWS resolve at same time with same outcome data
+- But each pool's rewards are calculated separately
 
 ### Anti-Gaming Mechanisms
 - Farcaster ID age >30 days
@@ -635,28 +775,145 @@ ETHERSCAN_API_KEY=
 
 ## Demo Scenarios
 
-### Scenario 1: First-Time Informer
-1. Alice connects wallet dan Farcaster
-2. Browses market "Will Bank Indonesia cut rates?"
-3. Writes detailed analysis dengan 3 evidence links
-4. Stakes 5 USDC pada analisisnya
-5. Post otomatis ke Farcaster
-6. Market resolves - Alice benar
-7. Alice earns rewards + reputation boost
+### Scenario 1: NEWS Creator
+1. Alice connects wallet + Farcaster
+2. Clicks "Create NEWS"
+3. Fills form:
+   - Title: "BTC will hit $100k before March 2025"
+   - Resolution: March 31, 2025
+   - Criteria: "BTC price >= $100k on CoinGecko"
+   - Category: Crypto
+4. Publishes → auto-posted ke Farcaster
+5. NEWS goes live immediately
+6. Other users start creating pools under her news
+7. Alice builds reputation as quality news creator
 
-### Scenario 2: Strategic Staker
-1. Bob melihat multiple analyses
-2. Checks historical accuracy dari informers
-3. Stakes 10 USDC pada informer dengan 85% accuracy
-4. Market resolves sesuai prediksi informer
-5. Bob earns proportional rewards
+### Scenario 2: POOL Creator (Analyst)
+1. Bob browses active NEWS
+2. Sees Alice's BTC news
+3. Creates POOL:
+   - Position: YES
+   - Reasoning: "Halving + ETF inflows akan drive price"
+   - Evidence: Links to research papers
+   - Initial stake: $50 USDC
+4. Pool published + auto-cast
+5. Users start staking on his pool (Setuju/Tidak Setuju)
+6. March 31: BTC hits $105k → Bob's position correct
+7. Bob earns 70% of pool + reputation boost
 
-### Scenario 3: Reputation Building
-1. Carol consistently memberikan analisis akurat
-2. Reputation NFT shows 90% accuracy over 20 markets
-3. Becomes top informer di kategori "Economics"
+### Scenario 3: Strategic Pool Staker
+1. Carol browses pools under BTC news
+2. Sees 5 different pools with different reasoning
+3. Analyzes each pool:
+   - Pool A (YES - ETF): Creator has 85% accuracy → backs with $100 "Setuju"
+   - Pool B (NO - macro): Weak reasoning → bets $50 "Tidak Setuju"
+4. March 31: Resolution happens
+5. Pool A correct → Carol earns from "Setuju" rewards
+6. Pool B wrong → Carol earns from "Tidak Setuju" rewards
+7. Carol profits from both pools
+
+### Scenario 4: Reputation Building Journey
+1. David consistently creates accurate pools
+2. After 20 pools:
+   - 17 correct predictions (85% accuracy)
+   - Reputation NFT tier: Master 💎
+   - Total earned: $2,500 USDC
+3. Becomes top analyst in "Crypto" category
 4. Gains followers di Farcaster
-5. Higher trust = more stakers = more rewards
+5. New stakers prefer backing David's pools
+6. Higher stake volume = higher rewards
+7. David's reputation NFT becomes valuable credential
+
+## Architecture Comparison: Why Permissionless Pools?
+
+### Model A: Traditional Admin Markets (NOT our model)
+```
+❌ What most prediction markets do:
+
+MARKET (Admin-created):
+"Will BTC hit $100k?"
+├─ Shared pool (YES vs NO)
+├─ Alice stakes $100 on YES
+├─ Bob stakes $50 on YES
+├─ Carol stakes $75 on NO
+└─ Market resolves → ONE outcome → split rewards
+
+Issues:
+- Centralized market creation
+- All compete in same pool
+- No differentiation between reasoning
+- Just binary betting
+```
+
+### Model B: Forter's Permissionless Pools (OUR model)
+```
+✅ What Forter does differently:
+
+NEWS (User-created):
+"BTC akan hit $100k by Dec 2024"
+
+├─ POOL 1 by Alice:
+│   ├─ Position: YES
+│   ├─ Reasoning: "ETF approval driving institutional demand"
+│   ├─ Own stake pool: Setuju $900 vs Tidak $200
+│   └─ Independent resolution & rewards
+│
+├─ POOL 2 by Bob:
+│   ├─ Position: YES
+│   ├─ Reasoning: "Halving cycle historically bullish"
+│   ├─ Own stake pool: Setuju $600 vs Tidak $400
+│   └─ Independent resolution & rewards
+│
+└─ POOL 3 by Carol:
+    ├─ Position: NO
+    ├─ Reasoning: "Macro headwinds + regulation concerns"
+    ├─ Own stake pool: Setuju $500 vs Tidak $800
+    └─ Independent resolution & rewards
+
+All resolve at same time (Dec 31)
+But each pool has separate reward calculation!
+
+Benefits:
+- Permissionless news & pool creation
+- Multiple perspectives coexist
+- Reasoning quality matters
+- Nuanced information market
+```
+
+### Key Architectural Differences
+
+| Aspect | Traditional Markets | Forter Pools |
+|--------|-------------------|--------------|
+| **Creation** | Admin/DAO curated | Fully permissionless |
+| **Structure** | 1 market = 1 pool | 1 news = many pools |
+| **Stakes** | Shared pool (compete) | Independent pools (coexist) |
+| **Reasoning** | Optional text | Core to each pool |
+| **Resolution** | Binary outcome | Same outcome, different pools |
+| **Rewards** | Winner-take-all | Per-pool distribution |
+| **Spam Control** | Curation | Minimum stakes + reputation |
+| **Innovation** | Incremental | Fundamental shift |
+
+### Why This Matters
+
+**For Analysts:**
+- Don't compete with others in same pool
+- Your reasoning is the differentiator
+- Build reputation on unique insights
+- Multiple revenue streams per news
+
+**For Stakers:**
+- Back specific arguments, not just outcomes
+- Can diversify across multiple pools
+- Benefit from reasoning quality
+- More strategic opportunities
+
+**For the Ecosystem:**
+- Permissionless = faster innovation
+- More data = better insights
+- Nuanced information discovery
+- True information marketplace
+
+---
 
 ## Conclusion
 
@@ -685,18 +942,31 @@ We're building:
 - ✅ A financial system for knowledge workers
 - ✅ A trust infrastructure for Web3 decision-making
 
-### The Vision: "Farcaster Porter"
+### The Vision: "Permissionless Information Finance"
 
 Imagine a world where:
-- DAOs use Forter reputation scores for governance weights
-- DeFi protocols check Forter SBTs for credit scoring
-- Research funds stake on emerging analysts via Forter
-- News platforms integrate Forter credibility badges
-- Investment firms source alpha from verified Forter analysts
+- **Anyone can create predictions** - No gatekeepers, no approval needed
+- **Every argument gets its own economic value** - Reasoning quality = financial reward
+- **DAOs use Forter reputation** for governance weights & decision-making
+- **DeFi protocols check Forter SBTs** for credit scoring & risk assessment
+- **Research funds discover analysts** via on-chain performance, not follower count
+- **News platforms integrate** Forter credibility badges for source verification
+- **Investment firms source alpha** from verified pool creators
 
 **That's the future we're building.**
 
-Forter is not just a product - it's a **primitive** for the information economy.
+Forter is not just a product - it's a **permissionless primitive** for the information economy.
+
+### From Centralized to Truly Open
+
+We're not building another curated platform. We're building the infrastructure for:
+- ✅ Permissionless information creation
+- ✅ Independent economic incentives per argument
+- ✅ Verifiable credibility without gatekeepers
+- ✅ Same-time resolution, independent rewards
+- ✅ True information marketplace
+
+**The shift:** From "admin decides what gets predicted" to "community creates, stakes decide quality."
 
 ---
 

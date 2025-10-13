@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { getNewsById, getPoolsByNewsId, getNewsStats } from '@/lib/mock-data';
+import { Pool } from '@/types';
 import PoolCard from '@/components/pools/PoolCard';
+import PoolStakingModal from '@/components/pools/PoolStakingModal';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +17,8 @@ export default function NewsDetailPage() {
   const newsId = params.id as string;
   const { currentNews, setCurrentNews, pools, setPools, loading, setLoading } = useGlobalStore();
   const [activeFilter, setActiveFilter] = useState<'all' | 'YES' | 'NO'>('all');
+  const [showStakingModal, setShowStakingModal] = useState(false);
+  const [selectedPool, setSelectedPool] = useState<Pool | null>(null);
 
   // Load news and pools
   useEffect(() => {
@@ -57,9 +61,21 @@ export default function NewsDetailPage() {
 
   const stats = getNewsStats(newsId);
 
+  const refetchPools = () => {
+    setLoading('pools', true);
+    setTimeout(() => {
+      const newsPools = getPoolsByNewsId(newsId);
+      setPools(newsPools);
+      setLoading('pools', false);
+    }, 500);
+  };
+
   const handleStake = (poolId: string, position: 'agree' | 'disagree') => {
-    console.log('Stake on pool:', poolId, 'position:', position);
-    // TODO: Implement staking logic
+    const pool = pools.find(p => p.id === poolId);
+    if (pool) {
+      setSelectedPool(pool);
+      setShowStakingModal(true);
+    }
   };
 
   return (
@@ -322,6 +338,22 @@ export default function NewsDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Staking Modal */}
+      {showStakingModal && selectedPool && (
+        <PoolStakingModal
+          pool={selectedPool}
+          onClose={() => {
+            setShowStakingModal(false);
+            setSelectedPool(null);
+          }}
+          onSuccess={() => {
+            refetchPools();
+            setShowStakingModal(false);
+            setSelectedPool(null);
+          }}
+        />
+      )}
     </div>
   );
 }

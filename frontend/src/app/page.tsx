@@ -6,6 +6,7 @@ import ReputationTiers from "@/components/landing/ReputationTiers"
 import Header from "@/components/layout/Header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import Link from "next/link"
 
 export default function Page() {
   return (
@@ -74,6 +75,46 @@ export default function Page() {
           <HowItWorks />
         </section>
 
+        {/* News CTA Section */}
+        <section className="px-4 md:px-6 py-12">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Create NEWS Card */}
+              <Card className="border border-primary/50 bg-gradient-to-br from-primary/5 to-accent/5 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
+                <CardContent className="p-8 text-center">
+                  <div className="text-4xl mb-4">📰</div>
+                  <h3 className="text-2xl font-bold mb-3">Create NEWS</h3>
+                  <p className="text-muted-foreground mb-6">
+                    Create permissionless predictions. Anyone can then analyze and stake on your NEWS.
+                  </p>
+                  <Link href="/news/create">
+                    <Button size="lg" className="w-full bg-gradient-to-r from-primary to-accent shadow-lg">
+                      Create NEWS
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+
+              {/* Browse & Stake Card */}
+              <Card className="border border-accent/50 bg-gradient-to-br from-accent/5 to-primary/5 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
+                <CardContent className="p-8 text-center">
+                  <div className="text-4xl mb-4">💰</div>
+                  <h3 className="text-2xl font-bold mb-3">Browse & Stake</h3>
+                  <p className="text-muted-foreground mb-6">
+                    Explore active predictions, create pools with analysis, or stake on credible reasoning.
+                  </p>
+                  <Link href="/news">
+                    <Button size="lg" variant="outline" className="w-full border-2">
+                      Browse NEWS
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Final CTA */}
         <section className="px-4 md:px-6 pb-20 pt-8">
           <div className="max-w-4xl mx-auto">
             <Card className="border border-border/50 bg-background/80 backdrop-blur-sm supports-[backdrop-filter]:bg-background/60 shadow-2xl shadow-primary/5">
@@ -82,15 +123,19 @@ export default function Page() {
                   Transform noise into signal. Finance credible information.
                 </h3>
                 <p className="mt-4 md:mt-6 text-muted-foreground text-lg text-pretty max-w-2xl mx-auto">
-                  Early Informer Program opens for analysts building verifiable, on-chain credibility.
+                  Join the permissionless information finance protocol. Build on-chain reputation through verifiable analysis.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <Button size="lg" className="min-w-[160px] bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25">
-                    Become an Informer
-                  </Button>
-                  <Button size="lg" variant="outline" className="min-w-[160px] border-border/50 hover:bg-accent/10">
-                    Back Informers
-                  </Button>
+                  <Link href="/news/create">
+                    <Button size="lg" className="min-w-[160px] bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25">
+                      Create NEWS
+                    </Button>
+                  </Link>
+                  <Link href="/news">
+                    <Button size="lg" variant="outline" className="min-w-[160px] border-border/50 hover:bg-accent/10">
+                      Explore Pools
+                    </Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>

@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function CreatePoolPage() {
   const params = useParams();
@@ -213,14 +214,15 @@ export default function CreatePoolPage() {
                       />
                       {/* Image Preview */}
                       <div className="rounded-lg overflow-hidden border border-border/30">
-                        <img
-                          src={formData.imageUrl}
-                          alt="Preview"
-                          className="w-full h-48 object-cover"
-                          onError={(e) => {
-                            e.currentTarget.src = 'https://via.placeholder.com/800x400?text=Invalid+Image+URL';
-                          }}
-                        />
+                        <div className="relative w-full h-48">
+                          <Image
+                            src={formData.imageUrl}
+                            alt="Preview"
+                            fill
+                            className="object-cover"
+                            unoptimized
+                          />
+                        </div>
                         {formData.imageCaption && (
                           <div className="p-2 bg-background/50 text-xs text-muted-foreground text-center">
                             📊 {formData.imageCaption}
@@ -331,14 +333,15 @@ export default function CreatePoolPage() {
 
                   {formData.imageUrl && (
                     <div className="mb-4 rounded-lg overflow-hidden border border-border/30">
-                      <img
-                        src={formData.imageUrl}
-                        alt="Preview"
-                        className="w-full h-48 object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = 'https://via.placeholder.com/800x400?text=Invalid+Image+URL';
-                        }}
-                      />
+                      <div className="relative w-full h-48">
+                        <Image
+                          src={formData.imageUrl}
+                          alt="Preview"
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
                       {formData.imageCaption && (
                         <div className="p-2 bg-background/50 text-xs text-muted-foreground text-center">
                           📊 {formData.imageCaption}

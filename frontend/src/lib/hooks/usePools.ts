@@ -19,8 +19,9 @@ export function usePools(newsId?: string) {
       // const response = await fetch(`/api/pools?newsId=${targetNewsId || newsId}`);
       // const data = await response.json();
 
-      const poolsData = targetNewsId || newsId
-        ? getPoolsByNewsId(targetNewsId || newsId)
+      const effectiveNewsId = targetNewsId || newsId;
+      const poolsData = effectiveNewsId
+        ? getPoolsByNewsId(effectiveNewsId)
         : MOCK_POOLS;
 
       setPools(poolsData);

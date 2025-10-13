@@ -82,7 +82,7 @@ export function usePoolStaking() {
     stakeAmount: number,
     position: 'agree' | 'disagree'
   ): { minReward: number; maxReward: number; breakEven: number } => {
-    const { agreeStakes, disagreeStakes, creatorStake, totalStaked } = pool;
+    const { agreeStakes, disagreeStakes, totalStaked } = pool;
 
     // Total pool after user stake
     const newTotalPool = totalStaked + stakeAmount;
@@ -91,7 +91,7 @@ export function usePoolStaking() {
 
     if (position === 'agree') {
       // If pool creator correct, user gets share of 30% distributed among agree stakers
-      const creatorReward = rewardPool * 0.7; // Creator gets 70%
+      // Creator gets 70% (unused in calculation but part of distribution logic)
       const stakersReward = rewardPool * 0.3; // Stakers get 30%
 
       const newAgreeTotal = agreeStakes + stakeAmount;

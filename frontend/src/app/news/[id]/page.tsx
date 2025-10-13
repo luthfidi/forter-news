@@ -70,7 +70,7 @@ export default function NewsDetailPage() {
     }, 500);
   };
 
-  const handleStake = (poolId: string, position: 'agree' | 'disagree') => {
+  const handleStake = (poolId: string) => {
     const pool = pools.find(p => p.id === poolId);
     if (pool) {
       setSelectedPool(pool);

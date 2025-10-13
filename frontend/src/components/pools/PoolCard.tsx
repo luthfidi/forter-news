@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface PoolCardProps {
   pool: Pool;
@@ -113,11 +114,15 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
         {/* Image if exists */}
         {pool.imageUrl && (
           <div className="mb-4 rounded-lg overflow-hidden border border-border/30">
-            <img
-              src={pool.imageUrl}
-              alt={pool.imageCaption || 'Pool analysis chart'}
-              className="w-full h-48 object-cover"
-            />
+            <div className="relative w-full h-48">
+              <Image
+                src={pool.imageUrl}
+                alt={pool.imageCaption || 'Pool analysis chart'}
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </div>
             {pool.imageCaption && (
               <div className="p-2 bg-background/50 text-xs text-muted-foreground text-center">
                 📊 {pool.imageCaption}

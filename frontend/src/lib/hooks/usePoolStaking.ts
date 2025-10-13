@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { PoolStake, Pool } from '@/types';
-import { getPoolById } from '@/lib/mock-data';
 
 export function usePoolStaking() {
   const { poolStakes, setPoolStakes, pools, setPools, loading, setLoading } = useGlobalStore();

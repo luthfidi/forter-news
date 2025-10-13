@@ -231,14 +231,14 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
             </Button>
             <Button
               onClick={handleStake}
-              disabled={!amount || parseFloat(amount) < 1 || isSubmitting || loading.stakes}
+              disabled={!amount || parseFloat(amount) < 1 || isSubmitting || loading}
               className={`flex-1 ${
                 selectedPosition === 'agree'
                   ? 'bg-green-500 hover:bg-green-600'
                   : 'bg-red-500 hover:bg-red-600'
               } text-white`}
             >
-              {isSubmitting || loading.stakes ? 'Processing...' : `Confirm Stake`}
+              {isSubmitting || loading ? 'Processing...' : `Confirm Stake`}
             </Button>
           </div>
 

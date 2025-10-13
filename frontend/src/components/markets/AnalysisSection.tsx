@@ -146,7 +146,7 @@ export default function AnalysisSection({ analyses, loading }: AnalysisSectionPr
                     }`}
                   >
                     <div className="text-lg font-bold">NO</div>
-                    <div className="text-sm opacity-75">I don't think this will happen</div>
+                    <div className="text-sm opacity-75">I don&apos;t think this will happen</div>
                   </button>
                 </div>
               </div>

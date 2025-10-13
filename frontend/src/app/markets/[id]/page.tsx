@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useGlobalStore } from '@/store/useGlobalStore';
-import { Market, Analysis, StakePosition } from '@/types';
+import { Analysis } from '@/types';
 import MarketOverview from '@/components/markets/MarketOverview';
 import AnalysisSection from '@/components/markets/AnalysisSection';
 import StakingInterface from '@/components/markets/StakingInterface';
@@ -85,7 +85,7 @@ export default function MarketDetailPage() {
               <div className="text-4xl mb-4">🔍</div>
               <h3 className="text-xl font-semibold mb-2">Market not found</h3>
               <p className="text-muted-foreground mb-6">
-                The market you're looking for doesn't exist or has been removed.
+                The market you&apos;re looking for doesn&apos;t exist or has been removed.
               </p>
               <Link href="/markets">
                 <Button>Browse Markets</Button>
@@ -99,7 +99,6 @@ export default function MarketDetailPage() {
 
   const yesStakes = analyses.filter(a => a.position === 'YES').reduce((sum, a) => sum + a.stakeAmount, 0);
   const noStakes = analyses.filter(a => a.position === 'NO').reduce((sum, a) => sum + a.stakeAmount, 0);
-  const totalAnalysisStakes = yesStakes + noStakes;
 
   return (
     <div className="min-h-screen pt-20 pb-16">
@@ -155,7 +154,7 @@ export default function MarketDetailPage() {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as 'overview' | 'analysis' | 'staking')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                 activeTab === tab.id
                   ? 'bg-primary text-primary-foreground shadow-lg'

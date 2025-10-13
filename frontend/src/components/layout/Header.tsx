@@ -1,6 +1,7 @@
 'use client';
 
 import CustomConnectButton from '@/components/wallet/CustomConnectButton';
+import Link from 'next/link';
 
 export default function Header() {
   return (
@@ -12,9 +13,9 @@ export default function Header() {
         </span>
       </div>
       <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-        <a href="/markets" className="text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform font-medium">
+        <Link href="/markets" className="text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform font-medium">
           Markets
-        </a>
+        </Link>
       </nav>
       <div className="flex items-center gap-3">
         <CustomConnectButton />

@@ -116,8 +116,7 @@ export default function InformerProfiles({ analyses }: InformerProfilesProps) {
         <div className="space-y-4">
           {informers.slice(0, 5).map((informer, index) => {
             const reputation = getReputationData(informer.address);
-            const dominantPosition = informer.positions.YES >= informer.positions.NO ? 'YES' : 'NO';
-            
+
             return (
               <div
                 key={informer.address}

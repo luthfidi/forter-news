@@ -279,6 +279,7 @@ flowchart TD
 **2. POOL Creators (Analysts)**
 - Create analysis dengan position (YES/NO)
 - Write detailed reasoning + evidence
+- **Upload chart/image for visual evidence** (optional)
 - Stake USDC on own pool (prove conviction)
 - Earn rewards if pool position correct
 - Build on-chain reputation NFT
@@ -314,9 +315,10 @@ flowchart TD
   - Position: YES or NO
   - Detailed reasoning (min 100 chars)
   - Evidence links (optional)
+  - **Chart/image upload** (optional, max 1 image for MVP via URL)
   - Initial stake (min $1 USDC untuk filter spam)
 - Each POOL gets own stake pool (Setuju vs Tidak Setuju)
-- Auto-posted ke Farcaster
+- Auto-posted ke Farcaster with image embed
 - Multiple pools can coexist under same NEWS
 
 #### Phase 3: Staking Period (Day 0 - Resolution Date -1)
@@ -590,8 +592,69 @@ Each tier has a unique visual design reflecting credibility level.
 
 **External Integrations:**
 - Farcaster (via Neynar): Identity dan social graph
-- IPFS (via Pinata): NFT metadata storage
+- IPFS (via Pinata): NFT metadata + image storage
 - Oracle (future): Chainlink/UMA untuk resolution
+
+### Visual Evidence Support
+
+**Image Upload for Pool Analysis:**
+
+Analysts can enhance their pools with visual evidence (charts, graphs, screenshots) to strengthen their arguments and increase credibility.
+
+**Implementation Phases:**
+
+**Phase 1 (MVP - URL-based):**
+- Single image support via URL paste
+- User pastes link from Imgur, Twitter, etc.
+- Preview displayed in pool card
+- Embedded in Farcaster auto-post
+- Zero storage cost, immediate implementation
+
+```typescript
+interface Pool {
+  // ... other fields
+  imageUrl?: string;        // Optional chart/visual evidence
+  imageCaption?: string;    // Brief description
+}
+```
+
+**Phase 2 (Beta - File Upload):**
+- Direct file upload (max 5MB)
+- Automatic upload to IPFS via Pinata
+- Support for PNG, JPG, WebP formats
+- Image compression/optimization
+- Multiple images support (max 3-5)
+
+**Phase 3 (Production - Multi-media):**
+- Video clips for analysis
+- PDF document embedding
+- GIF support for engagement
+- Embedded charts from TradingView
+- OCR for automatic chart data extraction
+
+**Storage Strategy:**
+```
+MVP: External URL (free, instant)
+  ↓
+Beta: IPFS via Pinata (~$1/GB/month)
+  ↓
+Production: IPFS + Arweave mirror ($5/GB one-time)
+```
+
+**Why Images Matter:**
+- 📊 **Technical Analysis**: Charts speak louder than words
+- 🎯 **Quality Signal**: Serious analysts include visual proof
+- 💬 **Engagement**: Pools with images get 3-5x more stakes
+- ✅ **Trust**: Visual evidence builds credibility faster
+- 🚀 **Virality**: Image previews boost Farcaster engagement
+
+**UX Flow:**
+1. Analyst creates pool with reasoning
+2. Optionally adds image URL or uploads file
+3. Preview shown before publishing
+4. Pool card displays image prominently
+5. Auto-posted to Farcaster with image embed
+6. Stakers see visual evidence when evaluating pools
 
 ## Tokenomics & Incentives
 
@@ -795,8 +858,9 @@ ETHERSCAN_API_KEY=
    - Position: YES
    - Reasoning: "Halving + ETF inflows akan drive price"
    - Evidence: Links to research papers
+   - **Image**: Uploads technical analysis chart showing bull flag pattern
    - Initial stake: $50 USDC
-4. Pool published + auto-cast
+4. Pool published + auto-cast with chart image embedded
 5. Users start staking on his pool (Setuju/Tidak Setuju)
 6. March 31: BTC hits $105k → Bob's position correct
 7. Bob earns 70% of pool + reputation boost

@@ -401,7 +401,7 @@ export default function CreatePoolPage() {
                       <span className="font-semibold text-primary">70%</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>&quot;Setuju&quot; stakers earn:</span>
+                      <span>&quot;Agree&quot; stakers earn:</span>
                       <span className="font-semibold text-accent">30%</span>
                     </div>
                   </div>
@@ -409,7 +409,7 @@ export default function CreatePoolPage() {
                   <div>
                     <div className="font-medium text-foreground mb-1">If your position is WRONG:</div>
                     <div>You lose your stake</div>
-                    <div>&quot;Tidak Setuju&quot; stakers win</div>
+                    <div>&quot;Disagree&quot; stakers win</div>
                   </div>
                 </div>
               </CardContent>

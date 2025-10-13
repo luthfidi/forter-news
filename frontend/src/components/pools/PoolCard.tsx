@@ -4,6 +4,7 @@ import { Pool } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 
 interface PoolCardProps {
@@ -13,6 +14,9 @@ interface PoolCardProps {
 
 export default function PoolCard({ pool, onStake }: PoolCardProps) {
   const [showFullReasoning, setShowFullReasoning] = useState(false);
+  const [showStakeInput, setShowStakeInput] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState<'agree' | 'disagree' | null>(null);
+  const [stakeAmount, setStakeAmount] = useState('');
 
   // Calculate percentages
   const agreePercentage = pool.totalStaked > 0
@@ -51,6 +55,28 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
   };
 
   const reputation = getReputationDisplay(pool.creatorAddress);
+
+  const handleStakeButtonClick = (position: 'agree' | 'disagree') => {
+    setSelectedPosition(position);
+    setShowStakeInput(true);
+    setStakeAmount('');
+  };
+
+  const handleConfirmStake = () => {
+    if (stakeAmount && parseFloat(stakeAmount) >= 1 && selectedPosition) {
+      onStake?.(pool.id, selectedPosition);
+      // Reset state
+      setShowStakeInput(false);
+      setSelectedPosition(null);
+      setStakeAmount('');
+    }
+  };
+
+  const handleCancelStake = () => {
+    setShowStakeInput(false);
+    setSelectedPosition(null);
+    setStakeAmount('');
+  };
 
   return (
     <Card className="border border-border/50 bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-all duration-200">
@@ -146,10 +172,10 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
 
           {/* Progress bars */}
           <div className="space-y-2">
-            {/* Setuju (Agree) */}
+            {/* Agree (Back Pool) */}
             <div>
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-green-600">Setuju (Back this pool)</span>
+                <span className="text-green-600">Agree (Back this pool)</span>
                 <span className="font-medium">${pool.agreeStakes.toLocaleString()} ({agreePercentage}%)</span>
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
@@ -160,10 +186,10 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
               </div>
             </div>
 
-            {/* Tidak Setuju (Disagree) */}
+            {/* Disagree (Against Pool) */}
             <div>
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-red-600">Tidak Setuju (Against)</span>
+                <span className="text-red-600">Disagree (Against pool)</span>
                 <span className="font-medium">${pool.disagreeStakes.toLocaleString()} ({disagreePercentage}%)</span>
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
@@ -185,23 +211,70 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-2">
-          <Button
-            onClick={() => onStake?.(pool.id, 'agree')}
-            className="flex-1 bg-green-500 hover:bg-green-600 text-white"
-            size="sm"
-          >
-            Stake Setuju
-          </Button>
-          <Button
-            onClick={() => onStake?.(pool.id, 'disagree')}
-            variant="outline"
-            className="flex-1 border-red-500/50 text-red-600 hover:bg-red-500/10"
-            size="sm"
-          >
-            Stake Tidak Setuju
-          </Button>
-        </div>
+        {!showStakeInput ? (
+          <div className="flex gap-2">
+            <Button
+              onClick={() => handleStakeButtonClick('agree')}
+              className="flex-1 bg-green-500 hover:bg-green-600 text-white"
+              size="sm"
+            >
+              Stake Agree
+            </Button>
+            <Button
+              onClick={() => handleStakeButtonClick('disagree')}
+              variant="outline"
+              className="flex-1 border-red-500/50 text-red-600 hover:bg-red-500 hover:text-white hover:border-red-500"
+              size="sm"
+            >
+              Stake Disagree
+            </Button>
+          </div>
+        ) : (
+          /* Inline Stake Input */
+          <div className="space-y-3 p-4 rounded-lg border-2 border-primary/20 bg-primary/5">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium">
+                Staking on:{' '}
+                <span className={selectedPosition === 'agree' ? 'text-green-600' : 'text-red-600'}>
+                  {selectedPosition === 'agree' ? 'Agree' : 'Disagree'}
+                </span>
+              </span>
+              <button
+                onClick={handleCancelStake}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                ✕ Cancel
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium mb-1">
+                Amount (USDC)
+              </label>
+              <Input
+                type="number"
+                placeholder="Min $1"
+                value={stakeAmount}
+                onChange={(e) => setStakeAmount(e.target.value)}
+                min="1"
+                className="bg-background/50"
+              />
+            </div>
+
+            <Button
+              onClick={handleConfirmStake}
+              disabled={!stakeAmount || parseFloat(stakeAmount) < 1}
+              className={`w-full ${
+                selectedPosition === 'agree'
+                  ? 'bg-green-500 hover:bg-green-600'
+                  : 'bg-red-500 hover:bg-red-600'
+              } text-white`}
+              size="sm"
+            >
+              Confirm Stake ${stakeAmount || '0'}
+            </Button>
+          </div>
+        )}
 
         {/* Metadata */}
         <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">

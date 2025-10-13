@@ -72,8 +72,9 @@ export default function NewsCard({ news }: NewsCardProps) {
   };
 
   return (
-    <Card className="group border border-border/50 bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5 cursor-pointer">
-      <CardContent className="p-6">
+    <Link href={`/news/${news.id}`} className="block">
+      <Card className="group border border-border/50 bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:scale-[1.02] cursor-pointer h-full flex flex-col">
+        <CardContent className="p-6 flex flex-col flex-1">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-2">
@@ -126,7 +127,7 @@ export default function NewsCard({ news }: NewsCardProps) {
         </div>
 
         {/* Time remaining */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <div className="h-1.5 w-1.5 rounded-full bg-current opacity-60" />
             <span>{timeRemaining === 'ended' ? 'Ended' : `Ends ${timeRemaining}`}</span>
@@ -142,23 +143,8 @@ export default function NewsCard({ news }: NewsCardProps) {
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-2">
-          <Link href={`/news/${news.id}`} className="flex-1">
-            <Button variant="outline" className="w-full border-border/50 hover:bg-accent/10 transition-all duration-200 hover:scale-105">
-              View Pools
-            </Button>
-          </Link>
-          <Link href={`/news/${news.id}/pool/create`} className="flex-1">
-            <Button className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25 transition-all duration-200 hover:scale-105">
-              Create Pool
-            </Button>
-          </Link>
-        </div>
-
-        {/* Hover Effect Indicator */}
-        <div className="mt-4 h-1 w-0 bg-gradient-to-r from-primary to-accent rounded-full group-hover:w-full transition-all duration-300" />
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

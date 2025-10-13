@@ -7,7 +7,7 @@ import { News, Pool, PoolStake } from '@/types';
 export const MOCK_NEWS: News[] = [
   {
     id: '1',
-    title: 'ETH akan mencapai $5000 sebelum Desember 2024',
+    title: 'ETH will reach $5000 before December 2024',
     description: 'Predicting Ethereum price movement considering ETF approval prospects, institutional adoption trends, and DeFi ecosystem growth. Key factors include spot ETF decisions, Layer 2 scaling improvements, and macroeconomic conditions.',
     category: 'Crypto',
     endDate: new Date('2024-12-31'),
@@ -33,7 +33,7 @@ export const MOCK_NEWS: News[] = [
   },
   {
     id: '3',
-    title: 'Federal Reserve akan memotong suku bunga di Q1 2025',
+    title: 'Federal Reserve will cut interest rates in Q1 2025',
     description: 'Analyzing Federal Reserve monetary policy trajectory based on inflation data, employment figures, and economic growth indicators to predict rate cut timing.',
     category: 'Macro',
     endDate: new Date('2025-03-31'),
@@ -59,7 +59,7 @@ export const MOCK_NEWS: News[] = [
   },
   {
     id: '5',
-    title: 'Ethereum ETF akan mencapai $1B+ inflows dalam 3 bulan',
+    title: 'Ethereum ETF will reach $1B+ inflows within 3 months',
     description: 'Analyzing institutional investment patterns and ETF adoption rates for Ethereum-based financial products following spot ETF approvals.',
     category: 'Crypto',
     endDate: new Date('2025-01-15'),
@@ -90,13 +90,13 @@ export const MOCK_NEWS: News[] = [
 // ============================================
 
 export const MOCK_POOLS: Pool[] = [
-  // Pools for NEWS 1: "ETH akan mencapai $5000"
+  // Pools for NEWS 1: "ETH will reach $5000"
   {
     id: 'pool-1',
     newsId: '1',
     creatorAddress: '0x1234...5678',
     position: 'YES',
-    reasoning: 'ETF approval akan mendorong institutional inflows yang massive. Historical data menunjukkan bahwa setelah Bitcoin ETF approval, harga melonjak 40% dalam 3 bulan. Ethereum memiliki fundamental lebih kuat dengan DeFi ecosystem dan staking yields. Technical analysis menunjukkan bull flag pattern dengan support kuat di $3500.',
+    reasoning: 'ETF approval will drive massive institutional inflows. Historical data shows that after Bitcoin ETF approval, price surged 40% within 3 months. Ethereum has stronger fundamentals with its DeFi ecosystem and staking yields. Technical analysis shows bull flag pattern with strong support at $3500.',
     evidence: [
       'https://example.com/etf-approval-data',
       'https://example.com/institutional-flows',
@@ -118,7 +118,7 @@ export const MOCK_POOLS: Pool[] = [
     newsId: '1',
     creatorAddress: '0xabcd...efgh',
     position: 'NO',
-    reasoning: 'Regulasi masih sangat unclear di banyak jurisdiksi. SEC masih aggressive terhadap crypto projects. Macro conditions dengan high interest rates membuat risk appetite berkurang. Historical resistance di $4800 sangat kuat dan sudah 3x rejection. Market masih bearish dengan volume rendah.',
+    reasoning: 'Regulation remains very unclear in many jurisdictions. SEC is still aggressive towards crypto projects. Macro conditions with high interest rates reduce risk appetite. Historical resistance at $4800 is very strong with 3x rejections already. Market remains bearish with low volume.',
     evidence: [
       'https://example.com/regulatory-concerns',
       'https://example.com/macro-headwinds',
@@ -139,7 +139,7 @@ export const MOCK_POOLS: Pool[] = [
     newsId: '1',
     creatorAddress: '0x9999...1111',
     position: 'YES',
-    reasoning: 'Layer 2 scaling solutions seperti Arbitrum dan Optimism sudah significantly reduce gas fees. Ini membuat DeFi adoption meningkat pesat. Real World Assets (RWA) tokenization trend akan drive institutional demand. Ethereum merge sudah proven dan staking yields attractive untuk institutions.',
+    reasoning: 'Layer 2 scaling solutions like Arbitrum and Optimism have significantly reduced gas fees. This is driving rapid DeFi adoption growth. Real World Assets (RWA) tokenization trend will drive institutional demand. Ethereum merge is proven and staking yields are attractive for institutions.',
     evidence: [
       'https://example.com/l2-adoption',
       'https://example.com/rwa-tokenization'
@@ -159,7 +159,7 @@ export const MOCK_POOLS: Pool[] = [
     newsId: '2',
     creatorAddress: '0x2222...3333',
     position: 'YES',
-    reasoning: 'Halving cycle historically bullish. Spot ETF inflows breaking records - sudah $50B+ dalam 6 bulan. MicroStrategy dan institutional buyers terus accumulate. Stock-to-flow model predicts $100k+ post-halving. On-chain metrics show strong accumulation di whales.',
+    reasoning: 'Halving cycle historically bullish. Spot ETF inflows breaking records - already $50B+ in 6 months. MicroStrategy and institutional buyers continue to accumulate. Stock-to-flow model predicts $100k+ post-halving. On-chain metrics show strong accumulation by whales.',
     evidence: [
       'https://example.com/halving-cycle-data',
       'https://example.com/etf-inflows-record',
@@ -181,7 +181,7 @@ export const MOCK_POOLS: Pool[] = [
     newsId: '2',
     creatorAddress: '0x4444...5555',
     position: 'NO',
-    reasoning: 'Macro environment still challenging. Fed belum pivot, interest rates masih high. Global liquidity conditions tight. China economic slowdown impacts risk assets. Historical post-halving rallies take 12-18 months, March 2025 too early. Technical overbought on weekly timeframe.',
+    reasoning: 'Macro environment still challenging. Fed has not pivoted yet, interest rates remain high. Global liquidity conditions are tight. China economic slowdown impacts risk assets. Historical post-halving rallies take 12-18 months, March 2025 is too early. Technical indicators show overbought on weekly timeframe.',
     evidence: [
       'https://example.com/fed-policy-outlook',
       'https://example.com/global-liquidity'
@@ -201,7 +201,7 @@ export const MOCK_POOLS: Pool[] = [
     newsId: '3',
     creatorAddress: '0x6666...7777',
     position: 'YES',
-    reasoning: 'Inflation data trending down menuju 2% target. Employment data showing weakness - unemployment creeping up. Powell sudah signal "higher for longer" ending. Market pricing in 75% chance of Q1 cut. Historical precedent: Fed cuts when they see economic softening.',
+    reasoning: 'Inflation data trending down towards 2% target. Employment data showing weakness - unemployment creeping up. Powell has signaled "higher for longer" is ending. Market pricing in 75% chance of Q1 cut. Historical precedent: Fed cuts when they see economic softening.',
     evidence: [
       'https://example.com/inflation-trends',
       'https://example.com/employment-weakness',
@@ -220,7 +220,7 @@ export const MOCK_POOLS: Pool[] = [
     newsId: '3',
     creatorAddress: '0x8888...9999',
     position: 'NO',
-    reasoning: 'Core inflation masih sticky above 3%. Labor market masih resilient. Fed tidak mau cut too early dan risk inflation resurgence. Political pressure pre-election makes them cautious. CME Fed Watch masih show uncertainty. Q2 2025 more likely untuk first cut.',
+    reasoning: 'Core inflation remains sticky above 3%. Labor market remains resilient. Fed does not want to cut too early and risk inflation resurgence. Political pressure pre-election makes them cautious. CME Fed Watch still shows uncertainty. Q2 2025 more likely for first cut.',
     evidence: [
       'https://example.com/core-inflation-data',
       'https://example.com/labor-market-strength'

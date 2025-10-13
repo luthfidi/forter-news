@@ -94,7 +94,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
               </div>
               <div className="flex gap-2 text-xs">
                 <div className="flex-1">
-                  <div className="text-green-600 mb-1">Setuju: {agreePercentage}%</div>
+                  <div className="text-green-600 mb-1">Agree: {agreePercentage}%</div>
                   <div className="h-1 bg-muted rounded-full overflow-hidden">
                     <div
                       className="h-full bg-green-500"
@@ -103,7 +103,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                   </div>
                 </div>
                 <div className="flex-1">
-                  <div className="text-red-600 mb-1">Tidak: {disagreePercentage}%</div>
+                  <div className="text-red-600 mb-1">Disagree: {disagreePercentage}%</div>
                   <div className="h-1 bg-muted rounded-full overflow-hidden">
                     <div
                       className="h-full bg-red-500"
@@ -127,7 +127,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                     : 'border-border/30 hover:border-green-500/50'
                 }`}
               >
-                <div className="font-bold mb-1">Setuju</div>
+                <div className="font-bold mb-1">Agree</div>
                 <div className="text-xs opacity-75">Back this pool&apos;s position</div>
               </button>
               <button
@@ -138,7 +138,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                     : 'border-border/30 hover:border-red-500/50'
                 }`}
               >
-                <div className="font-bold mb-1">Tidak Setuju</div>
+                <div className="font-bold mb-1">Disagree</div>
                 <div className="text-xs opacity-75">Bet against this pool</div>
               </button>
             </div>
@@ -238,7 +238,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                   : 'bg-red-500 hover:bg-red-600'
               } text-white`}
             >
-              {isSubmitting || loading.stakes ? 'Staking...' : `Stake ${selectedPosition === 'agree' ? 'Setuju' : 'Tidak Setuju'}`}
+              {isSubmitting || loading.stakes ? 'Processing...' : `Confirm Stake`}
             </Button>
           </div>
 

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { DatePicker } from '@/components/ui/date-picker';
 import Link from 'next/link';
 
 const CATEGORIES = ['Crypto', 'Macro', 'Tech', 'Sports', 'Politics'];
@@ -134,12 +135,11 @@ export default function CreateNewsPage() {
                   <label className="block text-sm font-medium mb-2">
                     Resolution Date *
                   </label>
-                  <Input
-                    type="date"
+                  <DatePicker
                     value={formData.endDate}
-                    onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                    min={new Date().toISOString().split('T')[0]}
-                    className="bg-background/50 border-border/50"
+                    onChange={(date) => setFormData({ ...formData, endDate: date })}
+                    minDate={new Date().toISOString().split('T')[0]}
+                    placeholder="Click to select resolution date"
                   />
                   <div className="text-xs text-muted-foreground mt-1">
                     When will this prediction be resolved?

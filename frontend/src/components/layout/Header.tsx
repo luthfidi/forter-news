@@ -13,8 +13,11 @@ export default function Header() {
         </span>
       </div>
       <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+        <Link href="/news" className="text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform font-medium">
+          News
+        </Link>
         <Link href="/markets" className="text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform font-medium">
-          Markets
+          Markets (Legacy)
         </Link>
       </nav>
       <div className="flex items-center gap-3">

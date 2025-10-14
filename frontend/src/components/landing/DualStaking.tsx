@@ -9,7 +9,7 @@ export default function DualStaking() {
           Dual Staking Mechanism
         </h2>
         <p className="text-muted-foreground text-lg md:text-xl max-w-3xl mx-auto">
-          Unlike traditional prediction markets, Forter lets you stake on both outcomes and the credibility of analysts.
+          Unlike traditional prediction platforms, Forter lets you stake on both outcomes and the credibility of analysts.
         </p>
         <Badge variant="outline" className="mt-4 bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
           Outcome + Informer = Complete Information Finance
@@ -25,13 +25,13 @@ export default function DualStaking() {
                 <span className="text-white font-bold text-lg">A</span>
               </div>
               <div>
-                <Badge variant="secondary" className="mb-2 bg-blue-500/10 text-blue-600">Market Staking</Badge>
+                <Badge variant="secondary" className="mb-2 bg-blue-500/10 text-blue-600">Outcome Staking</Badge>
                 <h3 className="text-xl font-bold">Stake on Outcome</h3>
               </div>
             </div>
             
             <p className="text-muted-foreground mb-6 leading-relaxed">
-              Traditional YES/NO positions. Provide market liquidity and earn from collective market correctness.
+              Traditional YES/NO positions. Provide liquidity and earn from collective prediction correctness.
             </p>
 
             <div className="space-y-4">
@@ -123,9 +123,9 @@ export default function DualStaking() {
             
             <div className="grid grid-cols-2 gap-8 mt-6 text-center">
               <div>
-                <div className="text-sm font-medium text-blue-600 mb-2">Market Liquidity Providers</div>
+                <div className="text-sm font-medium text-blue-600 mb-2">Outcome Liquidity Providers</div>
                 <div className="text-xs text-muted-foreground">
-                  Rewards for providing market depth and collective intelligence
+                  Rewards for providing prediction depth and collective intelligence
                 </div>
               </div>
               <div>
@@ -141,7 +141,7 @@ export default function DualStaking() {
 
       <div className="mt-8 text-center">
         <p className="text-muted-foreground italic">
-          &quot;Balance market wisdom with human intelligence — credibility drives the majority of rewards.&quot;
+          &quot;Balance collective wisdom with human intelligence — credibility drives the majority of rewards.&quot;
         </p>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Market, Analysis, News, Pool, PoolStake, User } from '@/types';
+import { News, Pool, PoolStake, User } from '@/types';
 
 interface GlobalState {
   // ============================================
@@ -27,20 +27,8 @@ interface GlobalState {
   setPoolStakes: (stakes: PoolStake[]) => void;
 
   // ============================================
-  // MODEL A: Legacy State (for backward compat)
+  // Legacy markets removed - using News/Pool only
   // ============================================
-
-  // Markets state (Legacy)
-  markets: Market[];
-  setMarkets: (markets: Market[]) => void;
-
-  // Current market (Legacy)
-  currentMarket: Market | null;
-  setCurrentMarket: (market: Market | null) => void;
-
-  // Analyses for current market (Legacy)
-  analyses: Analysis[];
-  setAnalyses: (analyses: Analysis[]) => void;
 
   // ============================================
   // SHARED STATE
@@ -55,63 +43,34 @@ interface GlobalState {
     news: boolean;
     pools: boolean;
     stakes: boolean;
-    // Legacy
-    markets: boolean;
-    analyses: boolean;
-    staking: boolean;
   };
   setLoading: (key: keyof GlobalState['loading'], value: boolean) => void;
 }
 
 export const useGlobalStore = create<GlobalState>((set) => ({
   // ============================================
-  // Initial State - MODEL B
+  // Initial State
   // ============================================
   newsList: [],
   currentNews: null,
   pools: [],
   currentPool: null,
   poolStakes: [],
-
-  // ============================================
-  // Initial State - MODEL A (Legacy)
-  // ============================================
-  markets: [],
-  currentMarket: null,
-  analyses: [],
-
-  // ============================================
-  // Initial State - SHARED
-  // ============================================
   user: null,
   loading: {
     news: false,
     pools: false,
     stakes: false,
-    markets: false,
-    analyses: false,
-    staking: false,
   },
 
   // ============================================
-  // Actions - MODEL B
+  // Actions
   // ============================================
   setNewsList: (newsList) => set({ newsList }),
   setCurrentNews: (currentNews) => set({ currentNews }),
   setPools: (pools) => set({ pools }),
   setCurrentPool: (currentPool) => set({ currentPool }),
   setPoolStakes: (poolStakes) => set({ poolStakes }),
-
-  // ============================================
-  // Actions - MODEL A (Legacy)
-  // ============================================
-  setMarkets: (markets) => set({ markets }),
-  setCurrentMarket: (currentMarket) => set({ currentMarket }),
-  setAnalyses: (analyses) => set({ analyses }),
-
-  // ============================================
-  // Actions - SHARED
-  // ============================================
   setUser: (user) => set({ user }),
   setLoading: (key, value) =>
     set((state) => ({

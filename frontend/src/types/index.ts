@@ -56,33 +56,8 @@ export interface PoolStake {
 }
 
 // ============================================
-// MODEL A: Legacy Types (for backward compat)
+// Legacy types removed - using News/Pool model only
 // ============================================
-
-// Market Types (Legacy - will be migrated to News)
-export interface Market {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  endDate: Date;
-  totalStaked: number;
-  analysisCount: number;
-  status: 'active' | 'resolved' | 'closed';
-}
-
-// Analysis Types (Legacy - will be migrated to Pool)
-export interface Analysis {
-  id: string;
-  marketId: string;
-  authorAddress: string;
-  position: 'YES' | 'NO';
-  reasoning: string;
-  evidence: string[];
-  stakeAmount: number;
-  createdAt: Date;
-  farcasterCastHash?: string;
-}
 
 // ============================================
 // SHARED TYPES (Used by both models)
@@ -101,16 +76,7 @@ export interface ReputationData {
   specialty?: string;           // NEW: best category
 }
 
-// Staking Types (Legacy - will be replaced by PoolStake)
-export interface StakePosition {
-  id: string;
-  marketId: string;
-  userAddress: string;
-  type: 'outcome' | 'informer';
-  target: string; // 'YES'/'NO' for outcome, address for informer
-  amount: number;
-  createdAt: Date;
-}
+// Legacy StakePosition type removed - using PoolStake only
 
 // User Types
 export interface User {
@@ -120,8 +86,8 @@ export interface User {
   reputation?: ReputationData;
   totalStaked: number;
   totalEarned: number;
-  totalPoolsCreated?: number;   // NEW: for Model B
-  totalNewsCreated?: number;    // NEW: for Model B
+  totalPoolsCreated: number;
+  totalNewsCreated: number;
 }
 
 // ============================================

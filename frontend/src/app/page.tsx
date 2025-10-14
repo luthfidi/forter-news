@@ -127,13 +127,13 @@ export default function Page() {
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link href="/news/create">
-                    <Button size="lg" className="min-w-[160px] bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25">
+                    <Button size="lg" className="min-w-[160px] bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary hover:text-primary-foreground shadow-lg shadow-primary/25">
                       Create NEWS
                     </Button>
                   </Link>
                   <Link href="/news">
-                    <Button size="lg" variant="outline" className="min-w-[160px] border-border/50 hover:bg-accent/10">
-                      Explore Pools
+                    <Button size="lg" variant="outline" className="min-w-[160px] border-border/50 hover:bg-accent/10 hover:text-foreground">
+                      Explore News
                     </Button>
                   </Link>
                 </div>

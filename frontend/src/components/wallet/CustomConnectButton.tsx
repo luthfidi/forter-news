@@ -43,7 +43,7 @@ export default function CustomConnectButton() {
           onClick={openChainModal}
           variant="outline"
           size="sm"
-          className="flex items-center gap-1 text-sm bg-card border-border/40 hover:bg-accent/10"
+          className="flex items-center gap-1 text-sm bg-card border-border/40 hover:bg-accent/10 hover:text-foreground"
         >
           <div
             className={cn(
@@ -63,7 +63,7 @@ export default function CustomConnectButton() {
       <Button
         onClick={openAccountModal}
         variant="outline"
-        className="bg-card border-border/40 text-foreground hover:bg-accent/10 transition-colors rounded-xl"
+        className="bg-card border-border/40 text-foreground hover:bg-accent/10 hover:text-foreground transition-colors rounded-xl"
       >
         <div className="flex items-center gap-2">
           {/* Avatar */}

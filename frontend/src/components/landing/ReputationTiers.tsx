@@ -2,53 +2,53 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 const TIERS = [
-  { 
-    name: "Novice", 
-    range: "0–49%", 
-    icon: "🥉", 
+  {
+    name: "Novice",
+    range: "0–49%",
+    icon: "🥉",
     color: "from-slate-400 to-slate-500",
-    bgColor: "bg-slate-500/10",
-    textColor: "text-slate-600",
+    bgColor: "bg-slate-500/20",
+    textColor: "text-slate-200 dark:text-slate-300",
     description: "Learning the ropes",
     benefits: ["Basic access", "Standard visibility"]
   },
-  { 
-    name: "Analyst", 
-    range: "50–69%", 
-    icon: "🥈", 
+  {
+    name: "Analyst",
+    range: "50–69%",
+    icon: "🥈",
     color: "from-slate-500 to-slate-600",
-    bgColor: "bg-slate-500/10",
-    textColor: "text-slate-700",
-    description: "Building credibility", 
+    bgColor: "bg-slate-500/20",
+    textColor: "text-slate-100 dark:text-slate-200",
+    description: "Building credibility",
     benefits: ["Featured content", "Increased rewards"]
   },
-  { 
-    name: "Expert", 
-    range: "70–84%", 
-    icon: "🥇", 
+  {
+    name: "Expert",
+    range: "70–84%",
+    icon: "🥇",
     color: "from-yellow-500 to-yellow-600",
-    bgColor: "bg-yellow-500/10",
-    textColor: "text-yellow-700",
+    bgColor: "bg-yellow-500/20",
+    textColor: "text-yellow-100 dark:text-yellow-200",
     description: "Proven track record",
     benefits: ["Leaderboard position", "Priority display"]
   },
-  { 
-    name: "Master", 
-    range: "85–94%", 
-    icon: "💎", 
+  {
+    name: "Master",
+    range: "85–94%",
+    icon: "💎",
     color: "from-blue-500 to-purple-600",
-    bgColor: "bg-blue-500/10",
-    textColor: "text-blue-700",
+    bgColor: "bg-blue-500/20",
+    textColor: "text-blue-100 dark:text-blue-200",
     description: "Elite performance",
     benefits: ["Staking multiplier", "VIP features"]
   },
-  { 
-    name: "Legend", 
-    range: "95–100%", 
-    icon: "👑", 
+  {
+    name: "Legend",
+    range: "95–100%",
+    icon: "👑",
     color: "from-purple-500 to-pink-500",
-    bgColor: "bg-purple-500/10",
-    textColor: "text-purple-700",
+    bgColor: "bg-purple-500/20",
+    textColor: "text-purple-100 dark:text-purple-200",
     description: "Legendary status",
     benefits: ["DAO governance", "Exclusive perks"]
   },

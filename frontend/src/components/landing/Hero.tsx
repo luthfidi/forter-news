@@ -26,12 +26,12 @@ export default function Hero() {
         </p>
 
         <div className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/markets">
-            <Button size="lg" className="min-w-[160px] h-12 text-base bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-xl shadow-primary/25 transition-all duration-300 hover:scale-105">
-              Explore Markets
+          <Link href="/news">
+            <Button size="lg" className="min-w-[160px] h-12 text-base bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary hover:text-primary-foreground shadow-xl shadow-primary/25 transition-all duration-300 hover:scale-105">
+              Explore News
             </Button>
           </Link>
-          <Button size="lg" variant="outline" className="min-w-[160px] h-12 text-base border-border/50 hover:bg-accent/10 transition-all duration-300 hover:scale-105">
+          <Button size="lg" variant="outline" className="min-w-[160px] h-12 text-base border-border/50 hover:bg-accent/10 hover:text-foreground transition-all duration-300 hover:scale-105">
             Read the Vision
           </Button>
         </div>

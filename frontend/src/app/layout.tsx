@@ -14,10 +14,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Forter - Farcaster Porter",
-  description: "Social credibility protocol on Farcaster - Transform your network reputation into yield-bearing assets",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Forter - Farcaster Porter",
+    description: "Stake on credibility, not luck. Build on-chain reputation through verifiable analysis and earn from accurate insights.",
+    openGraph: {
+      title: "Forter - Farcaster Porter",
+      description: "Permissionless information finance protocol. Create predictions, analyze with reasoning, and build on-chain reputation.",
+      images: [
+        {
+          url: "https://forter.app/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Forter - Farcaster Porter"
+        }
+      ],
+      type: "website",
+      siteName: "Forter"
+    }
+  };
+}
 
 export default function RootLayout({
   children,

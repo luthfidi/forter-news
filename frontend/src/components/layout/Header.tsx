@@ -16,9 +16,6 @@ export default function Header() {
         <Link href="/news" className="text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform font-medium">
           News
         </Link>
-        <Link href="/markets" className="text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform font-medium">
-          Markets (Legacy)
-        </Link>
       </nav>
       <div className="flex items-center gap-3">
         <CustomConnectButton />

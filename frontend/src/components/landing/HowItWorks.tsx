@@ -4,10 +4,10 @@ import { Badge } from "@/components/ui/badge"
 const STEPS = [
   { 
     title: "Connect & Browse", 
-    description: "Connect your wallet and Farcaster account. Explore curated markets across crypto, macro, and tech.",
+    description: "Connect your wallet and Farcaster account. Explore curated NEWS across crypto, macro, and tech.",
     icon: "🔗",
     color: "from-blue-500 to-cyan-500",
-    details: ["Wallet authentication", "Farcaster integration", "Market discovery"]
+    details: ["Wallet authentication", "Farcaster integration", "NEWS discovery"]
   },
   { 
     title: "Write Analysis", 
@@ -110,7 +110,7 @@ export default function HowItWorks() {
           <CardContent className="p-8">
             <h3 className="text-xl font-bold mb-4">The Complete Cycle</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Each market cycle builds your on-chain reputation. Over time, your accuracy becomes a measurable, 
+              Each prediction cycle builds your on-chain reputation. Over time, your accuracy becomes a measurable, 
               portable asset that other protocols can integrate — transforming information into a financial primitive.
             </p>
           </CardContent>

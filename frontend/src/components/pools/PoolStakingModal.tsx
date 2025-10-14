@@ -49,8 +49,8 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
     : 0;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl border border-border/50 bg-background">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto">
+      <Card className="w-full max-w-2xl border border-border/50 bg-background my-8">
         <CardContent className="p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">

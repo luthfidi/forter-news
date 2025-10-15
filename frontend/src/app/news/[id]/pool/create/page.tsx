@@ -85,7 +85,7 @@ export default function CreatePoolPage() {
     return (
       <div className="min-h-screen pt-20 pb-16">
         <div className="max-w-4xl mx-auto px-4 md:px-6">
-          <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+          <Card className="border border-border bg-card">
             <CardContent className="p-12 text-center">
               <div className="text-4xl mb-4">🔍</div>
               <h3 className="text-xl font-semibold mb-2">NEWS not found</h3>
@@ -144,7 +144,7 @@ export default function CreatePoolPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form */}
           <div className="lg:col-span-2">
-            <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300">
               <CardContent className="p-6">
                 {/* Position Selection */}
                 <div className="mb-6">
@@ -154,8 +154,8 @@ export default function CreatePoolPage() {
                       onClick={() => setFormData({ ...formData, position: 'YES' })}
                       className={`flex-1 p-4 rounded-lg border-2 transition-all ${
                         formData.position === 'YES'
-                          ? 'border-green-500 bg-green-500/10 text-green-600'
-                          : 'border-border/30 hover:border-green-500/50'
+                          ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600'
+                          : 'border-border hover:border-emerald-500/50'
                       }`}
                     >
                       <div className="text-lg font-bold">YES</div>
@@ -165,8 +165,8 @@ export default function CreatePoolPage() {
                       onClick={() => setFormData({ ...formData, position: 'NO' })}
                       className={`flex-1 p-4 rounded-lg border-2 transition-all ${
                         formData.position === 'NO'
-                          ? 'border-red-500 bg-red-500/10 text-red-600'
-                          : 'border-border/30 hover:border-red-500/50'
+                          ? 'border-rose-500 bg-rose-500/10 text-rose-600'
+                          : 'border-border hover:border-rose-500/50'
                       }`}
                     >
                       <div className="text-lg font-bold">NO</div>
@@ -184,7 +184,7 @@ export default function CreatePoolPage() {
                     placeholder="Provide detailed reasoning for your position. Include data, trends, and logical arguments to support your analysis..."
                     value={formData.reasoning}
                     onChange={(e) => setFormData({ ...formData, reasoning: e.target.value })}
-                    className="min-h-[150px] bg-background/50 border-border/50"
+                    className="min-h-[150px] bg-background border-border"
                     maxLength={1000}
                   />
                   <div className="text-xs text-muted-foreground mt-1">
@@ -201,7 +201,7 @@ export default function CreatePoolPage() {
                     placeholder="https://i.imgur.com/your-chart.png"
                     value={formData.imageUrl}
                     onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                    className="bg-background/50 border-border/50 mb-2"
+                    className="bg-background border-border mb-2"
                   />
                   {formData.imageUrl && (
                     <>
@@ -209,7 +209,7 @@ export default function CreatePoolPage() {
                         placeholder="Image caption (optional)"
                         value={formData.imageCaption}
                         onChange={(e) => setFormData({ ...formData, imageCaption: e.target.value })}
-                        className="bg-background/50 border-border/50 mb-3"
+                        className="bg-background border-border mb-3"
                         maxLength={100}
                       />
                       {/* Image Preview */}
@@ -224,7 +224,7 @@ export default function CreatePoolPage() {
                           />
                         </div>
                         {formData.imageCaption && (
-                          <div className="p-2 bg-background/50 text-xs text-muted-foreground text-center">
+                          <div className="p-2 bg-card/50 text-xs text-muted-foreground text-center">
                             📊 {formData.imageCaption}
                           </div>
                         )}
@@ -247,7 +247,7 @@ export default function CreatePoolPage() {
                         placeholder="https://example.com/supporting-data"
                         value={link}
                         onChange={(e) => handleEvidenceLinkChange(index, e.target.value)}
-                        className="bg-background/50 border-border/50"
+                        className="bg-background border-border"
                       />
                       {formData.evidenceLinks.length > 1 && (
                         <Button
@@ -280,7 +280,7 @@ export default function CreatePoolPage() {
                     placeholder="10"
                     value={formData.creatorStake}
                     onChange={(e) => setFormData({ ...formData, creatorStake: e.target.value })}
-                    className="bg-background/50 border-border/50"
+                    className="bg-background border-border"
                     min="1"
                   />
                   <div className="text-xs text-muted-foreground mt-1">
@@ -311,7 +311,7 @@ export default function CreatePoolPage() {
 
             {/* Preview */}
             {showPreview && isFormValid() && (
-              <Card className="border border-accent/50 bg-accent/5 backdrop-blur-sm mt-6">
+              <Card className="border border-accent/50 bg-accent/5 mt-6">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
@@ -323,8 +323,8 @@ export default function CreatePoolPage() {
                     </div>
                     <Badge
                       className={formData.position === 'YES'
-                        ? 'bg-green-500 text-white ml-auto'
-                        : 'bg-red-500 text-white ml-auto'
+                        ? 'bg-emerald-100 text-emerald-700 border-emerald-200 ml-auto'
+                        : 'bg-rose-100 text-rose-700 border-rose-200 ml-auto'
                       }
                     >
                       {formData.position}
@@ -343,7 +343,7 @@ export default function CreatePoolPage() {
                         />
                       </div>
                       {formData.imageCaption && (
-                        <div className="p-2 bg-background/50 text-xs text-muted-foreground text-center">
+                        <div className="p-2 bg-card/50 text-xs text-muted-foreground text-center">
                           📊 {formData.imageCaption}
                         </div>
                       )}
@@ -354,7 +354,7 @@ export default function CreatePoolPage() {
                     {formData.reasoning}
                   </p>
 
-                  <div className="p-3 rounded-lg bg-background/50 border border-border/30">
+                  <div className="p-3 rounded-lg bg-card/50 border border-border/30">
                     <div className="text-xs font-medium mb-2">Creator&apos;s Stake</div>
                     <div className="text-sm font-semibold">${parseFloat(formData.creatorStake || '0').toLocaleString()}</div>
                   </div>
@@ -365,7 +365,7 @@ export default function CreatePoolPage() {
 
           {/* Sidebar - Guidelines */}
           <div className="space-y-6">
-            <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300">
               <CardContent className="p-6">
                 <h3 className="font-bold mb-4">📋 Pool Guidelines</h3>
                 <div className="space-y-3 text-sm text-muted-foreground">
@@ -393,7 +393,7 @@ export default function CreatePoolPage() {
               </CardContent>
             </Card>
 
-            <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300">
               <CardContent className="p-6">
                 <h3 className="font-bold mb-4">💰 Earning Potential</h3>
                 <div className="space-y-3 text-sm text-muted-foreground">
@@ -418,7 +418,7 @@ export default function CreatePoolPage() {
               </CardContent>
             </Card>
 
-            <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300">
               <CardContent className="p-6">
                 <h3 className="font-bold mb-4">🎯 Pro Tips</h3>
                 <div className="space-y-2 text-sm text-muted-foreground">

@@ -50,7 +50,7 @@ export default function NewsDetailPage() {
     return (
       <div className="min-h-screen pt-20 pb-16">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <Card className="border border-border/50 bg-background/80 backdrop-blur-sm animate-pulse">
+          <Card className="border border-border bg-card animate-pulse">
             <CardContent className="p-12">
               <div className="h-8 bg-muted rounded w-3/4 mb-4"></div>
               <div className="h-4 bg-muted rounded w-full mb-2"></div>
@@ -117,7 +117,7 @@ export default function NewsDetailPage() {
 
         {/* Resolved Banner */}
         {currentNews.status === 'resolved' && currentNews.outcome && (
-          <Card className="mb-6 border-2 border-accent bg-accent/5 backdrop-blur-sm">
+          <Card className="mb-6 border-2 border-accent bg-accent/5">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -163,7 +163,7 @@ export default function NewsDetailPage() {
 
         {/* Admin Actions Section */}
         {isUserAdmin && currentNews.status === 'active' && (
-          <Card className="mb-6 border-2 border-orange-500/50 bg-orange-500/5 backdrop-blur-sm">
+          <Card className="mb-6 border-2 border-orange-500/50 bg-orange-500/5">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -190,7 +190,7 @@ export default function NewsDetailPage() {
           {/* Main Content */}
           <div className="xl:col-span-2">
             {/* NEWS Header */}
-            <Card className="border border-border/50 bg-background/80 backdrop-blur-sm mb-8">
+            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300 mb-8">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-2">
@@ -258,7 +258,7 @@ export default function NewsDetailPage() {
                     className={`px-3 py-1 rounded-full text-sm transition-all ${
                       activeFilter === 'all'
                         ? 'bg-primary text-primary-foreground'
-                        : 'bg-background/50 text-muted-foreground hover:bg-accent/10'
+                        : 'bg-card text-muted-foreground hover:bg-secondary'
                     }`}
                   >
                     All ({stats.totalPools})
@@ -267,8 +267,8 @@ export default function NewsDetailPage() {
                     onClick={() => setActiveFilter('YES')}
                     className={`px-3 py-1 rounded-full text-sm transition-all ${
                       activeFilter === 'YES'
-                        ? 'bg-green-500 text-white'
-                        : 'bg-background/50 text-muted-foreground hover:bg-green-500/10'
+                        ? 'bg-emerald-500 text-white'
+                        : 'bg-card text-muted-foreground hover:bg-emerald-500/10'
                     }`}
                   >
                     YES ({stats.yesPools})
@@ -277,8 +277,8 @@ export default function NewsDetailPage() {
                     onClick={() => setActiveFilter('NO')}
                     className={`px-3 py-1 rounded-full text-sm transition-all ${
                       activeFilter === 'NO'
-                        ? 'bg-red-500 text-white'
-                        : 'bg-background/50 text-muted-foreground hover:bg-red-500/10'
+                        ? 'bg-rose-500 text-white'
+                        : 'bg-card text-muted-foreground hover:bg-rose-500/10'
                     }`}
                   >
                     NO ({stats.noPools})
@@ -290,7 +290,7 @@ export default function NewsDetailPage() {
               {loading.pools ? (
                 <div className="space-y-6">
                   {[...Array(3)].map((_, i) => (
-                    <Card key={i} className="border border-border/50 bg-background/80 backdrop-blur-sm animate-pulse">
+                    <Card key={i} className="border border-border bg-card animate-pulse">
                       <CardContent className="p-6">
                         <div className="h-4 bg-muted rounded w-3/4 mb-3"></div>
                         <div className="h-3 bg-muted rounded w-full mb-2"></div>
@@ -306,7 +306,7 @@ export default function NewsDetailPage() {
                   ))}
                 </div>
               ) : (
-                <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+                <Card className="border border-border bg-card">
                   <CardContent className="p-12 text-center">
                     <div className="text-4xl mb-4">🏊</div>
                     <h3 className="text-xl font-semibold mb-2">No pools yet</h3>
@@ -327,7 +327,7 @@ export default function NewsDetailPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Stats Card */}
-            <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300">
               <CardContent className="p-6">
                 <h3 className="font-bold mb-4">NEWS Stats</h3>
                 <div className="space-y-4">
@@ -337,11 +337,11 @@ export default function NewsDetailPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">YES Pools</span>
-                    <span className="font-semibold text-green-600">{stats.yesPools}</span>
+                    <span className="font-semibold text-emerald-600">{stats.yesPools}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">NO Pools</span>
-                    <span className="font-semibold text-red-600">{stats.noPools}</span>
+                    <span className="font-semibold text-rose-600">{stats.noPools}</span>
                   </div>
                   <div className="pt-2 border-t border-border/30">
                     <div className="flex justify-between">
@@ -360,7 +360,7 @@ export default function NewsDetailPage() {
             </Card>
 
             {/* How it Works */}
-            <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300">
               <CardContent className="p-6">
                 <h3 className="font-bold mb-4">💡 How Pools Work</h3>
                 <div className="space-y-3 text-sm text-muted-foreground">
@@ -389,7 +389,7 @@ export default function NewsDetailPage() {
             </Card>
 
             {/* Reward Distribution */}
-            <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300">
               <CardContent className="p-6">
                 <h3 className="font-bold mb-4">💰 Reward Split</h3>
                 <div className="space-y-3 text-sm">
@@ -418,7 +418,7 @@ export default function NewsDetailPage() {
             </Card>
 
             {/* Create Pool CTA */}
-            <Card className="border border-primary/50 bg-primary/5 backdrop-blur-sm">
+            <Card className="border border-primary/50 bg-primary/5 hover:bg-primary/10 transition-all duration-300">
               <CardContent className="p-6 text-center">
                 <h3 className="font-bold mb-2">Have an Opinion?</h3>
                 <p className="text-sm text-muted-foreground mb-4">

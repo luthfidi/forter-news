@@ -50,7 +50,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto">
-      <Card className="w-full max-w-2xl border border-border/50 bg-background my-8">
+      <Card className="w-full max-w-2xl border border-border bg-card my-8">
         <CardContent className="p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
@@ -59,22 +59,22 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="hover:bg-accent/10"
+              className="hover:bg-secondary"
             >
               ✕
             </Button>
           </div>
 
           {/* Pool Info */}
-          <div className="mb-6 p-4 rounded-lg bg-background/50 border border-border/30">
+          <div className="mb-6 p-4 rounded-lg bg-card/50 border border-border/30">
             <div className="flex items-start justify-between mb-2">
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-sm font-medium">{pool.creatorAddress}</span>
                   <Badge
                     className={pool.position === 'YES'
-                      ? 'bg-green-500 text-white'
-                      : 'bg-red-500 text-white'
+                      ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
+                      : 'bg-rose-100 text-rose-700 border-rose-200'
                     }
                   >
                     {pool.position}
@@ -94,19 +94,19 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
               </div>
               <div className="flex gap-2 text-xs">
                 <div className="flex-1">
-                  <div className="text-green-600 mb-1">Agree: {agreePercentage}%</div>
+                  <div className="text-emerald-600 mb-1">Agree: {agreePercentage}%</div>
                   <div className="h-1 bg-muted rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-green-500"
+                      className="h-full bg-emerald-500"
                       style={{ width: `${agreePercentage}%` }}
                     />
                   </div>
                 </div>
                 <div className="flex-1">
-                  <div className="text-red-600 mb-1">Disagree: {disagreePercentage}%</div>
+                  <div className="text-rose-600 mb-1">Disagree: {disagreePercentage}%</div>
                   <div className="h-1 bg-muted rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-red-500"
+                      className="h-full bg-rose-500"
                       style={{ width: `${disagreePercentage}%` }}
                     />
                   </div>
@@ -123,8 +123,8 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                 onClick={() => setSelectedPosition('agree')}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   selectedPosition === 'agree'
-                    ? 'border-green-500 bg-green-500/10 text-green-600'
-                    : 'border-border/30 hover:border-green-500/50'
+                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600'
+                    : 'border-border hover:border-emerald-500/50'
                 }`}
               >
                 <div className="font-bold mb-1">Agree</div>
@@ -134,8 +134,8 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                 onClick={() => setSelectedPosition('disagree')}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   selectedPosition === 'disagree'
-                    ? 'border-red-500 bg-red-500/10 text-red-600'
-                    : 'border-border/30 hover:border-red-500/50'
+                    ? 'border-rose-500 bg-rose-500/10 text-rose-600'
+                    : 'border-border hover:border-rose-500/50'
                 }`}
               >
                 <div className="font-bold mb-1">Disagree</div>
@@ -155,7 +155,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               min="1"
-              className="bg-background/50 border-border/50 text-lg"
+              className="bg-background border-border text-lg"
             />
             <div className="text-xs text-muted-foreground mt-1">
               Minimum $1 USDC
@@ -172,7 +172,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                   <>
                     <div className="flex justify-between items-center">
                       <span className="text-sm">If pool position CORRECT:</span>
-                      <span className="font-bold text-green-600">
+                      <span className="font-bold text-emerald-600">
                         +${potentialReward.maxReward.toFixed(2)}
                       </span>
                     </div>
@@ -183,7 +183,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                     <div className="h-px bg-border"></div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm">If pool position WRONG:</span>
-                      <span className="font-bold text-red-600">
+                      <span className="font-bold text-rose-600">
                         -${stakeAmount.toFixed(2)}
                       </span>
                     </div>
@@ -195,7 +195,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                   <>
                     <div className="flex justify-between items-center">
                       <span className="text-sm">If pool position WRONG:</span>
-                      <span className="font-bold text-green-600">
+                      <span className="font-bold text-emerald-600">
                         +${potentialReward.maxReward.toFixed(2)}
                       </span>
                     </div>
@@ -206,7 +206,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                     <div className="h-px bg-border"></div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm">If pool position CORRECT:</span>
-                      <span className="font-bold text-red-600">
+                      <span className="font-bold text-rose-600">
                         -${stakeAmount.toFixed(2)}
                       </span>
                     </div>
@@ -234,8 +234,8 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
               disabled={!amount || parseFloat(amount) < 1 || isSubmitting || loading}
               className={`flex-1 ${
                 selectedPosition === 'agree'
-                  ? 'bg-green-500 hover:bg-green-600'
-                  : 'bg-red-500 hover:bg-red-600'
+                  ? 'bg-emerald-500 hover:bg-emerald-600'
+                  : 'bg-rose-500 hover:bg-rose-600'
               } text-white`}
             >
               {isSubmitting || loading ? 'Processing...' : `Confirm Stake`}
@@ -243,7 +243,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
           </div>
 
           {/* Warning */}
-          <div className="mt-4 p-3 rounded-lg bg-muted/50 text-xs text-muted-foreground">
+          <div className="mt-4 p-3 rounded-lg bg-card/50 text-xs text-muted-foreground">
             ⚠️ <strong>Risk Warning:</strong> Staking involves risk of loss. Only stake what you can afford to lose.
             Rewards depend on the pool creator&apos;s position being correct/wrong.
           </div>

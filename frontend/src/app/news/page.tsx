@@ -86,7 +86,7 @@ export default function NewsPage() {
               </h1>
             </div>
             <Link href="/news/create">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-accent shadow-lg shadow-primary/25">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-primary/90">
                 + Create NEWS
               </Button>
             </Link>
@@ -98,7 +98,7 @@ export default function NewsPage() {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+          <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300 hover:scale-105 hover:shadow-md">
             <CardContent className="p-6 text-center">
               <div className="text-2xl font-bold text-primary mb-1">
                 {activeNews.length}
@@ -106,7 +106,7 @@ export default function NewsPage() {
               <div className="text-sm text-muted-foreground">Active News</div>
             </CardContent>
           </Card>
-          <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+          <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300 hover:scale-105 hover:shadow-md">
             <CardContent className="p-6 text-center">
               <div className="text-2xl font-bold text-accent mb-1">
                 {totalPools}
@@ -114,7 +114,7 @@ export default function NewsPage() {
               <div className="text-sm text-muted-foreground">Total Pools</div>
             </CardContent>
           </Card>
-          <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+          <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300 hover:scale-105 hover:shadow-md">
             <CardContent className="p-6 text-center">
               <div className="text-2xl font-bold text-foreground mb-1">
                 ${totalStaked.toLocaleString()}
@@ -125,7 +125,7 @@ export default function NewsPage() {
         </div>
 
         {/* Filters */}
-        <Card className="border border-border/50 bg-background/80 backdrop-blur-sm mb-8">
+        <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300 mb-8">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-4">
               {/* Search */}
@@ -134,7 +134,7 @@ export default function NewsPage() {
                   placeholder="Search news..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-background/50"
+                  className="bg-background border-border"
                 />
               </div>
 
@@ -142,7 +142,7 @@ export default function NewsPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'endDate' | 'totalStaked' | 'totalPools')}
-                className="px-4 py-2 rounded-md border border-border/50 bg-background/50 text-sm"
+                className="px-4 py-2 rounded-md border border-border bg-background text-sm"
               >
                 <option value="totalStaked">Most Staked</option>
                 <option value="totalPools">Most Pools</option>
@@ -158,7 +158,7 @@ export default function NewsPage() {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   selectedStatus === 'all'
                     ? 'bg-primary text-primary-foreground shadow-lg'
-                    : 'bg-background/50 text-muted-foreground hover:bg-accent/10 hover:text-foreground'
+                    : 'bg-card text-muted-foreground hover:bg-secondary hover:text-foreground'
                 }`}
               >
                 All
@@ -168,7 +168,7 @@ export default function NewsPage() {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   selectedStatus === 'active'
                     ? 'bg-green-500 text-white shadow-lg'
-                    : 'bg-background/50 text-muted-foreground hover:bg-green-500/10 hover:text-foreground'
+                    : 'bg-card text-muted-foreground hover:bg-green-500/10 hover:text-foreground'
                 }`}
               >
                 Active
@@ -178,7 +178,7 @@ export default function NewsPage() {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   selectedStatus === 'resolved'
                     ? 'bg-blue-500 text-white shadow-lg'
-                    : 'bg-background/50 text-muted-foreground hover:bg-blue-500/10 hover:text-foreground'
+                    : 'bg-card text-muted-foreground hover:bg-blue-500/10 hover:text-foreground'
                 }`}
               >
                 Resolved
@@ -195,7 +195,7 @@ export default function NewsPage() {
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                     selectedCategory === category
                       ? 'bg-primary text-primary-foreground shadow-lg'
-                      : 'bg-background/50 text-muted-foreground hover:bg-accent/10 hover:text-foreground'
+                      : 'bg-card text-muted-foreground hover:bg-secondary hover:text-foreground'
                   }`}
                 >
                   {category}
@@ -241,7 +241,7 @@ export default function NewsPage() {
         {loading.news ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <Card key={i} className="border border-border/50 bg-background/80 backdrop-blur-sm animate-pulse">
+              <Card key={i} className="border border-border bg-card animate-pulse">
                 <CardContent className="p-6">
                   <div className="h-4 bg-muted rounded w-3/4 mb-3"></div>
                   <div className="h-3 bg-muted rounded w-full mb-2"></div>
@@ -265,7 +265,7 @@ export default function NewsPage() {
             ))}
           </div>
         ) : (
-          <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
+          <Card className="border border-border bg-card">
             <CardContent className="p-12 text-center">
               <div className="text-4xl mb-4">🔍</div>
               <h3 className="text-xl font-semibold mb-2">No news found</h3>
@@ -288,7 +288,7 @@ export default function NewsPage() {
         {/* Call to Action */}
         {filteredNews.length > 0 && (
           <div className="mt-12 text-center">
-            <Card className="border border-border/50 bg-background/90 backdrop-blur-sm max-w-2xl mx-auto">
+            <Card className="border border-border bg-card max-w-2xl mx-auto">
               <CardContent className="p-8">
                 <h3 className="text-xl font-bold mb-4">Ready to Share Your Prediction?</h3>
                 <p className="text-muted-foreground mb-6">

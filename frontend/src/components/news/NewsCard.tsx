@@ -72,7 +72,7 @@ export default function NewsCard({ news }: NewsCardProps) {
 
   return (
     <Link href={`/news/${news.id}`} className="block">
-      <Card className="group border border-border/50 bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:scale-[1.02] cursor-pointer h-full flex flex-col">
+      <Card className="group border border-border bg-card hover:bg-secondary transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:scale-[1.02] cursor-pointer h-full flex flex-col">
         <CardContent className="p-6 flex flex-col flex-1">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 mb-4">
@@ -80,7 +80,7 @@ export default function NewsCard({ news }: NewsCardProps) {
             <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${getCategoryColor(news.category)} flex items-center justify-center shadow-md`}>
               <span className="text-white text-sm">{getCategoryIcon(news.category)}</span>
             </div>
-            <Badge variant="secondary" className="bg-background/50">
+            <Badge variant="secondary" className="bg-card/50">
               {news.category}
             </Badge>
           </div>
@@ -88,14 +88,14 @@ export default function NewsCard({ news }: NewsCardProps) {
             {news.status === 'resolved' && news.outcome && (
               <Badge className={`${
                 news.outcome === 'YES'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-red-500 text-white'
+                  ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
+                  : 'bg-rose-100 text-rose-700 border-rose-200'
               }`}>
                 {news.outcome === 'YES' ? '✅' : '❌'} {news.outcome}
               </Badge>
             )}
             {isEndingSoon && news.status === 'active' && (
-              <Badge variant="destructive" className="bg-red-500/10 text-red-600 border-red-500/20">
+              <Badge variant="destructive" className="bg-rose-500/10 text-rose-600 border-rose-500/20">
                 Ending Soon
               </Badge>
             )}
@@ -114,13 +114,13 @@ export default function NewsCard({ news }: NewsCardProps) {
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="text-center p-3 rounded-lg bg-background/50 border border-border/30">
+          <div className="text-center p-3 rounded-lg bg-card/50 border border-border/30">
             <div className="text-lg font-bold text-primary">
               {news.totalPools}
             </div>
             <div className="text-xs text-muted-foreground">Pools</div>
           </div>
-          <div className="text-center p-3 rounded-lg bg-background/50 border border-border/30">
+          <div className="text-center p-3 rounded-lg bg-card/50 border border-border/30">
             <div className="text-lg font-bold text-accent">
               ${news.totalStaked.toLocaleString()}
             </div>
@@ -144,7 +144,7 @@ export default function NewsCard({ news }: NewsCardProps) {
           </div>
           <div className={`px-2 py-1 rounded-full text-xs font-medium ${
             news.status === 'active'
-              ? 'bg-green-500/10 text-green-600'
+              ? 'bg-emerald-500/10 text-emerald-600'
               : news.status === 'resolved'
               ? 'bg-blue-500/10 text-blue-600'
               : 'bg-gray-500/10 text-gray-600'

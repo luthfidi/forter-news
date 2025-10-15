@@ -1,4 +1,4 @@
-import { News, Pool, PoolStake, ReputationData, User } from '@/types';
+import { News, Pool, PoolStake, ReputationData } from '@/types';
 
 // ============================================
 // MOCK NEWS DATA

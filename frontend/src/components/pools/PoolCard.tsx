@@ -104,11 +104,11 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
             </div>
             {pool.outcome === 'creator_correct' ? (
               <p className="text-xs text-muted-foreground mt-2">
-                Pool creator was correct. "Agree" stakers won.
+                Pool creator was correct. &quot;Agree&quot; stakers won.
               </p>
             ) : (
               <p className="text-xs text-muted-foreground mt-2">
-                Pool creator was wrong. "Disagree" stakers won.
+                Pool creator was wrong. &quot;Disagree&quot; stakers won.
               </p>
             )}
           </div>

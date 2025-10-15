@@ -13,9 +13,7 @@ import {
   getTierIcon,
   MOCK_POOLS,
   MOCK_NEWS,
-  MOCK_POOL_STAKES
 } from '@/lib/mock-data';
-import { Pool, PoolStake, News } from '@/types';
 
 type TabType = 'pools' | 'stakes' | 'news' | 'activity';
 
@@ -24,9 +22,6 @@ export default function ProfilePage() {
   const address = params.address as string;
   const [activeTab, setActiveTab] = useState<TabType>('pools');
   const [loading, setLoading] = useState(true);
-
-  // Mock: check if this is current user (for demo, use hardcoded check)
-  const isOwnProfile = false; // TODO: Replace with actual wallet check
 
   useEffect(() => {
     // Simulate loading
@@ -55,11 +50,6 @@ export default function ProfilePage() {
       (stake.position === 'agree' && pool.outcome === 'creator_correct') ||
       (stake.position === 'disagree' && pool.outcome === 'creator_wrong')
     );
-  });
-
-  const activeStakes = stakesHistory.filter(stake => {
-    const pool = MOCK_POOLS.find(p => p.id === stake.poolId);
-    return pool?.status === 'active';
   });
 
   const stakingWinRate = resolvedStakes.length > 0

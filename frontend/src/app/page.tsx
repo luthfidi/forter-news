@@ -10,48 +10,19 @@ import Link from "next/link"
 
 export default function Page() {
   return (
-    <main className="relative min-h-screen">
-      {/* Advanced Static Background */}
+    <main className="relative min-h-screen bg-background">
       <div className="fixed inset-0 z-0" aria-hidden>
-        {/* Primary gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-background/95" />
-        
-        {/* Geometric pattern layer */}
-        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `
-              radial-gradient(circle at 25% 25%, currentColor 1px, transparent 1px),
-              radial-gradient(circle at 75% 75%, currentColor 1px, transparent 1px)
-            `,
-            backgroundSize: '60px 60px',
-            backgroundPosition: '0 0, 30px 30px'
-          }} />
-        </div>
-        
-        {/* Organic flowing shapes */}
-        <div className="absolute inset-0">
-          {/* Large primary blob */}
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/8 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
-          
-          {/* Secondary accent blob */}
-          <div className="absolute top-1/3 -left-20 w-64 h-64 bg-accent/6 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '2s' }} />
-          
-          {/* Bottom tertiary blob */}
-          <div className="absolute -bottom-32 left-1/2 w-96 h-96 bg-primary/4 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s', animationDelay: '1s' }} />
-        </div>
-        
         {/* Subtle grid overlay */}
-        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04]" style={{
-          backgroundImage: `
+        <div
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `
             linear-gradient(currentColor 1px, transparent 1px),
             linear-gradient(90deg, currentColor 1px, transparent 1px)
           `,
-          backgroundSize: '100px 100px'
-        }} />
-        
-        {/* Edge vignette */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-transparent to-background/20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/50" />
+            backgroundSize: "100px 100px",
+          }}
+        />
       </div>
 
       {/* Content Layer */}
@@ -75,20 +46,22 @@ export default function Page() {
           <HowItWorks />
         </section>
 
-        {/* News CTA Section */}
         <section className="px-4 md:px-6 py-12">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Create NEWS Card */}
-              <Card className="border border-primary/50 bg-gradient-to-br from-primary/5 to-accent/5 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
+              <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
                 <CardContent className="p-8 text-center">
                   <div className="text-4xl mb-4">📰</div>
-                  <h3 className="text-2xl font-bold mb-3">Create NEWS</h3>
+                  <h3 className="text-2xl font-bold text-foreground mb-3">Create NEWS</h3>
                   <p className="text-muted-foreground mb-6">
                     Create permissionless predictions. Anyone can then analyze and stake on your NEWS.
                   </p>
                   <Link href="/news/create">
-                    <Button size="lg" className="w-full bg-gradient-to-r from-primary to-accent shadow-lg">
+                    <Button
+                      size="lg"
+                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md"
+                    >
                       Create NEWS
                     </Button>
                   </Link>
@@ -96,15 +69,19 @@ export default function Page() {
               </Card>
 
               {/* Browse & Stake Card */}
-              <Card className="border border-accent/50 bg-gradient-to-br from-accent/5 to-primary/5 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
+              <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
                 <CardContent className="p-8 text-center">
                   <div className="text-4xl mb-4">💰</div>
-                  <h3 className="text-2xl font-bold mb-3">Browse & Stake</h3>
+                  <h3 className="text-2xl font-bold text-foreground mb-3">Browse & Stake</h3>
                   <p className="text-muted-foreground mb-6">
                     Explore active predictions, create pools with analysis, or stake on credible reasoning.
                   </p>
                   <Link href="/news">
-                    <Button size="lg" variant="outline" className="w-full border-2">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full border-border text-foreground hover:bg-secondary bg-transparent"
+                    >
                       Browse NEWS
                     </Button>
                   </Link>
@@ -114,25 +91,32 @@ export default function Page() {
           </div>
         </section>
 
-        {/* Final CTA */}
         <section className="px-4 md:px-6 pb-20 pt-8">
           <div className="max-w-4xl mx-auto">
-            <Card className="border border-border/50 bg-background/80 backdrop-blur-sm supports-[backdrop-filter]:bg-background/60 shadow-2xl shadow-primary/5">
+            <Card className="border border-border bg-card shadow-md">
               <CardContent className="p-8 md:p-12 text-center">
-                <h3 className="text-balance text-3xl md:text-4xl font-semibold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                <h3 className="text-balance text-3xl md:text-4xl font-semibold text-foreground">
                   Transform noise into signal. Finance credible information.
                 </h3>
                 <p className="mt-4 md:mt-6 text-muted-foreground text-lg text-pretty max-w-2xl mx-auto">
-                  Join the permissionless information finance protocol. Build on-chain reputation through verifiable analysis.
+                  Join the permissionless information finance protocol. Build on-chain reputation through verifiable
+                  analysis.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link href="/news/create">
-                    <Button size="lg" className="min-w-[160px] bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary hover:text-primary-foreground shadow-lg shadow-primary/25">
+                    <Button
+                      size="lg"
+                      className="min-w-[160px] bg-primary hover:bg-primary/90 text-primary-foreground shadow-md"
+                    >
                       Create NEWS
                     </Button>
                   </Link>
                   <Link href="/news">
-                    <Button size="lg" variant="outline" className="min-w-[160px] border-border/50 hover:bg-accent/10 hover:text-foreground">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="min-w-[160px] border-border text-foreground hover:bg-secondary bg-transparent"
+                    >
                       Explore News
                     </Button>
                   </Link>

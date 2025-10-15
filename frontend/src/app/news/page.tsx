@@ -16,6 +16,7 @@ export default function NewsPage() {
   const { newsList, setNewsList, loading, setLoading } = useGlobalStore();
   const [filteredNews, setFilteredNews] = useState<News[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState<'all' | 'active' | 'resolved'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'endDate' | 'totalStaked' | 'totalPools'>('totalStaked');
 
@@ -32,6 +33,11 @@ export default function NewsPage() {
   // Filter and sort news
   useEffect(() => {
     let filtered = newsList;
+
+    // Status filter
+    if (selectedStatus !== 'all') {
+      filtered = filtered.filter(news => news.status === selectedStatus);
+    }
 
     // Category filter
     if (selectedCategory !== 'All') {
@@ -61,7 +67,7 @@ export default function NewsPage() {
     });
 
     setFilteredNews(filtered);
-  }, [newsList, selectedCategory, searchQuery, sortBy]);
+  }, [newsList, selectedCategory, selectedStatus, searchQuery, sortBy]);
 
   const activeNews = filteredNews.filter(n => n.status === 'active');
   const totalStaked = activeNews.reduce((sum, news) => sum + news.totalStaked, 0);
@@ -144,8 +150,44 @@ export default function NewsPage() {
               </select>
             </div>
 
+            {/* Status Filter */}
+            <div className="flex flex-wrap gap-2 mt-4 pb-4 border-b border-border/30">
+              <span className="text-sm text-muted-foreground mr-2 flex items-center">Status:</span>
+              <button
+                onClick={() => setSelectedStatus('all')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  selectedStatus === 'all'
+                    ? 'bg-primary text-primary-foreground shadow-lg'
+                    : 'bg-background/50 text-muted-foreground hover:bg-accent/10 hover:text-foreground'
+                }`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setSelectedStatus('active')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  selectedStatus === 'active'
+                    ? 'bg-green-500 text-white shadow-lg'
+                    : 'bg-background/50 text-muted-foreground hover:bg-green-500/10 hover:text-foreground'
+                }`}
+              >
+                Active
+              </button>
+              <button
+                onClick={() => setSelectedStatus('resolved')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  selectedStatus === 'resolved'
+                    ? 'bg-blue-500 text-white shadow-lg'
+                    : 'bg-background/50 text-muted-foreground hover:bg-blue-500/10 hover:text-foreground'
+                }`}
+              >
+                Resolved
+              </button>
+            </div>
+
             {/* Category Filter */}
             <div className="flex flex-wrap gap-2 mt-4">
+              <span className="text-sm text-muted-foreground mr-2 flex items-center">Category:</span>
               {CATEGORIES.map((category) => (
                 <button
                   key={category}
@@ -162,9 +204,14 @@ export default function NewsPage() {
             </div>
 
             {/* Active Filters Display */}
-            {(searchQuery || selectedCategory !== 'All') && (
+            {(searchQuery || selectedCategory !== 'All' || selectedStatus !== 'all') && (
               <div className="mt-4 flex items-center gap-2 text-sm">
                 <span className="text-muted-foreground">Active filters:</span>
+                {selectedStatus !== 'all' && (
+                  <span className="px-2 py-1 rounded bg-blue-500/10 text-blue-600">
+                    {selectedStatus.charAt(0).toUpperCase() + selectedStatus.slice(1)}
+                  </span>
+                )}
                 {selectedCategory !== 'All' && (
                   <span className="px-2 py-1 rounded bg-primary/10 text-primary">
                     {selectedCategory}
@@ -178,6 +225,7 @@ export default function NewsPage() {
                 <button
                   onClick={() => {
                     setSelectedCategory('All');
+                    setSelectedStatus('all');
                     setSearchQuery('');
                   }}
                   className="text-muted-foreground hover:text-foreground ml-2"

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface PoolCardProps {
   pool: Pool;
@@ -80,17 +81,48 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
   };
 
   return (
-    <Card className="border border-border/50 bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-all duration-200">
+    <Card className={`border backdrop-blur-sm transition-all duration-200 ${
+      pool.status === 'resolved'
+        ? 'border-accent/50 bg-accent/5 hover:bg-accent/10'
+        : 'border-border/50 bg-background/80 hover:bg-background/90'
+    }`}>
       <CardContent className="p-6">
+        {/* Resolved Badge (if resolved) */}
+        {pool.status === 'resolved' && pool.outcome && (
+          <div className="mb-4 pb-4 border-b border-border/30">
+            <div className="flex items-center justify-between">
+              <Badge className={`px-3 py-1 ${
+                pool.outcome === 'creator_correct'
+                  ? 'bg-green-500 text-white'
+                  : 'bg-red-500 text-white'
+              }`}>
+                {pool.outcome === 'creator_correct' ? '✅ CORRECT' : '❌ WRONG'}
+              </Badge>
+              <span className="text-xs text-muted-foreground">
+                Resolved Pool
+              </span>
+            </div>
+            {pool.outcome === 'creator_correct' ? (
+              <p className="text-xs text-muted-foreground mt-2">
+                Pool creator was correct. "Agree" stakers won.
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground mt-2">
+                Pool creator was wrong. "Disagree" stakers won.
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Creator Info */}
         <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
+          <Link href={`/profile/${pool.creatorAddress}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
               {pool.creatorAddress.slice(2, 4).toUpperCase()}
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm">{pool.creatorAddress}</span>
+                <span className="font-semibold text-sm hover:underline">{pool.creatorAddress}</span>
                 <Badge variant="secondary" className="text-xs">
                   {getTierIcon(reputation.tier)} {reputation.tier}
                 </Badge>
@@ -99,16 +131,18 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
                 {reputation.accuracy}% accuracy
               </div>
             </div>
+          </Link>
+          <div className="flex items-center gap-2">
+            <Badge
+              variant={pool.position === 'YES' ? 'default' : 'secondary'}
+              className={pool.position === 'YES'
+                ? 'bg-green-500 text-white'
+                : 'bg-red-500 text-white'
+              }
+            >
+              {pool.position}
+            </Badge>
           </div>
-          <Badge
-            variant={pool.position === 'YES' ? 'default' : 'secondary'}
-            className={pool.position === 'YES'
-              ? 'bg-green-500 text-white'
-              : 'bg-red-500 text-white'
-            }
-          >
-            {pool.position}
-          </Badge>
         </div>
 
         {/* Image if exists */}
@@ -216,7 +250,13 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
         </div>
 
         {/* Action Buttons */}
-        {!showStakeInput ? (
+        {pool.status === 'resolved' ? (
+          <div className="p-3 bg-accent/10 rounded-lg text-center">
+            <p className="text-sm text-muted-foreground">
+              🔒 Pool Settled - Staking Closed
+            </p>
+          </div>
+        ) : !showStakeInput ? (
           <div className="flex gap-2">
             <Button
               onClick={() => handleStakeButtonClick('agree')}

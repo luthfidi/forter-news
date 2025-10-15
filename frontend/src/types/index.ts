@@ -15,6 +15,13 @@ export interface News {
   status: 'active' | 'resolved' | 'disputed' | 'closed';
   totalPools: number;           // Count of pools under this news
   totalStaked: number;          // Aggregate from all pools
+
+  // Resolution fields (added when resolved)
+  outcome?: 'YES' | 'NO';       // Final outcome
+  resolvedAt?: Date;            // When it was resolved
+  resolvedBy?: string;          // Admin wallet that resolved
+  resolutionSource?: string;    // URL to data source (e.g., CoinGecko)
+  resolutionNotes?: string;     // Optional admin notes
 }
 
 // POOL = Analysis with independent stake pool
@@ -63,31 +70,65 @@ export interface PoolStake {
 // SHARED TYPES (Used by both models)
 // ============================================
 
-// Reputation Types
+// Reputation Types (calculated from pool creation performance only)
 export interface ReputationData {
   address: string;
-  accuracy: number;
-  totalMarkets: number;        // Legacy: total markets
-  totalPools: number;          // NEW: total pools created
+  accuracy: number;             // Percentage from pool creation (0-100)
+  totalPools: number;           // Total pools created
+  correctPools: number;         // Correct pools
+  wrongPools: number;           // Wrong pools
+  activePools: number;          // Unresolved pools
   tier: 'Novice' | 'Analyst' | 'Expert' | 'Master' | 'Legend';
   nftTokenId?: number;
-  categoryStats: Record<string, number>;
-  currentStreak?: number;       // NEW: consecutive correct predictions
-  specialty?: string;           // NEW: best category
+  categoryStats: Record<string, { total: number; correct: number; accuracy: number }>;
+  currentStreak?: number;       // Consecutive correct predictions
+  bestStreak?: number;          // Best streak ever
+  specialty?: string;           // Best category
+  memberSince?: Date;           // First pool creation date
 }
 
 // Legacy StakePosition type removed - using PoolStake only
 
-// User Types
+// User Types (universal - no role distinction)
 export interface User {
   address: string;
   fid?: number;
   username?: string;
+  pfpUrl?: string;
+  bio?: string;
+
+  // Reputation (from pool creation)
   reputation?: ReputationData;
-  totalStaked: number;
-  totalEarned: number;
+
+  // Pool Creation Stats
   totalPoolsCreated: number;
+  poolsWon: number;
+  poolsLost: number;
+  poolsActive: number;
+
+  // Staking Stats (tracked separately, doesn't affect tier)
+  totalStakes: number;
+  stakesWon: number;
+  stakesLost: number;
+  stakesActive: number;
+
+  // News Creation
   totalNewsCreated: number;
+
+  // Earnings (private, only shown to owner)
+  totalEarned: number;          // Total earnings from pools + stakes
+  earningsFromPools: number;    // Earnings from pool creation
+  earningsFromStakes: number;   // Earnings from staking
+}
+
+// Staking History Stats (for transparency, doesn't affect tier)
+export interface StakingStats {
+  totalStakes: number;
+  wonStakes: number;
+  lostStakes: number;
+  winRate: number;              // Percentage (0-100)
+  totalStaked: number;          // Total USDC staked
+  totalEarnings: number;        // Total earnings from stakes
 }
 
 // ============================================
@@ -110,4 +151,13 @@ export interface CreatePoolInput {
   imageUrl?: string;
   imageCaption?: string;
   creatorStake: number;
+}
+
+// Resolution Input (for admin)
+export interface ResolveNewsInput {
+  newsId: string;
+  outcome: 'YES' | 'NO';
+  resolutionSource: string;     // URL to data source
+  resolutionNotes?: string;     // Optional notes
+  resolvedBy: string;           // Admin wallet address
 }

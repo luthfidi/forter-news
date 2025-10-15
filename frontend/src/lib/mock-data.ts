@@ -1,4 +1,4 @@
-import { News, Pool, PoolStake } from '@/types';
+import { News, Pool, PoolStake, ReputationData, User } from '@/types';
 
 // ============================================
 // MOCK NEWS DATA
@@ -82,6 +82,46 @@ export const MOCK_NEWS: News[] = [
     status: 'active',
     totalPools: 3,
     totalStaked: 7200
+  },
+
+  // ============================================
+  // RESOLVED NEWS (for testing)
+  // ============================================
+  {
+    id: '7',
+    title: 'SOL will reach $200 before November 2024',
+    description: 'Solana price prediction based on network activity, memecoin trends, and institutional interest. Considering FTX liquidation impacts and overall market sentiment.',
+    category: 'Crypto',
+    endDate: new Date('2024-11-01'),
+    resolutionCriteria: 'SOL price >= $200 on CoinGecko',
+    creatorAddress: '0xabc...123',
+    createdAt: new Date('2024-09-15'),
+    status: 'resolved',
+    totalPools: 3,
+    totalStaked: 4800,
+    outcome: 'YES',
+    resolvedAt: new Date('2024-11-01'),
+    resolvedBy: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
+    resolutionSource: 'https://www.coingecko.com/en/coins/solana',
+    resolutionNotes: 'SOL reached $205 on Nov 1, 2024'
+  },
+  {
+    id: '8',
+    title: 'Apple will launch AI assistant before October 2024',
+    description: 'Tracking Apple\'s AI development and WWDC announcements to predict launch timing of comprehensive AI assistant features in iOS.',
+    category: 'Tech',
+    endDate: new Date('2024-10-31'),
+    resolutionCriteria: 'Apple Intelligence features publicly available',
+    creatorAddress: '0xdef...456',
+    createdAt: new Date('2024-08-01'),
+    status: 'resolved',
+    totalPools: 2,
+    totalStaked: 3200,
+    outcome: 'NO',
+    resolvedAt: new Date('2024-10-31'),
+    resolvedBy: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
+    resolutionSource: 'https://www.apple.com/apple-intelligence/',
+    resolutionNotes: 'Apple Intelligence delayed to iOS 18.1 in late October, not fully available before deadline'
   }
 ];
 
@@ -274,6 +314,100 @@ export const MOCK_POOLS: Pool[] = [
     status: 'active',
     outcome: null,
     createdAt: new Date('2024-10-12')
+  },
+
+  // ============================================
+  // RESOLVED POOLS (for News 7: SOL $200 - Outcome: YES)
+  // ============================================
+  {
+    id: 'pool-10',
+    newsId: '7',
+    creatorAddress: '0x1234...5678',
+    position: 'YES',
+    reasoning: 'Solana ecosystem growth is explosive. Memecoin mania driving massive trading volume. Jito airdrop and Jupiter launch creating positive sentiment. Network uptime stable. Major DeFi protocols migrating to Solana.',
+    evidence: [
+      'https://example.com/solana-activity',
+      'https://example.com/dex-volume'
+    ],
+    creatorStake: 150,
+    agreeStakes: 1200,
+    disagreeStakes: 400,
+    totalStaked: 1750,
+    status: 'resolved',
+    outcome: 'creator_correct',
+    createdAt: new Date('2024-09-16')
+  },
+  {
+    id: 'pool-11',
+    newsId: '7',
+    creatorAddress: '0xabcd...efgh',
+    position: 'NO',
+    reasoning: 'FTX overhang still present. Technical resistance at $180. Memecoin hype unsustainable. Network still has occasional congestion issues.',
+    evidence: [
+      'https://example.com/ftx-liquidations'
+    ],
+    creatorStake: 100,
+    agreeStakes: 800,
+    disagreeStakes: 900,
+    totalStaked: 1800,
+    status: 'resolved',
+    outcome: 'creator_wrong',
+    createdAt: new Date('2024-09-17')
+  },
+  {
+    id: 'pool-12',
+    newsId: '7',
+    creatorAddress: '0x9999...1111',
+    position: 'YES',
+    reasoning: 'On-chain metrics bullish. Whale accumulation visible. Technical breakout from $150 confirmed. Momentum strong with Jupiter airdrop catalyst.',
+    evidence: [
+      'https://example.com/sol-on-chain'
+    ],
+    creatorStake: 120,
+    agreeStakes: 900,
+    disagreeStakes: 230,
+    totalStaked: 1250,
+    status: 'resolved',
+    outcome: 'creator_correct',
+    createdAt: new Date('2024-09-18')
+  },
+
+  // ============================================
+  // RESOLVED POOLS (for News 8: Apple AI - Outcome: NO)
+  // ============================================
+  {
+    id: 'pool-13',
+    newsId: '8',
+    creatorAddress: '0x2222...3333',
+    position: 'YES',
+    reasoning: 'WWDC announcements promising. Beta features already available. Apple typically ships on time. Competitive pressure from Google and Microsoft.',
+    evidence: [
+      'https://example.com/apple-wwdc'
+    ],
+    creatorStake: 100,
+    agreeStakes: 700,
+    disagreeStakes: 900,
+    totalStaked: 1700,
+    status: 'resolved',
+    outcome: 'creator_wrong',
+    createdAt: new Date('2024-08-05')
+  },
+  {
+    id: 'pool-14',
+    newsId: '8',
+    creatorAddress: '0x4444...5555',
+    position: 'NO',
+    reasoning: 'Apple historically conservative with AI rollout. Privacy concerns require extensive testing. Beta feedback showing delays. October too optimistic.',
+    evidence: [
+      'https://example.com/apple-delays'
+    ],
+    creatorStake: 80,
+    agreeStakes: 600,
+    disagreeStakes: 920,
+    totalStaked: 1500,
+    status: 'resolved',
+    outcome: 'creator_correct',
+    createdAt: new Date('2024-08-06')
   }
 ];
 
@@ -332,8 +466,272 @@ export const MOCK_POOL_STAKES: PoolStake[] = [
     position: 'disagree',
     amount: 250,
     createdAt: new Date('2024-10-09')
+  },
+
+  // More stakes for resolved pools (News 7: SOL - Outcome YES)
+  {
+    id: 'stake-7',
+    poolId: 'pool-10',
+    userAddress: '0xuser1...111',
+    position: 'agree',
+    amount: 400,
+    createdAt: new Date('2024-09-20')
+  },
+  {
+    id: 'stake-8',
+    poolId: 'pool-10',
+    userAddress: '0xuser2...222',
+    position: 'agree',
+    amount: 300,
+    createdAt: new Date('2024-09-21')
+  },
+  {
+    id: 'stake-9',
+    poolId: 'pool-11',
+    userAddress: '0xuser3...333',
+    position: 'disagree',
+    amount: 350,
+    createdAt: new Date('2024-09-22')
+  },
+  {
+    id: 'stake-10',
+    poolId: 'pool-11',
+    userAddress: '0xuser4...444',
+    position: 'disagree',
+    amount: 250,
+    createdAt: new Date('2024-09-23')
+  },
+  {
+    id: 'stake-11',
+    poolId: 'pool-12',
+    userAddress: '0xuser1...111',
+    position: 'agree',
+    amount: 200,
+    createdAt: new Date('2024-09-24')
+  },
+
+  // Stakes for resolved pools (News 8: Apple AI - Outcome NO)
+  {
+    id: 'stake-12',
+    poolId: 'pool-13',
+    userAddress: '0xuser2...222',
+    position: 'disagree',
+    amount: 300,
+    createdAt: new Date('2024-08-10')
+  },
+  {
+    id: 'stake-13',
+    poolId: 'pool-14',
+    userAddress: '0xuser3...333',
+    position: 'agree',
+    amount: 250,
+    createdAt: new Date('2024-08-11')
+  },
+  {
+    id: 'stake-14',
+    poolId: 'pool-14',
+    userAddress: '0xuser4...444',
+    position: 'agree',
+    amount: 150,
+    createdAt: new Date('2024-08-12')
+  },
+
+  // More stakes on active pools for testing
+  {
+    id: 'stake-15',
+    poolId: 'pool-2',
+    userAddress: '0xuser1...111',
+    position: 'agree',
+    amount: 180,
+    createdAt: new Date('2024-10-10')
+  },
+  {
+    id: 'stake-16',
+    poolId: 'pool-3',
+    userAddress: '0xuser2...222',
+    position: 'disagree',
+    amount: 120,
+    createdAt: new Date('2024-10-11')
+  },
+  {
+    id: 'stake-17',
+    poolId: 'pool-5',
+    userAddress: '0xuser3...333',
+    position: 'agree',
+    amount: 280,
+    createdAt: new Date('2024-10-12')
+  },
+  {
+    id: 'stake-18',
+    poolId: 'pool-6',
+    userAddress: '0xuser4...444',
+    position: 'agree',
+    amount: 200,
+    createdAt: new Date('2024-10-13')
   }
 ];
+
+// ============================================
+// MOCK REPUTATION DATA (calculated from pool creation only)
+// ============================================
+
+export const MOCK_REPUTATION: Record<string, ReputationData> = {
+  '0x1234...5678': {
+    address: '0x1234...5678',
+    accuracy: 87,
+    totalPools: 3,
+    correctPools: 2,         // pool-1 (active), pool-10 (correct)
+    wrongPools: 0,
+    activePools: 1,
+    tier: 'Master',
+    nftTokenId: 1,
+    categoryStats: {
+      'Crypto': { total: 3, correct: 2, accuracy: 66.67 }
+    },
+    currentStreak: 1,
+    bestStreak: 2,
+    specialty: 'Crypto',
+    memberSince: new Date('2024-09-15')
+  },
+  '0xabcd...efgh': {
+    address: '0xabcd...efgh',
+    accuracy: 50,
+    totalPools: 2,
+    correctPools: 0,
+    wrongPools: 1,           // pool-11 (wrong)
+    activePools: 1,          // pool-2 (active)
+    tier: 'Analyst',
+    nftTokenId: 2,
+    categoryStats: {
+      'Crypto': { total: 2, correct: 0, accuracy: 0 }
+    },
+    currentStreak: 0,
+    bestStreak: 0,
+    specialty: 'Crypto',
+    memberSince: new Date('2024-09-17')
+  },
+  '0x9999...1111': {
+    address: '0x9999...1111',
+    accuracy: 100,
+    totalPools: 2,
+    correctPools: 1,         // pool-12 (correct)
+    wrongPools: 0,
+    activePools: 1,          // pool-3 (active)
+    tier: 'Legend',
+    nftTokenId: 3,
+    categoryStats: {
+      'Crypto': { total: 2, correct: 1, accuracy: 50 }
+    },
+    currentStreak: 1,
+    bestStreak: 1,
+    specialty: 'Crypto',
+    memberSince: new Date('2024-09-18')
+  },
+  '0x2222...3333': {
+    address: '0x2222...3333',
+    accuracy: 50,
+    totalPools: 2,
+    correctPools: 0,
+    wrongPools: 1,           // pool-13 (wrong)
+    activePools: 1,          // pool-4 (active)
+    tier: 'Analyst',
+    nftTokenId: 4,
+    categoryStats: {
+      'Crypto': { total: 1, correct: 0, accuracy: 0 },
+      'Tech': { total: 1, correct: 0, accuracy: 0 }
+    },
+    currentStreak: 0,
+    bestStreak: 0,
+    specialty: 'Crypto',
+    memberSince: new Date('2024-08-05')
+  },
+  '0x4444...5555': {
+    address: '0x4444...5555',
+    accuracy: 100,
+    totalPools: 2,
+    correctPools: 1,         // pool-14 (correct)
+    wrongPools: 0,
+    activePools: 1,          // pool-5 (active)
+    tier: 'Legend',
+    nftTokenId: 5,
+    categoryStats: {
+      'Crypto': { total: 1, correct: 0, accuracy: 0 },
+      'Tech': { total: 1, correct: 1, accuracy: 100 }
+    },
+    currentStreak: 1,
+    bestStreak: 1,
+    specialty: 'Tech',
+    memberSince: new Date('2024-08-06')
+  },
+  '0x6666...7777': {
+    address: '0x6666...7777',
+    accuracy: 0,
+    totalPools: 1,
+    correctPools: 0,
+    wrongPools: 0,
+    activePools: 1,          // pool-6 (active)
+    tier: 'Novice',
+    nftTokenId: 6,
+    categoryStats: {
+      'Macro': { total: 1, correct: 0, accuracy: 0 }
+    },
+    currentStreak: 0,
+    bestStreak: 0,
+    specialty: 'Macro',
+    memberSince: new Date('2024-10-09')
+  },
+  '0x8888...9999': {
+    address: '0x8888...9999',
+    accuracy: 0,
+    totalPools: 1,
+    correctPools: 0,
+    wrongPools: 0,
+    activePools: 1,          // pool-7 (active)
+    tier: 'Novice',
+    nftTokenId: 7,
+    categoryStats: {
+      'Macro': { total: 1, correct: 0, accuracy: 0 }
+    },
+    currentStreak: 0,
+    bestStreak: 0,
+    specialty: 'Macro',
+    memberSince: new Date('2024-10-10')
+  },
+  '0xaaaa...bbbb': {
+    address: '0xaaaa...bbbb',
+    accuracy: 0,
+    totalPools: 1,
+    correctPools: 0,
+    wrongPools: 0,
+    activePools: 1,          // pool-8 (active)
+    tier: 'Novice',
+    nftTokenId: 8,
+    categoryStats: {
+      'Tech': { total: 1, correct: 0, accuracy: 0 }
+    },
+    currentStreak: 0,
+    bestStreak: 0,
+    specialty: 'Tech',
+    memberSince: new Date('2024-10-11')
+  },
+  '0xcccc...dddd': {
+    address: '0xcccc...dddd',
+    accuracy: 0,
+    totalPools: 1,
+    correctPools: 0,
+    wrongPools: 0,
+    activePools: 1,          // pool-9 (active)
+    tier: 'Novice',
+    nftTokenId: 9,
+    categoryStats: {
+      'Tech': { total: 1, correct: 0, accuracy: 0 }
+    },
+    currentStreak: 0,
+    bestStreak: 0,
+    specialty: 'Tech',
+    memberSince: new Date('2024-10-12')
+  }
+};
 
 // ============================================
 // HELPER FUNCTIONS
@@ -395,4 +793,40 @@ export function getNewsStats(newsId: string) {
     noPools,
     totalStaked
   };
+}
+
+// Get reputation data for an address
+export function getReputationData(address: string): ReputationData | undefined {
+  return MOCK_REPUTATION[address];
+}
+
+// Get pools created by address
+export function getPoolsByCreator(address: string): Pool[] {
+  return MOCK_POOLS.filter(pool => pool.creatorAddress === address);
+}
+
+// Get stakes made by address
+export function getStakesByUser(address: string): PoolStake[] {
+  return MOCK_POOL_STAKES.filter(stake => stake.userAddress === address);
+}
+
+// Get tier icon
+export function getTierIcon(tier: string): string {
+  switch (tier) {
+    case 'Novice': return '🥉';
+    case 'Analyst': return '🥈';
+    case 'Expert': return '🥇';
+    case 'Master': return '💎';
+    case 'Legend': return '👑';
+    default: return '❓';
+  }
+}
+
+// Calculate tier based on accuracy
+export function calculateTier(accuracy: number): 'Novice' | 'Analyst' | 'Expert' | 'Master' | 'Legend' {
+  if (accuracy >= 95) return 'Legend';
+  if (accuracy >= 85) return 'Master';
+  if (accuracy >= 70) return 'Expert';
+  if (accuracy >= 50) return 'Analyst';
+  return 'Novice';
 }

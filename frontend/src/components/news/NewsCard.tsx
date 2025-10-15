@@ -84,11 +84,22 @@ export default function NewsCard({ news }: NewsCardProps) {
               {news.category}
             </Badge>
           </div>
-          {isEndingSoon && (
-            <Badge variant="destructive" className="bg-red-500/10 text-red-600 border-red-500/20">
-              Ending Soon
-            </Badge>
-          )}
+          <div className="flex gap-2">
+            {news.status === 'resolved' && news.outcome && (
+              <Badge className={`${
+                news.outcome === 'YES'
+                  ? 'bg-green-500 text-white'
+                  : 'bg-red-500 text-white'
+              }`}>
+                {news.outcome === 'YES' ? '✅' : '❌'} {news.outcome}
+              </Badge>
+            )}
+            {isEndingSoon && news.status === 'active' && (
+              <Badge variant="destructive" className="bg-red-500/10 text-red-600 border-red-500/20">
+                Ending Soon
+              </Badge>
+            )}
+          </div>
         </div>
 
         {/* Title */}

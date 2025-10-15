@@ -11,14 +11,21 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { useAccount } from 'wagmi';
+import { isAdmin } from '@/config/admin';
+import ResolveNewsModal from '@/components/admin/ResolveNewsModal';
 
 export default function NewsDetailPage() {
   const params = useParams();
   const newsId = params.id as string;
   const { currentNews, setCurrentNews, pools, setPools, loading, setLoading } = useGlobalStore();
+  const { address } = useAccount();
   const [activeFilter, setActiveFilter] = useState<'all' | 'YES' | 'NO'>('all');
   const [showStakingModal, setShowStakingModal] = useState(false);
   const [selectedPool, setSelectedPool] = useState<Pool | null>(null);
+  const [showResolveModal, setShowResolveModal] = useState(false);
+
+  const isUserAdmin = isAdmin(address);
 
   // Load news and pools
   useEffect(() => {
@@ -78,6 +85,24 @@ export default function NewsDetailPage() {
     }
   };
 
+  const handleResolveNews = (outcome: 'YES' | 'NO', resolutionSource: string, resolutionNotes?: string) => {
+    // In real app, this would call API to resolve news
+    console.log('Resolving news:', { newsId, outcome, resolutionSource, resolutionNotes, resolvedBy: address });
+
+    // For now, just close modal and show success message
+    // In production, this would update news status, resolve all pools, distribute rewards, etc.
+    alert(`News resolved as ${outcome}! In production, this would:\n1. Update news status\n2. Resolve all pools\n3. Distribute rewards\n4. Update reputation NFTs`);
+
+    setShowResolveModal(false);
+
+    // Refresh news data
+    setTimeout(() => {
+      const updatedNews = getNewsById(newsId);
+      setCurrentNews(updatedNews || null);
+      refetchPools();
+    }, 500);
+  };
+
   return (
     <div className="min-h-screen pt-20 pb-16">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -89,6 +114,77 @@ export default function NewsDetailPage() {
           <span>/</span>
           <span className="text-foreground">NEWS Details</span>
         </div>
+
+        {/* Resolved Banner */}
+        {currentNews.status === 'resolved' && currentNews.outcome && (
+          <Card className="mb-6 border-2 border-accent bg-accent/5 backdrop-blur-sm">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Badge className={`text-lg px-3 py-1 ${
+                      currentNews.outcome === 'YES'
+                        ? 'bg-green-500 text-white'
+                        : 'bg-red-500 text-white'
+                    }`}>
+                      {currentNews.outcome === 'YES' ? '✅' : '❌'} RESOLVED: {currentNews.outcome}
+                    </Badge>
+                    <span className="text-sm text-muted-foreground">
+                      Resolved on {currentNews.resolvedAt ? new Date(currentNews.resolvedAt).toLocaleDateString() : 'N/A'}
+                    </span>
+                  </div>
+                  <h3 className="font-semibold mb-1">This news has been resolved</h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    All pools under this news have been settled. Rewards have been distributed to winning pool creators and stakers.
+                  </p>
+                  {currentNews.resolutionSource && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="text-muted-foreground">Data Source:</span>
+                      <a
+                        href={currentNews.resolutionSource}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        {currentNews.resolutionSource}
+                      </a>
+                    </div>
+                  )}
+                  {currentNews.resolutionNotes && (
+                    <div className="mt-2 text-sm text-muted-foreground">
+                      <span className="font-medium">Notes:</span> {currentNews.resolutionNotes}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Admin Actions Section */}
+        {isUserAdmin && currentNews.status === 'active' && (
+          <Card className="mb-6 border-2 border-orange-500/50 bg-orange-500/5 backdrop-blur-sm">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge className="bg-orange-500 text-white">⚠️ ADMIN</Badge>
+                    <h3 className="font-semibold">Admin Actions</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    You are an admin. You can resolve this news once the resolution criteria has been met.
+                  </p>
+                  <Button
+                    onClick={() => setShowResolveModal(true)}
+                    className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+                  >
+                    🔒 Resolve News
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           {/* Main Content */}
@@ -352,6 +448,15 @@ export default function NewsDetailPage() {
             setShowStakingModal(false);
             setSelectedPool(null);
           }}
+        />
+      )}
+
+      {/* Resolve News Modal (Admin Only) */}
+      {showResolveModal && currentNews && (
+        <ResolveNewsModal
+          news={currentNews}
+          onClose={() => setShowResolveModal(false)}
+          onResolve={handleResolveNews}
         />
       )}
     </div>

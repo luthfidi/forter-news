@@ -1041,7 +1041,7 @@ export function sortAnalysts(
   } else if (sortBy === 'totalPools') {
     sorted.sort((a, b) => b.totalPools - a.totalPools);
   } else if (sortBy === 'recent') {
-    sorted.sort((a, b) => b.memberSince.getTime() - a.memberSince.getTime());
+    sorted.sort((a, b) => (b.memberSince?.getTime() ?? 0) - (a.memberSince?.getTime() ?? 0));
   }
 
   return sorted;

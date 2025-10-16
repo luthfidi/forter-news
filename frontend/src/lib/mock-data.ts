@@ -865,6 +865,44 @@ export const MOCK_REPUTATION: Record<string, ReputationData> = {
     bestStreak: 3,
     specialty: 'Crypto, Macro',
     memberSince: new Date('2024-08-01')
+  },
+  // ADMIN WALLET - Tachul (Co-founder, DeFi specialist)
+  '0xa930FDA4B716341c8b5D1b83B67BfC2adFbd1fEd': {
+    address: '0xa930FDA4B716341c8b5D1b83B67BfC2adFbd1fEd',
+    accuracy: 82,
+    totalPools: 5,
+    correctPools: 4,
+    wrongPools: 1,
+    activePools: 0,
+    tier: 'Expert',
+    nftTokenId: 11,
+    categoryStats: {
+      'DeFi': { total: 3, correct: 3, accuracy: 100 },
+      'Crypto': { total: 2, correct: 1, accuracy: 50 }
+    },
+    currentStreak: 3,
+    bestStreak: 3,
+    specialty: 'DeFi, Crypto',
+    memberSince: new Date('2024-07-15')
+  },
+  // ADMIN WALLET - Zidan (Tech analyst, AI/ML focus)
+  '0xeF4DB09D536439831FEcaA33fE4250168976535E': {
+    address: '0xeF4DB09D536439831FEcaA33fE4250168976535E',
+    accuracy: 88,
+    totalPools: 6,
+    correctPools: 5,
+    wrongPools: 1,
+    activePools: 0,
+    tier: 'Master',
+    nftTokenId: 12,
+    categoryStats: {
+      'Tech': { total: 4, correct: 4, accuracy: 100 },
+      'Crypto': { total: 2, correct: 1, accuracy: 50 }
+    },
+    currentStreak: 4,
+    bestStreak: 4,
+    specialty: 'Tech, Crypto',
+    memberSince: new Date('2024-07-01')
   }
 };
 

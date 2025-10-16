@@ -35,10 +35,12 @@ export default function AnalystsPage() {
     // Count by category
     const categoryCount: Record<string, number> = {};
     allAnalysts.forEach(analyst => {
-      analyst.specialty.split(',').forEach(cat => {
-        const trimmed = cat.trim();
-        categoryCount[trimmed] = (categoryCount[trimmed] || 0) + 1;
-      });
+      if (analyst.specialty) {
+        analyst.specialty.split(',').forEach(cat => {
+          const trimmed = cat.trim();
+          categoryCount[trimmed] = (categoryCount[trimmed] || 0) + 1;
+        });
+      }
     });
 
     const mostActiveCategory = Object.entries(categoryCount).sort((a, b) => b[1] - a[1])[0];

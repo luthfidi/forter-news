@@ -16,6 +16,10 @@ export interface News {
   totalPools: number;           // Count of pools under this news
   totalStaked: number;          // Aggregate from all pools
 
+  // Quality metrics (calculated dynamically)
+  qualityScore?: number;        // 0-100 quality score
+  avgPoolQuality?: number;      // Average quality of pools
+
   // Resolution fields (added when resolved)
   outcome?: 'YES' | 'NO';       // Final outcome
   resolvedAt?: Date;            // When it was resolved
@@ -43,6 +47,9 @@ export interface Pool {
   agreeStakes: number;          // "Setuju" total
   disagreeStakes: number;       // "Tidak Setuju" total
   totalStaked: number;          // agreeStakes + disagreeStakes + creatorStake
+
+  // Quality metrics (calculated dynamically)
+  qualityScore?: number;        // 0-100 quality score
 
   // Resolution
   status: 'active' | 'resolved';

@@ -30,10 +30,11 @@ Platform ini lahir dari konsep "Forecast Porter" - di mana para analis menjadi "
 5. [Dynamic Reputation NFT System](#dynamic-reputation-nft-system)
 6. [Technical Architecture](#technical-architecture)
 7. [Tokenomics & Incentives](#tokenomics-incentives)
-8. [Development Roadmap](#development-roadmap)
-9. [Setup Instructions](#setup-instructions)
-10. [Testing Strategy](#testing-strategy)
-11. [Demo Scenarios](#demo-scenarios)
+8. [Quality Control & Risk Mitigation](#quality-control--risk-mitigation)
+9. [Development Roadmap](#development-roadmap)
+10. [Setup Instructions](#setup-instructions)
+11. [Testing Strategy](#testing-strategy)
+12. [Demo Scenarios](#demo-scenarios)
 
 ## Problem Statement
 
@@ -987,6 +988,356 @@ Distribution:
 - Minimum 10 casts requirement
 - Quadratic staking untuk influence
 - Rate limiting per address
+
+## Quality Control & Risk Mitigation
+
+### 🚨 The Spam/Noise Problem
+
+**Core Challenge**: In a truly permissionless system, anyone can create NEWS and POOLS. Without quality controls, the platform risks becoming unusable due to spam and low-quality content.
+
+**Our Solution**: Multi-layered filtering system that preserves permissionlessness while surfacing quality.
+
+---
+
+### Quality Control Strategy
+
+#### 1. **NEWS Creation Barriers** 🔐
+
+**Problem**: Without barriers, users could spam 100s of low-quality predictions.
+
+**Solution - Deposit Requirement:**
+
+```typescript
+// MVP Implementation
+interface NewsCreationRequirements {
+  minimumDeposit: number;    // $10 USDC (testnet: $1)
+  refundCondition: {
+    minPools: 3;              // Need 3+ quality pools created
+    minTotalStaked: 50;       // $50+ total stakes across pools
+    timeWindow: 7 * 24;       // Within 7 days
+  };
+  slashCondition: {
+    zeroPools: true;          // No pools after 7 days = slash
+    spamReports: 5;           // 5+ reports = slash
+  };
+}
+```
+
+**How It Works:**
+1. User pays $10 USDC deposit to create NEWS
+2. If NEWS attracts 3+ pools with $50+ total stakes within 7 days → **deposit refunded**
+3. If NEWS gets no pools or flagged as spam → **deposit slashed to treasury**
+4. This creates **skin in the game** for NEWS creators
+
+**Smart Contract Interface:**
+```solidity
+contract NewsFactory {
+  uint256 public constant NEWS_DEPOSIT = 10 * 10**6; // 10 USDC
+
+  function createNews(
+    string memory title,
+    string memory description,
+    uint256 endDate,
+    string memory resolutionCriteria,
+    string memory category
+  ) external payable {
+    require(msg.value >= NEWS_DEPOSIT, "Insufficient deposit");
+    // Create news...
+  }
+
+  function refundDeposit(uint256 newsId) external {
+    News memory news = getNews(newsId);
+    require(news.totalPools >= 3, "Not enough pools");
+    require(news.totalStaked >= 50 * 10**6, "Not enough stakes");
+    // Refund deposit...
+  }
+}
+```
+
+**Benefits:**
+- ✅ Prevents spam (costs $10 per spam attempt)
+- ✅ Incentivizes quality (get money back if good)
+- ✅ Still permissionless (anyone can pay)
+- ✅ Self-regulating (community decides via pools/stakes)
+
+---
+
+#### 2. **POOL Quality Requirements** 📊
+
+**Problem**: Empty reasoning or copy-paste pools dilute quality.
+
+**Solution - Minimum Standards:**
+
+```typescript
+interface PoolCreationRequirements {
+  minReasoningLength: 100;     // Chars (force thoughtful analysis)
+  minCreatorStake: 1;          // $1 USDC minimum (testnet: $0.5)
+  evidenceRequired: false;     // Optional but encouraged
+  imageRecommended: true;      // Pools with images rank higher
+}
+```
+
+**Quality Scoring Algorithm:**
+
+```typescript
+function calculatePoolQualityScore(pool: Pool): number {
+  let score = 0;
+
+  // Base: Reasoning quality (0-40 points)
+  score += Math.min(pool.reasoning.length / 10, 40);
+
+  // Evidence links (0-20 points)
+  score += Math.min(pool.evidence.length * 5, 20);
+
+  // Visual evidence (0-15 points)
+  if (pool.imageUrl) score += 15;
+
+  // Creator reputation (0-25 points)
+  const reputation = getReputation(pool.creatorAddress);
+  score += (reputation.accuracy / 100) * 25;
+
+  return Math.min(score, 100);
+}
+```
+
+**How It's Used:**
+- Sorting: High-quality pools shown first
+- Filtering: Hide pools below quality threshold (score < 30)
+- Discovery: "Top Quality" filter for premium content
+
+---
+
+#### 3. **NEWS Quality Scoring** 🎯
+
+**Problem**: Not all NEWS are equal - some attract serious analysis, others don't.
+
+**Solution - Dynamic Quality Score:**
+
+```typescript
+interface NewsQualityMetrics {
+  totalPools: number;           // More pools = more interest
+  totalStaked: number;          // More stakes = more conviction
+  avgPoolQuality: number;       // Avg quality score of pools
+  creatorReputation: number;    // Creator's track record
+  timeToFirstPool: number;      // Fast pool creation = good topic
+}
+
+function calculateNewsQualityScore(news: News): number {
+  const pools = getPoolsByNews(news.id);
+
+  // Weighted score
+  const score = {
+    poolCount: Math.min(pools.length * 10, 30),        // 0-30 pts
+    totalStake: Math.min(news.totalStaked / 10, 30),  // 0-30 pts (every $10 = 1pt)
+    avgQuality: calculateAvgPoolQuality(pools),       // 0-25 pts
+    speed: calculateSpeedScore(news),                 // 0-15 pts
+  };
+
+  return Object.values(score).reduce((a, b) => a + b, 0);
+}
+```
+
+**Use Cases:**
+
+**1. Default Sorting:**
+```typescript
+// Show high-quality NEWS first
+const sortedNews = news.sort((a, b) =>
+  calculateNewsQualityScore(b) - calculateNewsQualityScore(a)
+);
+```
+
+**2. Filters:**
+```typescript
+// "Quality Threshold" filter
+const qualityNews = news.filter(n =>
+  calculateNewsQualityScore(n) >= 50
+);
+
+// "Trending" = quality + recent
+const trending = news
+  .filter(n => isRecent(n) && calculateNewsQualityScore(n) >= 40)
+  .sort((a, b) => b.qualityScore - a.qualityScore);
+```
+
+**3. UI Badges:**
+```
+┌─────────────────────────────────┐
+│ NEWS: "BTC to $100k by Dec"     │
+│ 🏆 High Quality (Score: 87)    │  ← Badge
+│ 12 Pools · $1.2k Staked        │
+└─────────────────────────────────┘
+```
+
+---
+
+#### 4. **Frontend Filtering & Discovery** 🔍
+
+**Multi-Layer Filtering Strategy:**
+
+```typescript
+// Default View: Quality-First
+const defaultFilter = {
+  minQualityScore: 40,        // Hide low-quality
+  sortBy: 'qualityScore',     // Best first
+  showArchived: false,        // Hide old/dead NEWS
+};
+
+// Advanced Filters
+interface NewsFilters {
+  qualityThreshold: {
+    all: 0,
+    decent: 40,
+    good: 60,
+    excellent: 80,
+  };
+  activityLevel: {
+    any: 0,
+    active: '>=1 pool',
+    popular: '>=3 pools',
+    trending: '>=5 pools + $100 stakes',
+  };
+  status: 'all' | 'active' | 'resolved';
+  category: string;
+  creatorTier: 'all' | 'expert+' | 'master+' | 'legend';
+}
+```
+
+**UI Implementation:**
+
+```tsx
+<NewsFilters>
+  {/* Quality Filter */}
+  <select value={qualityFilter}>
+    <option value="all">All Quality</option>
+    <option value="decent">Decent+ (40)</option>
+    <option value="good">Good+ (60)</option>
+    <option value="excellent">Excellent (80+)</option>
+  </select>
+
+  {/* Activity Filter */}
+  <select value={activityFilter}>
+    <option value="any">Any Activity</option>
+    <option value="active">Active (1+ pools)</option>
+    <option value="popular">Popular (3+ pools)</option>
+    <option value="trending">Trending (5+ pools, $100+)</option>
+  </select>
+
+  {/* Sort Options */}
+  <select value={sortBy}>
+    <option value="quality">🏆 Quality Score</option>
+    <option value="staked">💰 Most Staked</option>
+    <option value="pools">🏊 Most Pools</option>
+    <option value="recent">⏰ Most Recent</option>
+  </select>
+</NewsFilters>
+```
+
+---
+
+### Risk Mitigation Matrix
+
+| Risk | Severity | Mitigation | Status |
+|------|----------|-----------|--------|
+| **Spam NEWS** | 🔴 High | $10 deposit requirement | ✅ Planned (MVP) |
+| **Low-Quality Pools** | 🟡 Medium | Min stake + quality scoring | ✅ Planned (MVP) |
+| **Liquidity Fragmentation** | 🟡 Medium | Quality sorting, hide low-stakes | ✅ Planned (MVP) |
+| **Oracle Centralization** | 🟡 Medium | Multi-sig admin → UMA integration | 🔨 Roadmap (Phase 2) |
+| **Sybil Attacks** | 🟡 Medium | Farcaster ID + deposit costs | ✅ Planned (MVP) |
+| **User Confusion (Complex UX)** | 🟡 Medium | Onboarding flow + templates | 🔨 Roadmap (Phase 1) |
+| **Slow Adoption** | 🟡 Medium | Seed 20-30 analysts, incentives | 🔨 Go-to-market |
+| **Regulatory** | 🟢 Low | Information market (not gambling) | 🔨 Legal review |
+
+---
+
+### Smart Contract Architecture for Quality Control
+
+**Recommended Structure:**
+
+```solidity
+contract QualityControl {
+  // NEWS deposit management
+  mapping(uint256 => uint256) public newsDeposits;
+  mapping(uint256 => uint256) public newsRefundDeadline;
+
+  function createNewsWithDeposit(...) external payable {
+    require(msg.value >= NEWS_DEPOSIT, "Insufficient deposit");
+    newsDeposits[newsId] = msg.value;
+    newsRefundDeadline[newsId] = block.timestamp + 7 days;
+  }
+
+  function claimRefund(uint256 newsId) external {
+    News memory news = getNews(newsId);
+    require(msg.sender == news.creator, "Not creator");
+    require(block.timestamp <= newsRefundDeadline[newsId], "Deadline passed");
+    require(news.totalPools >= 3, "Not enough pools");
+    require(news.totalStaked >= 50 * 10**6, "Not enough stakes");
+
+    uint256 refund = newsDeposits[newsId];
+    newsDeposits[newsId] = 0;
+    payable(msg.sender).transfer(refund);
+  }
+
+  function slashDeposit(uint256 newsId) external onlyAdmin {
+    require(block.timestamp > newsRefundDeadline[newsId], "Still active");
+    News memory news = getNews(newsId);
+    if (news.totalPools < 3) {
+      // Slash to treasury
+      uint256 deposit = newsDeposits[newsId];
+      newsDeposits[newsId] = 0;
+      payable(treasury).transfer(deposit);
+    }
+  }
+}
+```
+
+---
+
+### Positioning: Information Finance, Not Gambling
+
+**Critical Distinction for Regulatory & User Perception:**
+
+| Aspect | Prediction Market (Gambling) | Forter (Information Finance) |
+|--------|------------------------------|------------------------------|
+| **Primary Activity** | Betting on outcomes | Funding quality analysis |
+| **User Incentive** | Win bets | Earn yield on research |
+| **Value Creation** | Entertainment | Knowledge discovery |
+| **Target User** | Speculators | Researchers, analysts, DAOs |
+| **Success Metric** | Betting luck | Analysis accuracy |
+| **Reputation** | Win rate | Track record of correct reasoning |
+
+**Marketing Message:**
+> "Forter isn't a casino for predictions. It's a marketplace where quality research earns returns. Think of it as **funding research papers with upside** - if the analysis is correct, both the analyst and backers earn."
+
+**This positioning:**
+- ✅ Attracts serious users (not just gamblers)
+- ✅ Reduces regulatory risk (information vs gambling)
+- ✅ Aligns incentives with quality (not speculation)
+- ✅ Differentiates from Polymarket/Augur
+
+---
+
+### Implementation Priority
+
+**Phase 1 (MVP - Current Focus):**
+- ✅ Quality scoring algorithms (frontend calculation)
+- ✅ Frontend filters (quality, activity, sort)
+- ✅ Min stake requirements (UI enforcement)
+- ✅ Pool quality indicators (badges, scores)
+
+**Phase 2 (Testnet):**
+- 🔨 NEWS deposit smart contract
+- 🔨 Refund/slash mechanism
+- 🔨 On-chain quality metrics
+- 🔨 Community reporting system
+
+**Phase 3 (Mainnet):**
+- 🔨 Advanced spam detection (ML-based)
+- 🔨 Reputation-weighted filtering
+- 🔨 Curation DAO (optional)
+- 🔨 Category moderators
+
+---
 
 ## Development Roadmap
 

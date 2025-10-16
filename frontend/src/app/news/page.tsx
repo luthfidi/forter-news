@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { News } from '@/types';
-import { MOCK_NEWS } from '@/lib/mock-data';
+import { MOCK_NEWS, MOCK_POOLS, MOCK_REPUTATION } from '@/lib/mock-data';
 import NewsCard from '@/components/news/NewsCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import Image from 'next/image';
+import { calculateNewsQualityScore, QualityFilter, ActivityFilter } from '@/lib/quality-scoring';
 
 const CATEGORIES = ['All', 'Crypto', 'Macro', 'Tech', 'Sports', 'Politics'];
 
@@ -19,7 +20,9 @@ export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'active' | 'resolved'>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'endDate' | 'totalStaked' | 'totalPools'>('totalStaked');
+  const [sortBy, setSortBy] = useState<'quality' | 'endDate' | 'totalStaked' | 'totalPools'>('quality');
+  const [qualityFilter, setQualityFilter] = useState<QualityFilter>('all');
+  const [activityFilter, setActivityFilter] = useState<ActivityFilter>('any');
 
   // Load mock data on component mount
   useEffect(() => {
@@ -31,9 +34,26 @@ export default function NewsPage() {
     }, 1000);
   }, [setNewsList, setLoading]);
 
+  // Calculate quality scores for all news
+  const newsWithQuality = useMemo(() => {
+    const reputationMap = new Map(
+      Object.entries(MOCK_REPUTATION).map(([addr, rep]) => [addr, rep])
+    );
+
+    return newsList.map(news => {
+      const pools = MOCK_POOLS.filter(p => p.newsId === news.id);
+      const qualityScore = calculateNewsQualityScore(news, pools, reputationMap);
+
+      return {
+        ...news,
+        qualityScore,
+      };
+    });
+  }, [newsList]);
+
   // Filter and sort news
   useEffect(() => {
-    let filtered = newsList;
+    let filtered = newsWithQuality;
 
     // Status filter
     if (selectedStatus !== 'all') {
@@ -43,6 +63,33 @@ export default function NewsPage() {
     // Category filter
     if (selectedCategory !== 'All') {
       filtered = filtered.filter(news => news.category === selectedCategory);
+    }
+
+    // Quality filter
+    if (qualityFilter !== 'all') {
+      const thresholds = {
+        all: 0,
+        decent: 40,
+        good: 60,
+        excellent: 80,
+      };
+      const minScore = thresholds[qualityFilter];
+      filtered = filtered.filter(news => (news.qualityScore ?? 0) >= minScore);
+    }
+
+    // Activity filter
+    if (activityFilter !== 'any') {
+      switch (activityFilter) {
+        case 'active':
+          filtered = filtered.filter(n => n.totalPools >= 1);
+          break;
+        case 'popular':
+          filtered = filtered.filter(n => n.totalPools >= 3);
+          break;
+        case 'trending':
+          filtered = filtered.filter(n => n.totalPools >= 5 && n.totalStaked >= 100);
+          break;
+      }
     }
 
     // Search filter
@@ -56,6 +103,8 @@ export default function NewsPage() {
     // Sort
     filtered = [...filtered].sort((a, b) => {
       switch (sortBy) {
+        case 'quality':
+          return (b.qualityScore ?? 0) - (a.qualityScore ?? 0);
         case 'endDate':
           return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
         case 'totalStaked':
@@ -68,7 +117,7 @@ export default function NewsPage() {
     });
 
     setFilteredNews(filtered);
-  }, [newsList, selectedCategory, selectedStatus, searchQuery, sortBy]);
+  }, [newsWithQuality, selectedCategory, selectedStatus, qualityFilter, activityFilter, searchQuery, sortBy]);
 
   const activeNews = filteredNews.filter(n => n.status === 'active');
   const totalStaked = activeNews.reduce((sum, news) => sum + news.totalStaked, 0);
@@ -148,9 +197,10 @@ export default function NewsPage() {
               </div>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as 'endDate' | 'totalStaked' | 'totalPools')}
+                onChange={(e) => setSortBy(e.target.value as 'quality' | 'endDate' | 'totalStaked' | 'totalPools')}
                 className="px-4 py-2 rounded-md border border-border/50 bg-background/80 text-sm font-medium hover:border-primary transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 min-w-[160px]"
               >
+                <option value="quality">🏆 Quality Score</option>
                 <option value="totalStaked">💰 Most Staked</option>
                 <option value="totalPools">🏊 Most Pools</option>
                 <option value="endDate">⏰ Ending Soon</option>
@@ -202,10 +252,65 @@ export default function NewsPage() {
                   ))}
                 </div>
               </div>
+
+              {/* Quality Filter */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider min-w-[70px]">Quality</span>
+                <div className="flex flex-wrap gap-2">
+                  {(['all', 'decent', 'good', 'excellent'] as const).map((quality) => (
+                    <button
+                      key={quality}
+                      onClick={() => setQualityFilter(quality)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+                        qualityFilter === quality
+                          ? quality === 'excellent'
+                            ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
+                            : quality === 'good'
+                            ? 'bg-blue-500 text-white shadow-md shadow-blue-500/20'
+                            : quality === 'decent'
+                            ? 'bg-yellow-500 text-white shadow-md shadow-yellow-500/20'
+                            : 'bg-primary text-primary-foreground shadow-md shadow-primary/20'
+                          : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }`}
+                    >
+                      {quality === 'all' ? '•' : quality === 'excellent' ? '🏆' : quality === 'good' ? '⭐' : '✓'}{' '}
+                      {quality.charAt(0).toUpperCase() + quality.slice(1)}
+                      {quality !== 'all' && ` (${quality === 'decent' ? '40+' : quality === 'good' ? '60+' : '80+'})`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Activity Filter */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider min-w-[70px]">Activity</span>
+                <div className="flex flex-wrap gap-2">
+                  {(['any', 'active', 'popular', 'trending'] as const).map((activity) => (
+                    <button
+                      key={activity}
+                      onClick={() => setActivityFilter(activity)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+                        activityFilter === activity
+                          ? activity === 'trending'
+                            ? 'bg-orange-500 text-white shadow-md shadow-orange-500/20'
+                            : activity === 'popular'
+                            ? 'bg-purple-500 text-white shadow-md shadow-purple-500/20'
+                            : activity === 'active'
+                            ? 'bg-green-500 text-white shadow-md shadow-green-500/20'
+                            : 'bg-primary text-primary-foreground shadow-md shadow-primary/20'
+                          : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }`}
+                    >
+                      {activity === 'any' ? '•' : activity === 'trending' ? '🔥' : activity === 'popular' ? '🌟' : '⚡'}{' '}
+                      {activity.charAt(0).toUpperCase() + activity.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Active Filters Summary */}
-            {(searchQuery || selectedCategory !== 'All' || selectedStatus !== 'all') && (
+            {(searchQuery || selectedCategory !== 'All' || selectedStatus !== 'all' || qualityFilter !== 'all' || activityFilter !== 'any') && (
               <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs flex-wrap">
                   <span className="text-muted-foreground font-medium">Showing:</span>
@@ -217,6 +322,16 @@ export default function NewsPage() {
                   {selectedCategory !== 'All' && (
                     <span className="px-2 py-1 rounded-md bg-primary/10 text-primary font-medium">
                       {selectedCategory}
+                    </span>
+                  )}
+                  {qualityFilter !== 'all' && (
+                    <span className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-600 font-medium">
+                      {qualityFilter} quality
+                    </span>
+                  )}
+                  {activityFilter !== 'any' && (
+                    <span className="px-2 py-1 rounded-md bg-purple-500/10 text-purple-600 font-medium">
+                      {activityFilter}
                     </span>
                   )}
                   {searchQuery && (
@@ -232,6 +347,8 @@ export default function NewsPage() {
                   onClick={() => {
                     setSelectedCategory('All');
                     setSelectedStatus('all');
+                    setQualityFilter('all');
+                    setActivityFilter('any');
                     setSearchQuery('');
                   }}
                   className="text-xs text-muted-foreground hover:text-foreground font-medium transition-colors flex items-center gap-1 group"

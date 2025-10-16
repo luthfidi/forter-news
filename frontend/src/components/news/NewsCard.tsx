@@ -4,6 +4,7 @@ import { News } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { getNewsQualityBadge } from '@/lib/quality-scoring';
 
 interface NewsCardProps {
   news: News;
@@ -35,6 +36,7 @@ function formatDistanceToNow(date: Date): string {
 export default function NewsCard({ news }: NewsCardProps) {
   const timeRemaining = formatDistanceToNow(news.endDate);
   const isEndingSoon = new Date(news.endDate).getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000; // 7 days
+  const qualityBadge = getNewsQualityBadge(news.qualityScore ?? 0);
 
   const getCategoryColor = (category: string) => {
     switch (category.toLowerCase()) {
@@ -76,13 +78,18 @@ export default function NewsCard({ news }: NewsCardProps) {
         <CardContent className="p-6 flex flex-col flex-1">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 mb-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${getCategoryColor(news.category)} flex items-center justify-center shadow-md`}>
               <span className="text-white text-sm">{getCategoryIcon(news.category)}</span>
             </div>
             <Badge variant="secondary" className="bg-card/50">
               {news.category}
             </Badge>
+            {news.qualityScore && news.qualityScore >= 40 && (
+              <Badge className={`border ${qualityBadge.color}`}>
+                {qualityBadge.icon} {qualityBadge.label}
+              </Badge>
+            )}
           </div>
           <div className="flex gap-2">
             {news.status === 'resolved' && news.outcome && (

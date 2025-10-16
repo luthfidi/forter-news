@@ -97,7 +97,7 @@ export default function AnalystCard({ analyst }: AnalystCardProps) {
         )}
 
         {/* Streak */}
-        {analyst.currentStreak > 0 && (
+        {analyst.currentStreak && analyst.currentStreak > 0 && (
           <div className="mb-4 p-2 rounded-lg bg-primary/5 border border-primary/20">
             <div className="text-xs font-medium text-primary">
               🔥 {analyst.currentStreak} Win Streak
@@ -117,11 +117,13 @@ export default function AnalystCard({ analyst }: AnalystCardProps) {
         </Link>
 
         {/* Member Since */}
-        <div className="mt-3 pt-3 border-t border-border/30 text-center">
-          <span className="text-[10px] text-muted-foreground">
-            Member since {analyst.memberSince.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-          </span>
-        </div>
+        {analyst.memberSince && (
+          <div className="mt-3 pt-3 border-t border-border/30 text-center">
+            <span className="text-[10px] text-muted-foreground">
+              Member since {analyst.memberSince.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+            </span>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

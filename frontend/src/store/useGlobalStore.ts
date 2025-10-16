@@ -45,6 +45,27 @@ interface GlobalState {
     stakes: boolean;
   };
   setLoading: (key: keyof GlobalState['loading'], value: boolean) => void;
+
+  // Error states (for smart contract integration)
+  error: {
+    news: string | null;
+    pools: string | null;
+    stakes: string | null;
+    contract: string | null;
+  };
+  setError: (key: keyof GlobalState['error'], value: string | null) => void;
+  clearError: (key: keyof GlobalState['error']) => void;
+  clearAllErrors: () => void;
+
+  // Transaction states (for smart contract integration)
+  transactions: {
+    pending: string[]; // Transaction hashes
+    confirmed: string[];
+    failed: string[];
+  };
+  addTransaction: (hash: string, status: 'pending' | 'confirmed' | 'failed') => void;
+  updateTransaction: (hash: string, status: 'pending' | 'confirmed' | 'failed') => void;
+  clearTransactions: () => void;
 }
 
 export const useGlobalStore = create<GlobalState>((set) => ({
@@ -62,6 +83,17 @@ export const useGlobalStore = create<GlobalState>((set) => ({
     pools: false,
     stakes: false,
   },
+  error: {
+    news: null,
+    pools: null,
+    stakes: null,
+    contract: null,
+  },
+  transactions: {
+    pending: [],
+    confirmed: [],
+    failed: [],
+  },
 
   // ============================================
   // Actions
@@ -76,4 +108,57 @@ export const useGlobalStore = create<GlobalState>((set) => ({
     set((state) => ({
       loading: { ...state.loading, [key]: value }
     })),
+
+  // Error actions
+  setError: (key, value) =>
+    set((state) => ({
+      error: { ...state.error, [key]: value }
+    })),
+  clearError: (key) =>
+    set((state) => ({
+      error: { ...state.error, [key]: null }
+    })),
+  clearAllErrors: () =>
+    set({
+      error: {
+        news: null,
+        pools: null,
+        stakes: null,
+        contract: null,
+      }
+    }),
+
+  // Transaction actions
+  addTransaction: (hash, status) =>
+    set((state) => ({
+      transactions: {
+        ...state.transactions,
+        [status]: [...state.transactions[status], hash],
+      }
+    })),
+  updateTransaction: (hash, status) =>
+    set((state) => {
+      // Remove from all lists
+      const pending = state.transactions.pending.filter(h => h !== hash);
+      const confirmed = state.transactions.confirmed.filter(h => h !== hash);
+      const failed = state.transactions.failed.filter(h => h !== hash);
+
+      // Add to new status list
+      return {
+        transactions: {
+          pending,
+          confirmed,
+          failed,
+          [status]: [...(status === 'pending' ? pending : status === 'confirmed' ? confirmed : failed), hash],
+        }
+      };
+    }),
+  clearTransactions: () =>
+    set({
+      transactions: {
+        pending: [],
+        confirmed: [],
+        failed: [],
+      }
+    }),
 }));

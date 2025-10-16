@@ -1020,7 +1020,7 @@ export function getAnalystsByTier(tier?: string): ReputationData[] {
 export function getAnalystsByCategory(category?: string): ReputationData[] {
   const analysts = getAllAnalysts();
   if (!category || category === 'All') return analysts;
-  return analysts.filter(a => a.specialty.includes(category));
+  return analysts.filter(a => a.specialty?.includes(category));
 }
 
 // Sort analysts

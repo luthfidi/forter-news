@@ -64,16 +64,18 @@ export default function AnalystCard({ analyst }: AnalystCardProps) {
         </div>
 
         {/* Specialty */}
-        <div className="mb-4">
-          <div className="text-xs font-medium text-muted-foreground mb-1">Specialty</div>
-          <div className="flex flex-wrap gap-1">
-            {analyst.specialty.split(',').map((spec, i) => (
-              <Badge key={i} variant="outline" className="text-xs">
-                {spec.trim()}
-              </Badge>
-            ))}
+        {analyst.specialty && (
+          <div className="mb-4">
+            <div className="text-xs font-medium text-muted-foreground mb-1">Specialty</div>
+            <div className="flex flex-wrap gap-1">
+              {analyst.specialty.split(',').map((spec, i) => (
+                <Badge key={i} variant="outline" className="text-xs">
+                  {spec.trim()}
+                </Badge>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Recent Activity */}
         {recentPools.length > 0 && (

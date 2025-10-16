@@ -67,7 +67,7 @@ export default function DualStaking() {
                 <span className="text-sm font-semibold text-foreground">Example</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Stake $100 on "Will BTC hit $100k by Dec 2024?" → Earn proportional rewards if correct
+                Stake $100 on &ldquo;Will BTC hit $100k by Dec 2024?&rdquo; → Earn proportional rewards if correct
               </p>
             </div>
           </CardContent>
@@ -176,7 +176,7 @@ export default function DualStaking() {
       {/* Footer Quote */}
       <div className="mt-12 text-center">
         <p className="text-muted-foreground italic text-lg">
-          "Balance collective wisdom with human intelligence — credibility drives the majority of rewards."
+          &ldquo;Balance collective wisdom with human intelligence — credibility drives the majority of rewards.&rdquo;
         </p>
       </div>
     </div>

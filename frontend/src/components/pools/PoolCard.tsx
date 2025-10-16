@@ -8,17 +8,20 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePoolStaking } from '@/lib/hooks/usePoolStaking';
 
 interface PoolCardProps {
   pool: Pool;
-  onStake?: (poolId: string, position: 'agree' | 'disagree') => void;
+  onStakeSuccess?: () => void;
 }
 
-export default function PoolCard({ pool, onStake }: PoolCardProps) {
+export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
+  const { stakeOnPool, calculatePotentialReward, loading } = usePoolStaking();
   const [showFullReasoning, setShowFullReasoning] = useState(false);
   const [showStakeInput, setShowStakeInput] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<'agree' | 'disagree' | null>(null);
   const [stakeAmount, setStakeAmount] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Calculate percentages
   const agreePercentage = pool.totalStaked > 0
@@ -64,13 +67,20 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
     setStakeAmount('');
   };
 
-  const handleConfirmStake = () => {
+  const handleConfirmStake = async () => {
     if (stakeAmount && parseFloat(stakeAmount) >= 1 && selectedPosition) {
-      onStake?.(pool.id, selectedPosition);
-      // Reset state
-      setShowStakeInput(false);
-      setSelectedPosition(null);
-      setStakeAmount('');
+      setIsSubmitting(true);
+      const result = await stakeOnPool(pool.id, selectedPosition, parseFloat(stakeAmount));
+
+      if (result) {
+        // Success! Reset state and notify parent
+        setShowStakeInput(false);
+        setSelectedPosition(null);
+        setStakeAmount('');
+        onStakeSuccess?.();
+      }
+
+      setIsSubmitting(false);
     }
   };
 
@@ -306,9 +316,64 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
               />
             </div>
 
+            {/* Potential Outcomes */}
+            {stakeAmount && parseFloat(stakeAmount) >= 1 && selectedPosition && (() => {
+              const amount = parseFloat(stakeAmount);
+              const potentialReward = calculatePotentialReward(pool, amount, selectedPosition);
+              const profit = potentialReward.maxReward - amount;
+              const roi = (profit / amount) * 100;
+
+              return (
+                <div className="p-3 rounded-lg bg-accent/5 border border-accent/20">
+                  <div className="text-xs font-medium text-accent mb-2">Potential Outcomes</div>
+                  <div className="space-y-2">
+                    {selectedPosition === 'agree' ? (
+                      <>
+                        <div className="flex justify-between items-center text-xs">
+                          <span>If pool CORRECT:</span>
+                          <span className="font-bold text-emerald-600">
+                            +${potentialReward.maxReward.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-muted-foreground">
+                          ${profit.toFixed(2)} profit ({roi.toFixed(1)}% ROI)
+                        </div>
+                        <div className="h-px bg-border my-1"></div>
+                        <div className="flex justify-between items-center text-xs">
+                          <span>If pool WRONG:</span>
+                          <span className="font-bold text-rose-600">
+                            -${amount.toFixed(2)}
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex justify-between items-center text-xs">
+                          <span>If pool WRONG:</span>
+                          <span className="font-bold text-emerald-600">
+                            +${potentialReward.maxReward.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-muted-foreground">
+                          ${profit.toFixed(2)} profit ({roi.toFixed(1)}% ROI)
+                        </div>
+                        <div className="h-px bg-border my-1"></div>
+                        <div className="flex justify-between items-center text-xs">
+                          <span>If pool CORRECT:</span>
+                          <span className="font-bold text-rose-600">
+                            -${amount.toFixed(2)}
+                          </span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
+
             <Button
               onClick={handleConfirmStake}
-              disabled={!stakeAmount || parseFloat(stakeAmount) < 1}
+              disabled={!stakeAmount || parseFloat(stakeAmount) < 1 || isSubmitting || loading}
               className={`w-full ${
                 selectedPosition === 'agree'
                   ? 'bg-emerald-500 hover:bg-emerald-600'
@@ -316,7 +381,7 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
               } text-white`}
               size="sm"
             >
-              Confirm Stake ${stakeAmount || '0'}
+              {isSubmitting || loading ? 'Processing...' : `Confirm Stake $${stakeAmount || '0'}`}
             </Button>
           </div>
         )}

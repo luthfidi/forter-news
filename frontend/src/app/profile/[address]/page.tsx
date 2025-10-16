@@ -1,96 +1,41 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
+import { useAccount } from 'wagmi';
+import { getUserProfileStats, getPoolsByCreator, getStakesByUser, MOCK_NEWS, getTierIcon } from '@/lib/mock-data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import PoolsCreatedTab from '@/components/profile/PoolsCreatedTab';
+import StakesHistoryTab from '@/components/profile/StakesHistoryTab';
+import NewsCreatedTab from '@/components/profile/NewsCreatedTab';
 import Link from 'next/link';
-import {
-  getReputationData,
-  getPoolsByCreator,
-  getStakesByUser,
-  getTierIcon,
-  MOCK_POOLS,
-  MOCK_NEWS,
-} from '@/lib/mock-data';
-
-type TabType = 'pools' | 'stakes' | 'news' | 'activity';
 
 export default function ProfilePage() {
   const params = useParams();
-  const address = params.address as string;
-  const [activeTab, setActiveTab] = useState<TabType>('pools');
-  const [loading, setLoading] = useState(true);
+  const profileAddress = params.address as string;
+  const { address: connectedAddress, isConnected } = useAccount();
+  const [activeTab, setActiveTab] = useState<'pools' | 'stakes' | 'news'>('pools');
 
-  useEffect(() => {
-    // Simulate loading
-    setTimeout(() => setLoading(false), 500);
-  }, [address]);
+  // Check if viewing own profile
+  const isOwnProfile = isConnected && connectedAddress?.toLowerCase() === profileAddress.toLowerCase();
 
-  const reputation = getReputationData(address);
-  const poolsCreated = getPoolsByCreator(address);
-  const stakesHistory = getStakesByUser(address);
+  // Load profile data
+  const profileStats = getUserProfileStats(profileAddress);
+  const { reputation, totalPools, totalStakes, totalNews, stakesWon, stakesLost } = profileStats;
 
-  // Calculate stats
-  const newsCreated = MOCK_NEWS.filter(n => n.creatorAddress === address);
+  const pools = getPoolsByCreator(profileAddress);
+  const stakes = getStakesByUser(profileAddress);
+  const newsCreated = MOCK_NEWS.filter(n => n.creatorAddress === profileAddress);
 
-  // Calculate staking stats from history
-  const resolvedStakes = stakesHistory.filter(stake => {
-    const pool = MOCK_POOLS.find(p => p.id === stake.poolId);
-    return pool?.status === 'resolved';
-  });
-
-  const wonStakes = resolvedStakes.filter(stake => {
-    const pool = MOCK_POOLS.find(p => p.id === stake.poolId);
-    if (!pool || !pool.outcome) return false;
-
-    // Win condition: agree + creator_correct OR disagree + creator_wrong
-    return (
-      (stake.position === 'agree' && pool.outcome === 'creator_correct') ||
-      (stake.position === 'disagree' && pool.outcome === 'creator_wrong')
-    );
-  });
-
-  const stakingWinRate = resolvedStakes.length > 0
-    ? Math.round((wonStakes.length / resolvedStakes.length) * 100)
-    : 0;
-
-  if (loading) {
-    return (
-      <div className="min-h-screen pt-20 pb-16">
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <Card className="border border-border/50 bg-background/80 backdrop-blur-sm animate-pulse">
-            <CardContent className="p-12">
-              <div className="h-8 bg-muted rounded w-3/4 mb-4"></div>
-              <div className="h-4 bg-muted rounded w-1/2"></div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
-  if (!reputation && poolsCreated.length === 0 && stakesHistory.length === 0) {
-    return (
-      <div className="min-h-screen pt-20 pb-16">
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
-            <CardContent className="p-12 text-center">
-              <div className="text-4xl mb-4">👤</div>
-              <h3 className="text-xl font-semibold mb-2">No Activity Found</h3>
-              <p className="text-muted-foreground mb-6">
-                This wallet hasn&apos;t created any pools or stakes yet.
-              </p>
-              <Link href="/news">
-                <Button>Browse News</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
+  // Determine display type
+  const displayType = reputation
+    ? 'Analyst'
+    : totalStakes > 0
+    ? 'Community Member'
+    : totalNews > 0
+    ? 'News Contributor'
+    : 'New Member';
 
   return (
     <div className="min-h-screen pt-20 pb-16">

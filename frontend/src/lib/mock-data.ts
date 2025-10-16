@@ -568,6 +568,122 @@ export const MOCK_POOL_STAKES: PoolStake[] = [
     position: 'agree',
     amount: 200,
     createdAt: new Date('2024-10-13')
+  },
+
+  // ============================================
+  // STAKER-ONLY USER: 0xstaker...001 (Type B: No pools, only stakes)
+  // ============================================
+  {
+    id: 'stake-19',
+    poolId: 'pool-1',
+    userAddress: '0xstaker...001',
+    position: 'agree',
+    amount: 250,
+    createdAt: new Date('2024-10-02')
+  },
+  {
+    id: 'stake-20',
+    poolId: 'pool-4',
+    userAddress: '0xstaker...001',
+    position: 'agree',
+    amount: 400,
+    createdAt: new Date('2024-10-07')
+  },
+  {
+    id: 'stake-21',
+    poolId: 'pool-6',
+    userAddress: '0xstaker...001',
+    position: 'disagree',
+    amount: 150,
+    createdAt: new Date('2024-10-10')
+  },
+  {
+    id: 'stake-22',
+    poolId: 'pool-8',
+    userAddress: '0xstaker...001',
+    position: 'agree',
+    amount: 300,
+    createdAt: new Date('2024-10-12')
+  },
+  {
+    id: 'stake-23',
+    poolId: 'pool-10',
+    userAddress: '0xstaker...001',
+    position: 'agree',
+    amount: 500,
+    createdAt: new Date('2024-09-20')
+  },
+  {
+    id: 'stake-24',
+    poolId: 'pool-13',
+    userAddress: '0xstaker...001',
+    position: 'disagree',
+    amount: 350,
+    createdAt: new Date('2024-08-08')
+  },
+
+  // ============================================
+  // ADMIN WALLET STAKES (showing admin also participates)
+  // ============================================
+  {
+    id: 'stake-25',
+    poolId: 'pool-1',
+    userAddress: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
+    position: 'agree',
+    amount: 150,
+    createdAt: new Date('2024-10-03')
+  },
+  {
+    id: 'stake-26',
+    poolId: 'pool-4',
+    userAddress: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
+    position: 'disagree',
+    amount: 200,
+    createdAt: new Date('2024-10-08')
+  },
+  {
+    id: 'stake-27',
+    poolId: 'pool-10',
+    userAddress: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
+    position: 'agree',
+    amount: 300,
+    createdAt: new Date('2024-09-21')
+  },
+
+  // ============================================
+  // MORE STAKER-ONLY USER: 0xstaker...002
+  // ============================================
+  {
+    id: 'stake-28',
+    poolId: 'pool-2',
+    userAddress: '0xstaker...002',
+    position: 'disagree',
+    amount: 200,
+    createdAt: new Date('2024-10-04')
+  },
+  {
+    id: 'stake-29',
+    poolId: 'pool-5',
+    userAddress: '0xstaker...002',
+    position: 'agree',
+    amount: 180,
+    createdAt: new Date('2024-10-08')
+  },
+  {
+    id: 'stake-30',
+    poolId: 'pool-7',
+    userAddress: '0xstaker...002',
+    position: 'disagree',
+    amount: 120,
+    createdAt: new Date('2024-10-11')
+  },
+  {
+    id: 'stake-31',
+    poolId: 'pool-14',
+    userAddress: '0xstaker...002',
+    position: 'agree',
+    amount: 220,
+    createdAt: new Date('2024-08-09')
   }
 ];
 
@@ -730,6 +846,25 @@ export const MOCK_REPUTATION: Record<string, ReputationData> = {
     bestStreak: 0,
     specialty: 'Tech',
     memberSince: new Date('2024-10-12')
+  },
+  // ADMIN WALLET (has resolved pools, builds reputation)
+  '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d': {
+    address: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
+    accuracy: 75,
+    totalPools: 4,
+    correctPools: 3,
+    wrongPools: 1,
+    activePools: 0,
+    tier: 'Expert',
+    nftTokenId: 10,
+    categoryStats: {
+      'Crypto': { total: 2, correct: 2, accuracy: 100 },
+      'Macro': { total: 2, correct: 1, accuracy: 50 }
+    },
+    currentStreak: 2,
+    bestStreak: 3,
+    specialty: 'Crypto, Macro',
+    memberSince: new Date('2024-08-01')
   }
 };
 
@@ -829,4 +964,98 @@ export function calculateTier(accuracy: number): 'Novice' | 'Analyst' | 'Expert'
   if (accuracy >= 70) return 'Expert';
   if (accuracy >= 50) return 'Analyst';
   return 'Novice';
+}
+
+// Get all analysts (users who have created pools)
+export function getAllAnalysts(): ReputationData[] {
+  return Object.values(MOCK_REPUTATION);
+}
+
+// Get analysts by tier
+export function getAnalystsByTier(tier?: string): ReputationData[] {
+  const analysts = getAllAnalysts();
+  if (!tier || tier === 'All') return analysts;
+  return analysts.filter(a => a.tier === tier);
+}
+
+// Get analysts by category
+export function getAnalystsByCategory(category?: string): ReputationData[] {
+  const analysts = getAllAnalysts();
+  if (!category || category === 'All') return analysts;
+  return analysts.filter(a => a.specialty.includes(category));
+}
+
+// Sort analysts
+export function sortAnalysts(
+  analysts: ReputationData[],
+  sortBy: 'accuracy' | 'totalPools' | 'recent' = 'accuracy'
+): ReputationData[] {
+  const sorted = [...analysts];
+
+  if (sortBy === 'accuracy') {
+    // Sort by tier first, then accuracy within tier
+    const tierOrder = { 'Legend': 5, 'Master': 4, 'Expert': 3, 'Analyst': 2, 'Novice': 1 };
+    sorted.sort((a, b) => {
+      const tierDiff = tierOrder[b.tier] - tierOrder[a.tier];
+      if (tierDiff !== 0) return tierDiff;
+      return b.accuracy - a.accuracy;
+    });
+  } else if (sortBy === 'totalPools') {
+    sorted.sort((a, b) => b.totalPools - a.totalPools);
+  } else if (sortBy === 'recent') {
+    sorted.sort((a, b) => b.memberSince.getTime() - a.memberSince.getTime());
+  }
+
+  return sorted;
+}
+
+// Get user profile stats (including stakes even if no pools)
+export interface UserProfileStats {
+  address: string;
+  reputation?: ReputationData;
+  totalPools: number;
+  totalStakes: number;
+  totalNews: number;
+  stakesWon?: number;
+  stakesLost?: number;
+  stakesActive?: number;
+}
+
+export function getUserProfileStats(address: string): UserProfileStats {
+  const reputation = getReputationData(address);
+  const pools = getPoolsByCreator(address);
+  const stakes = getStakesByUser(address);
+  const newsCreated = MOCK_NEWS.filter(n => n.creatorAddress === address);
+
+  // Calculate stakes win/loss (based on resolved pools)
+  let stakesWon = 0;
+  let stakesLost = 0;
+  let stakesActive = 0;
+
+  stakes.forEach(stake => {
+    const pool = getPoolById(stake.poolId);
+    if (!pool) return;
+
+    if (pool.status === 'resolved' && pool.outcome) {
+      const userWon =
+        (stake.position === 'agree' && pool.outcome === 'creator_correct') ||
+        (stake.position === 'disagree' && pool.outcome === 'creator_wrong');
+
+      if (userWon) stakesWon++;
+      else stakesLost++;
+    } else {
+      stakesActive++;
+    }
+  });
+
+  return {
+    address,
+    reputation,
+    totalPools: pools.length,
+    totalStakes: stakes.length,
+    totalNews: newsCreated.length,
+    stakesWon,
+    stakesLost,
+    stakesActive
+  };
 }

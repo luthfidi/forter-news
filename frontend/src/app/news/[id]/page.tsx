@@ -4,9 +4,6 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { getNewsById, getPoolsByNewsId, getNewsStats } from '@/lib/mock-data';
-import { Pool } from '@/types';
-import PoolCard from '@/components/pools/PoolCard';
-import PoolStakingModal from '@/components/pools/PoolStakingModal';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +11,7 @@ import Link from 'next/link';
 import { useAccount } from 'wagmi';
 import { isAdmin } from '@/config/admin';
 import ResolveNewsModal from '@/components/admin/ResolveNewsModal';
+import PoolCard from '@/components/pools/PoolCard';
 
 export default function NewsDetailPage() {
   const params = useParams();
@@ -21,8 +19,6 @@ export default function NewsDetailPage() {
   const { currentNews, setCurrentNews, pools, setPools, loading, setLoading } = useGlobalStore();
   const { address } = useAccount();
   const [activeFilter, setActiveFilter] = useState<'all' | 'YES' | 'NO'>('all');
-  const [showStakingModal, setShowStakingModal] = useState(false);
-  const [selectedPool, setSelectedPool] = useState<Pool | null>(null);
   const [showResolveModal, setShowResolveModal] = useState(false);
 
   const isUserAdmin = isAdmin(address);
@@ -75,14 +71,6 @@ export default function NewsDetailPage() {
       setPools(newsPools);
       setLoading('pools', false);
     }, 500);
-  };
-
-  const handleStake = (poolId: string) => {
-    const pool = pools.find(p => p.id === poolId);
-    if (pool) {
-      setSelectedPool(pool);
-      setShowStakingModal(true);
-    }
   };
 
   const handleResolveNews = (outcome: 'YES' | 'NO', resolutionSource: string, resolutionNotes?: string) => {
@@ -302,7 +290,7 @@ export default function NewsDetailPage() {
               ) : filteredPools.length > 0 ? (
                 <div className="space-y-6">
                   {filteredPools.map((pool) => (
-                    <PoolCard key={pool.id} pool={pool} onStake={handleStake} />
+                    <PoolCard key={pool.id} pool={pool} onStakeSuccess={refetchPools} />
                   ))}
                 </div>
               ) : (
@@ -434,22 +422,6 @@ export default function NewsDetailPage() {
           </div>
         </div>
       </div>
-
-      {/* Staking Modal */}
-      {showStakingModal && selectedPool && (
-        <PoolStakingModal
-          pool={selectedPool}
-          onClose={() => {
-            setShowStakingModal(false);
-            setSelectedPool(null);
-          }}
-          onSuccess={() => {
-            refetchPools();
-            setShowStakingModal(false);
-            setSelectedPool(null);
-          }}
-        />
-      )}
 
       {/* Resolve News Modal (Admin Only) */}
       {showResolveModal && currentNews && (

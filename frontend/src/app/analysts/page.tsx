@@ -48,7 +48,8 @@ export default function AnalystsPage() {
     return {
       totalAnalysts,
       avgAccuracy,
-      mostActiveCategory: mostActiveCategory ? `${mostActiveCategory[0]} (${mostActiveCategory[1]})` : 'N/A'
+      mostActiveCategory: mostActiveCategory ? mostActiveCategory[0] : 'N/A',
+      mostActiveCategoryCount: mostActiveCategory ? mostActiveCategory[1] : 0
     };
   }, []);
 
@@ -59,8 +60,11 @@ export default function AnalystsPage() {
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            🏆 Top Analysts & Informers
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            <span className="mr-2">🏆</span>
+            <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+              Top Analysts & Informers
+            </span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-3xl">
             Discover credible analysts by track record. All reputation data is verified on-chain and built from proven pool creation performance.
@@ -68,24 +72,32 @@ export default function AnalystsPage() {
         </div>
 
         {/* Stats Banner */}
-        <Card className="mb-8 border border-border bg-gradient-to-br from-primary/5 to-accent/5">
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center md:text-left">
-                <div className="text-3xl font-bold text-foreground">{stats.totalAnalysts}</div>
-                <div className="text-sm text-muted-foreground">Total Analysts</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300 hover:scale-105 hover:shadow-md">
+            <CardContent className="p-6 text-center">
+              <div className="text-2xl font-bold text-primary mb-1">
+                {stats.totalAnalysts}
               </div>
-              <div className="text-center md:text-left">
-                <div className="text-3xl font-bold text-primary">{stats.avgAccuracy}%</div>
-                <div className="text-sm text-muted-foreground">Average Accuracy</div>
+              <div className="text-sm text-muted-foreground">Total Analysts</div>
+            </CardContent>
+          </Card>
+          <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300 hover:scale-105 hover:shadow-md">
+            <CardContent className="p-6 text-center">
+              <div className="text-2xl font-bold text-accent mb-1">
+                {stats.avgAccuracy}%
               </div>
-              <div className="text-center md:text-left">
-                <div className="text-xl font-bold text-accent line-clamp-1">{stats.mostActiveCategory}</div>
-                <div className="text-sm text-muted-foreground">Most Active Category</div>
+              <div className="text-sm text-muted-foreground">Average Accuracy</div>
+            </CardContent>
+          </Card>
+          <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300 hover:scale-105 hover:shadow-md">
+            <CardContent className="p-6 text-center">
+              <div className="text-2xl font-bold text-foreground mb-1">
+                {stats.mostActiveCategory}
               </div>
-            </div>
-          </CardContent>
-        </Card>
+              <div className="text-sm text-muted-foreground">Most Active Specialty</div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Filters & Sort */}
         <div className="flex flex-col md:flex-row gap-4 mb-8 items-start md:items-center justify-between">

@@ -4,7 +4,6 @@ import CustomConnectButton from '@/components/wallet/CustomConnectButton';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAccount } from 'wagmi';
-import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 
 export default function Header() {
@@ -45,14 +44,15 @@ export default function Header() {
           Analysts
         </Link>
         {isConnected && address && (
-          <Link href={`/profile/${address}`}>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={isMyProfile ? 'font-bold' : 'font-medium'}
-            >
-              My Profile
-            </Button>
+          <Link
+            href={`/profile/${address}`}
+            className={`transition-colors duration-200 hover:scale-105 transform ${
+              isMyProfile
+                ? 'text-foreground font-bold'
+                : 'text-muted-foreground hover:text-foreground font-medium'
+            }`}
+          >
+            My Profile
           </Link>
         )}
       </nav>

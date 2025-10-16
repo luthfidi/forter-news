@@ -3,10 +3,11 @@
 
 export const ADMIN_WALLETS = [
   // Primary admin wallet (replace with actual address)
-  '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
+  '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d', //wallet luthfi 1
 
   // Backup admin wallet (replace with actual address)
-  '0xe0169D648004C38228173CD8674f25FA483fb5c5',
+  '0xe0169D648004C38228173CD8674f25FA483fb5c5', // wallet luthfi 2
+  '0xa930FDA4B716341c8b5D1b83B67BfC2adFbd1fEd', // wallet tachul
 ];
 
 /**
@@ -30,3 +31,5 @@ export const ADMIN_PERMISSIONS = {
   canModerateContent: true, // Future: content moderation
   canManageDisputes: true,  // Future: dispute resolution
 } as const;
+
+

@@ -2,12 +2,18 @@
 
 import CustomConnectButton from '@/components/wallet/CustomConnectButton';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useAccount } from 'wagmi';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 
 export default function Header() {
+  const pathname = usePathname();
   const { address, isConnected } = useAccount();
+
+  const isNewsActive = pathname?.startsWith('/news');
+  const isAnalystsActive = pathname?.startsWith('/analysts');
+  const isMyProfile = isConnected && address && pathname === `/profile/${address}`;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-4 flex items-center justify-between backdrop-blur-md bg-background/90 border-b border-border/30 shadow-sm">
@@ -18,12 +24,33 @@ export default function Header() {
         </span>
       </Link>
       <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-        <Link href="/news" className="text-muted-foreground hover:text-foreground transition-colors duration-200 hover:scale-105 transform font-medium">
+        <Link
+          href="/news"
+          className={`transition-colors duration-200 hover:scale-105 transform ${
+            isNewsActive
+              ? 'text-foreground font-bold'
+              : 'text-muted-foreground hover:text-foreground font-medium'
+          }`}
+        >
           News
+        </Link>
+        <Link
+          href="/analysts"
+          className={`transition-colors duration-200 hover:scale-105 transform ${
+            isAnalystsActive
+              ? 'text-foreground font-bold'
+              : 'text-muted-foreground hover:text-foreground font-medium'
+          }`}
+        >
+          Analysts
         </Link>
         {isConnected && address && (
           <Link href={`/profile/${address}`}>
-            <Button variant="ghost" size="sm" className="font-medium">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={isMyProfile ? 'font-bold' : 'font-medium'}
+            >
               My Profile
             </Button>
           </Link>

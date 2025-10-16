@@ -3,39 +3,45 @@
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useAccount } from 'wagmi';
-import { getUserProfileStats, getPoolsByCreator, getStakesByUser, MOCK_NEWS, getTierIcon } from '@/lib/mock-data';
+import { getReputationData, getPoolsByCreator, getStakesByUser, MOCK_NEWS, MOCK_POOLS, getTierIcon } from '@/lib/mock-data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import PoolsCreatedTab from '@/components/profile/PoolsCreatedTab';
-import StakesHistoryTab from '@/components/profile/StakesHistoryTab';
-import NewsCreatedTab from '@/components/profile/NewsCreatedTab';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 export default function ProfilePage() {
   const params = useParams();
   const profileAddress = params.address as string;
+  const address = profileAddress; // Alias for compatibility with render code
   const { address: connectedAddress, isConnected } = useAccount();
-  const [activeTab, setActiveTab] = useState<'pools' | 'stakes' | 'news'>('pools');
+  const [activeTab, setActiveTab] = useState<'pools' | 'stakes' | 'news' | 'activity'>('pools');
 
   // Check if viewing own profile
   const isOwnProfile = isConnected && connectedAddress?.toLowerCase() === profileAddress.toLowerCase();
 
   // Load profile data
-  const profileStats = getUserProfileStats(profileAddress);
-  const { reputation, totalPools, totalStakes, totalNews, stakesWon, stakesLost } = profileStats;
-
+  const reputation = getReputationData(profileAddress);
   const pools = getPoolsByCreator(profileAddress);
   const stakes = getStakesByUser(profileAddress);
   const newsCreated = MOCK_NEWS.filter(n => n.creatorAddress === profileAddress);
 
-  // Determine display type
-  const displayType = reputation
-    ? 'Analyst'
-    : totalStakes > 0
-    ? 'Community Member'
-    : totalNews > 0
-    ? 'News Contributor'
-    : 'New Member';
+  // Compute stake statistics
+  const poolsCreated = pools;
+  const stakesHistory = stakes;
+  const resolvedStakes = stakes.filter(stake => {
+    const pool = MOCK_POOLS.find(p => p.id === stake.poolId);
+    return pool?.status === 'resolved';
+  });
+  const wonStakes = resolvedStakes.filter(stake => {
+    const pool = MOCK_POOLS.find(p => p.id === stake.poolId);
+    return (
+      (stake.position === 'agree' && pool?.outcome === 'creator_correct') ||
+      (stake.position === 'disagree' && pool?.outcome === 'creator_wrong')
+    );
+  });
+  const stakingWinRate = resolvedStakes.length > 0
+    ? Math.round((wonStakes.length / resolvedStakes.length) * 100)
+    : 0;
 
   return (
     <div className="min-h-screen pt-20 pb-16">
@@ -266,7 +272,11 @@ export default function ProfilePage() {
                 <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
                   <CardContent className="p-12 text-center">
                     <div className="text-4xl mb-4">🏊</div>
-                    <p className="text-muted-foreground">No pools created yet</p>
+                    <p className="text-muted-foreground">
+                      {isOwnProfile
+                        ? "You haven't created any analysis pools yet. Start building your reputation!"
+                        : "This user hasn't created any analysis pools yet."}
+                    </p>
                   </CardContent>
                 </Card>
               )}
@@ -328,7 +338,11 @@ export default function ProfilePage() {
                 <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
                   <CardContent className="p-12 text-center">
                     <div className="text-4xl mb-4">💰</div>
-                    <p className="text-muted-foreground">No stakes made yet</p>
+                    <p className="text-muted-foreground">
+                      {isOwnProfile
+                        ? "You haven't staked on any pools yet. Browse news and support analysts!"
+                        : "This user hasn't staked on any pools yet."}
+                    </p>
                   </CardContent>
                 </Card>
               )}
@@ -376,7 +390,11 @@ export default function ProfilePage() {
                 <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
                   <CardContent className="p-12 text-center">
                     <div className="text-4xl mb-4">📰</div>
-                    <p className="text-muted-foreground">No news created yet</p>
+                    <p className="text-muted-foreground">
+                      {isOwnProfile
+                        ? "You haven't created any news yet. Submit predictions for analysts to analyze!"
+                        : "This user hasn't created any news yet."}
+                    </p>
                   </CardContent>
                 </Card>
               )}

@@ -4,7 +4,6 @@ import { useState, useMemo } from 'react';
 import { getAllAnalysts, sortAnalysts, getAnalystsByCategory } from '@/lib/mock-data';
 import AnalystCard from '@/components/analysts/AnalystCard';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 export default function AnalystsPage() {
   const [categoryFilter, setCategoryFilter] = useState<string>('All');

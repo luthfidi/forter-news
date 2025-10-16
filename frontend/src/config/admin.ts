@@ -6,7 +6,7 @@ export const ADMIN_WALLETS = [
   '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
 
   // Backup admin wallet (replace with actual address)
-  '0x0987654321098765432109876543210987654321',
+  '0xe0169D648004C38228173CD8674f25FA483fb5c5',
 ];
 
 /**

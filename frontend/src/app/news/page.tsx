@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const CATEGORIES = ['All', 'Crypto', 'Macro', 'Tech', 'Sports', 'Politics'];
 
@@ -80,7 +81,7 @@ export default function NewsPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent"></div>
+              <Image src="/forter.webp" alt="FORTER" width={40} height={40} className="w-10 h-10 rounded-lg" />
               <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
                 News Explorer
               </h1>
@@ -125,111 +126,119 @@ export default function NewsPage() {
         </div>
 
         {/* Filters */}
-        <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300 mb-8">
+        <Card className="border border-border/50 bg-card/50 backdrop-blur-sm mb-8">
           <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Search */}
-              <div className="flex-1">
+            {/* Search and Sort Row */}
+            <div className="flex flex-col sm:flex-row gap-3 mb-6">
+              <div className="relative flex-1">
+                <svg
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
                 <Input
-                  placeholder="Search news..."
+                  placeholder="Search by title or description..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-background border-border"
+                  className="pl-10 bg-background/80 border-border/50 focus:border-primary transition-colors"
                 />
               </div>
-
-              {/* Sort */}
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'endDate' | 'totalStaked' | 'totalPools')}
-                className="px-4 py-2 rounded-md border border-border bg-background text-sm"
+                className="px-4 py-2 rounded-md border border-border/50 bg-background/80 text-sm font-medium hover:border-primary transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20 min-w-[160px]"
               >
-                <option value="totalStaked">Most Staked</option>
-                <option value="totalPools">Most Pools</option>
-                <option value="endDate">Ending Soon</option>
+                <option value="totalStaked">💰 Most Staked</option>
+                <option value="totalPools">🏊 Most Pools</option>
+                <option value="endDate">⏰ Ending Soon</option>
               </select>
             </div>
 
-            {/* Status Filter */}
-            <div className="flex flex-wrap gap-2 mt-4 pb-4 border-b border-border/30">
-              <span className="text-sm text-muted-foreground mr-2 flex items-center">Status:</span>
-              <button
-                onClick={() => setSelectedStatus('all')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedStatus === 'all'
-                    ? 'bg-primary text-primary-foreground shadow-lg'
-                    : 'bg-card text-muted-foreground hover:bg-secondary hover:text-foreground'
-                }`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setSelectedStatus('active')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedStatus === 'active'
-                    ? 'bg-green-500 text-white shadow-lg'
-                    : 'bg-card text-muted-foreground hover:bg-green-500/10 hover:text-foreground'
-                }`}
-              >
-                Active
-              </button>
-              <button
-                onClick={() => setSelectedStatus('resolved')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedStatus === 'resolved'
-                    ? 'bg-blue-500 text-white shadow-lg'
-                    : 'bg-card text-muted-foreground hover:bg-blue-500/10 hover:text-foreground'
-                }`}
-              >
-                Resolved
-              </button>
+            {/* Compact Filter Chips */}
+            <div className="space-y-3">
+              {/* Status Filter */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider min-w-[70px]">Status</span>
+                <div className="flex flex-wrap gap-2">
+                  {(['all', 'active', 'resolved'] as const).map((status) => (
+                    <button
+                      key={status}
+                      onClick={() => setSelectedStatus(status)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+                        selectedStatus === status
+                          ? status === 'active'
+                            ? 'bg-green-500 text-white shadow-md shadow-green-500/20'
+                            : status === 'resolved'
+                            ? 'bg-blue-500 text-white shadow-md shadow-blue-500/20'
+                            : 'bg-primary text-primary-foreground shadow-md shadow-primary/20'
+                          : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }`}
+                    >
+                      {status === 'all' ? '•' : status === 'active' ? '⚡' : '✓'} {status.charAt(0).toUpperCase() + status.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Category Filter */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider min-w-[70px]">Category</span>
+                <div className="flex flex-wrap gap-2">
+                  {CATEGORIES.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+                        selectedCategory === category
+                          ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20'
+                          : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Category Filter */}
-            <div className="flex flex-wrap gap-2 mt-4">
-              <span className="text-sm text-muted-foreground mr-2 flex items-center">Category:</span>
-              {CATEGORIES.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                    selectedCategory === category
-                      ? 'bg-primary text-primary-foreground shadow-lg'
-                      : 'bg-card text-muted-foreground hover:bg-secondary hover:text-foreground'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-
-            {/* Active Filters Display */}
+            {/* Active Filters Summary */}
             {(searchQuery || selectedCategory !== 'All' || selectedStatus !== 'all') && (
-              <div className="mt-4 flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground">Active filters:</span>
-                {selectedStatus !== 'all' && (
-                  <span className="px-2 py-1 rounded bg-blue-500/10 text-blue-600">
-                    {selectedStatus.charAt(0).toUpperCase() + selectedStatus.slice(1)}
+              <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs flex-wrap">
+                  <span className="text-muted-foreground font-medium">Showing:</span>
+                  {selectedStatus !== 'all' && (
+                    <span className="px-2 py-1 rounded-md bg-blue-500/10 text-blue-600 font-medium">
+                      {selectedStatus}
+                    </span>
+                  )}
+                  {selectedCategory !== 'All' && (
+                    <span className="px-2 py-1 rounded-md bg-primary/10 text-primary font-medium">
+                      {selectedCategory}
+                    </span>
+                  )}
+                  {searchQuery && (
+                    <span className="px-2 py-1 rounded-md bg-accent/10 text-accent font-medium">
+                      &quot;{searchQuery}&quot;
+                    </span>
+                  )}
+                  <span className="text-muted-foreground">
+                    ({filteredNews.length} {filteredNews.length === 1 ? 'result' : 'results'})
                   </span>
-                )}
-                {selectedCategory !== 'All' && (
-                  <span className="px-2 py-1 rounded bg-primary/10 text-primary">
-                    {selectedCategory}
-                  </span>
-                )}
-                {searchQuery && (
-                  <span className="px-2 py-1 rounded bg-accent/10 text-accent">
-                    Search: &quot;{searchQuery}&quot;
-                  </span>
-                )}
+                </div>
                 <button
                   onClick={() => {
                     setSelectedCategory('All');
                     setSelectedStatus('all');
                     setSearchQuery('');
                   }}
-                  className="text-muted-foreground hover:text-foreground ml-2"
+                  className="text-xs text-muted-foreground hover:text-foreground font-medium transition-colors flex items-center gap-1 group"
                 >
+                  <svg className="w-3 h-3 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                   Clear all
                 </button>
               </div>

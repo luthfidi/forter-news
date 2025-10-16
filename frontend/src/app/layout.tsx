@@ -18,6 +18,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Forter - Farcaster Porter",
     description: "Stake on credibility, not luck. Build on-chain reputation through verifiable analysis and earn from accurate insights.",
+    icons: {
+      icon: [
+        { url: "/forter.ico", type: "image/x-icon" },
+        { url: "/forter.png", type: "image/png" }
+      ],
+      shortcut: "/forter.ico",
+      apple: "/forter.png"
+    },
     openGraph: {
       title: "Forter - Farcaster Porter",
       description: "Permissionless information finance protocol. Create predictions, analyze with reasoning, and build on-chain reputation.",

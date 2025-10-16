@@ -81,10 +81,10 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
   };
 
   return (
-    <Card className={`border backdrop-blur-sm transition-all duration-200 ${
+    <Card className={`border transition-all duration-300 hover:shadow-md ${
       pool.status === 'resolved'
         ? 'border-accent/50 bg-accent/5 hover:bg-accent/10'
-        : 'border-border/50 bg-background/80 hover:bg-background/90'
+        : 'border-border bg-card hover:bg-secondary'
     }`}>
       <CardContent className="p-6">
         {/* Resolved Badge (if resolved) */}
@@ -136,8 +136,8 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
             <Badge
               variant={pool.position === 'YES' ? 'default' : 'secondary'}
               className={pool.position === 'YES'
-                ? 'bg-green-500 text-white'
-                : 'bg-red-500 text-white'
+                ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
+                : 'bg-rose-100 text-rose-700 border-rose-200'
               }
             >
               {pool.position}
@@ -158,7 +158,7 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
               />
             </div>
             {pool.imageCaption && (
-              <div className="p-2 bg-background/50 text-xs text-muted-foreground text-center">
+              <div className="p-2 bg-card/50 text-xs text-muted-foreground text-center">
                 📊 {pool.imageCaption}
               </div>
             )}
@@ -203,7 +203,7 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
         )}
 
         {/* Stakes Visualization */}
-        <div className="mb-4 p-4 rounded-lg bg-background/50 border border-border/30">
+        <div className="mb-4 p-4 rounded-lg bg-card/50 border border-border/30">
           <div className="flex justify-between text-sm mb-2">
             <span className="font-medium">Pool Stakes</span>
             <span className="text-muted-foreground">${pool.totalStaked.toLocaleString()}</span>
@@ -214,12 +214,12 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
             {/* Agree (Back Pool) */}
             <div>
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-green-600">Agree (Back this pool)</span>
+                <span className="text-emerald-600">Agree (Back this pool)</span>
                 <span className="font-medium">${pool.agreeStakes.toLocaleString()} ({agreePercentage}%)</span>
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
                   style={{ width: `${agreePercentage}%` }}
                 />
               </div>
@@ -228,12 +228,12 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
             {/* Disagree (Against Pool) */}
             <div>
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-red-600">Disagree (Against pool)</span>
+                <span className="text-rose-600">Disagree (Against pool)</span>
                 <span className="font-medium">${pool.disagreeStakes.toLocaleString()} ({disagreePercentage}%)</span>
               </div>
               <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-rose-400 to-rose-500 transition-all duration-500"
                   style={{ width: `${disagreePercentage}%` }}
                 />
               </div>
@@ -260,7 +260,7 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
           <div className="flex gap-2">
             <Button
               onClick={() => handleStakeButtonClick('agree')}
-              className="flex-1 bg-green-500 hover:bg-green-600 text-white"
+              className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white"
               size="sm"
             >
               Stake Agree
@@ -268,7 +268,7 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
             <Button
               onClick={() => handleStakeButtonClick('disagree')}
               variant="outline"
-              className="flex-1 border-red-500/50 text-red-600 hover:bg-red-500 hover:text-white hover:border-red-500"
+              className="flex-1 border-rose-500/50 text-rose-600 hover:bg-rose-500 hover:text-white hover:border-rose-500"
               size="sm"
             >
               Stake Disagree
@@ -280,7 +280,7 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">
                 Staking on:{' '}
-                <span className={selectedPosition === 'agree' ? 'text-green-600' : 'text-red-600'}>
+                <span className={selectedPosition === 'agree' ? 'text-emerald-600' : 'text-rose-600'}>
                   {selectedPosition === 'agree' ? 'Agree' : 'Disagree'}
                 </span>
               </span>
@@ -302,7 +302,7 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
                 value={stakeAmount}
                 onChange={(e) => setStakeAmount(e.target.value)}
                 min="1"
-                className="bg-background/50"
+                className="bg-background border-border"
               />
             </div>
 
@@ -311,8 +311,8 @@ export default function PoolCard({ pool, onStake }: PoolCardProps) {
               disabled={!stakeAmount || parseFloat(stakeAmount) < 1}
               className={`w-full ${
                 selectedPosition === 'agree'
-                  ? 'bg-green-500 hover:bg-green-600'
-                  : 'bg-red-500 hover:bg-red-600'
+                  ? 'bg-emerald-500 hover:bg-emerald-600'
+                  : 'bg-rose-500 hover:bg-rose-600'
               } text-white`}
               size="sm"
             >

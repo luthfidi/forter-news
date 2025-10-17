@@ -1,6 +1,6 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ReactNode } from 'react';
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ReactNode } from "react";
 
 interface EmptyStateProps {
   title: string;
@@ -9,12 +9,12 @@ interface EmptyStateProps {
   action?: {
     label: string;
     onClick: () => void;
-    variant?: 'default' | 'outline' | 'ghost';
+    variant?: "default" | "outline" | "ghost";
   };
   secondaryAction?: {
     label: string;
     onClick: () => void;
-    variant?: 'default' | 'outline' | 'ghost';
+    variant?: "default" | "outline" | "ghost";
   };
   className?: string;
 }
@@ -63,17 +63,17 @@ interface EmptyStateProps {
 export function EmptyState({
   title,
   description,
-  icon = '📭',
+  icon = "📭",
   action,
   secondaryAction,
   className,
 }: EmptyStateProps) {
   return (
-    <Card className={`border border-border bg-card ${className || ''}`}>
+    <Card className={`border border-border bg-card ${className || ""}`}>
       <CardContent className="p-12 text-center">
         {/* Icon/Emoji */}
         <div className="mb-4">
-          {typeof icon === 'string' ? (
+          {typeof icon === "string" ? (
             <div className="text-6xl">{icon}</div>
           ) : (
             <div className="flex justify-center">{icon}</div>
@@ -81,9 +81,7 @@ export function EmptyState({
         </div>
 
         {/* Title */}
-        <h3 className="text-xl font-semibold mb-2 text-foreground">
-          {title}
-        </h3>
+        <h3 className="text-xl font-semibold mb-2 text-foreground">{title}</h3>
 
         {/* Description */}
         <p className="text-muted-foreground mb-6 max-w-md mx-auto">
@@ -96,7 +94,7 @@ export function EmptyState({
             {action && (
               <Button
                 onClick={action.onClick}
-                variant={action.variant || 'default'}
+                variant={action.variant || "default"}
                 size="lg"
               >
                 {action.label}
@@ -105,7 +103,7 @@ export function EmptyState({
             {secondaryAction && (
               <Button
                 onClick={secondaryAction.onClick}
-                variant={secondaryAction.variant || 'outline'}
+                variant={secondaryAction.variant || "outline"}
                 size="lg"
               >
                 {secondaryAction.label}
@@ -129,21 +127,32 @@ interface EmptyVariantProps {
   onSecondaryAction?: () => void;
 }
 
-export function EmptyNewsState({ onAction, onSecondaryAction }: EmptyVariantProps) {
+export function EmptyNewsState({
+  onAction,
+  onSecondaryAction,
+}: EmptyVariantProps) {
   return (
     <EmptyState
       icon="📰"
       title="No news found"
       description="Try adjusting your search criteria or explore different categories."
-      action={onAction ? {
-        label: "Clear Filters",
-        onClick: onAction,
-        variant: "outline"
-      } : undefined}
-      secondaryAction={onSecondaryAction ? {
-        label: "Create NEWS",
-        onClick: onSecondaryAction
-      } : undefined}
+      action={
+        onAction
+          ? {
+              label: "Clear Filters",
+              onClick: onAction,
+              variant: "outline",
+            }
+          : undefined
+      }
+      secondaryAction={
+        onSecondaryAction
+          ? {
+              label: "Create NEWS",
+              onClick: onSecondaryAction,
+            }
+          : undefined
+      }
     />
   );
 }
@@ -154,10 +163,14 @@ export function EmptyPoolsState({ onAction }: EmptyVariantProps) {
       icon="🏊"
       title="No pools created yet"
       description="Be the first to create an analysis pool for this news prediction."
-      action={onAction ? {
-        label: "Create Pool",
-        onClick: onAction
-      } : undefined}
+      action={
+        onAction
+          ? {
+              label: "Create Pool",
+              onClick: onAction,
+            }
+          : undefined
+      }
     />
   );
 }
@@ -168,10 +181,14 @@ export function EmptyStakesState({ onAction }: EmptyVariantProps) {
       icon="💰"
       title="No staking history"
       description="You haven't staked on any pools yet. Start staking to build your reputation."
-      action={onAction ? {
-        label: "Explore Pools",
-        onClick: onAction
-      } : undefined}
+      action={
+        onAction
+          ? {
+              label: "Explore Pools",
+              onClick: onAction,
+            }
+          : undefined
+      }
     />
   );
 }
@@ -182,11 +199,15 @@ export function EmptySearchState({ onAction }: EmptyVariantProps) {
       icon="🔍"
       title="No results found"
       description="We couldn't find anything matching your search. Try different keywords."
-      action={onAction ? {
-        label: "Clear Search",
-        onClick: onAction,
-        variant: "outline"
-      } : undefined}
+      action={
+        onAction
+          ? {
+              label: "Clear Search",
+              onClick: onAction,
+              variant: "outline",
+            }
+          : undefined
+      }
     />
   );
 }

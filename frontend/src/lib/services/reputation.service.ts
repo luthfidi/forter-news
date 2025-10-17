@@ -341,7 +341,7 @@ class ReputationService {
    * (Client-side sorting, or use subgraph orderBy)
    */
   async getSorted(
-    sortBy: 'score' | 'successRate' | 'poolsCreated' | 'totalStaked' = 'score'
+    sortBy: 'score' | 'successRate' | 'totalPools' | 'totalStaked' = 'score'
   ): Promise<ReputationData[]> {
     const allAnalysts = await this.getAllAnalysts();
     return sortAnalysts(allAnalysts, sortBy);

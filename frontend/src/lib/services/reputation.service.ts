@@ -168,26 +168,28 @@ class ReputationService {
         totalPoolsCreated: 0,
         totalStaked: 0,
         tierDistribution: {
-          'Gold': 0,
-          'Silver': 0,
-          'Bronze': 0,
-          'Unranked': 0,
+          'Legend': 0,
+          'Master': 0,
+          'Expert': 0,
+          'Analyst': 0,
+          'Novice': 0,
         },
       };
     }
 
     return {
       totalAnalysts: allAnalysts.length,
-      avgScore: allAnalysts.reduce((sum, a) => sum + a.score, 0) / allAnalysts.length,
+      avgScore: allAnalysts.reduce((sum, a) => sum + a.accuracy, 0) / allAnalysts.length,
       avgSuccessRate:
-        allAnalysts.reduce((sum, a) => sum + a.successRate, 0) / allAnalysts.length,
-      totalPoolsCreated: allAnalysts.reduce((sum, a) => sum + a.poolsCreated, 0),
-      totalStaked: allAnalysts.reduce((sum, a) => sum + a.totalStaked, 0),
+        allAnalysts.reduce((sum, a) => sum + a.accuracy, 0) / allAnalysts.length,
+      totalPoolsCreated: allAnalysts.reduce((sum, a) => sum + a.totalPools, 0),
+      totalStaked: 0, // ReputationData doesn't track totalStaked
       tierDistribution: {
-        'Gold': allAnalysts.filter(a => a.tier === 'Gold').length,
-        'Silver': allAnalysts.filter(a => a.tier === 'Silver').length,
-        'Bronze': allAnalysts.filter(a => a.tier === 'Bronze').length,
-        'Unranked': allAnalysts.filter(a => a.tier === 'Unranked').length,
+        'Legend': allAnalysts.filter(a => a.tier === 'Legend').length,
+        'Master': allAnalysts.filter(a => a.tier === 'Master').length,
+        'Expert': allAnalysts.filter(a => a.tier === 'Expert').length,
+        'Analyst': allAnalysts.filter(a => a.tier === 'Analyst').length,
+        'Novice': allAnalysts.filter(a => a.tier === 'Novice').length,
       },
     };
   }
@@ -241,15 +243,11 @@ class ReputationService {
     const reputation = await this.getByAddress(address);
     if (!reputation) return 0;
 
-    const avgQuality = reputation.poolsCreated > 0
-      ? reputation.totalQualityScore / reputation.poolsCreated
-      : 0;
-
+    // ReputationData only has: accuracy, totalPools, correctPools, wrongPools, activePools
+    // Simplified score calculation using available fields
     const score =
-      (avgQuality * 40) +
-      (reputation.successRate * 30) +
-      (reputation.totalStaked * 0.01) +
-      (reputation.poolsCreated * 5);
+      (reputation.accuracy * 0.7) + // 70% weight on accuracy
+      (reputation.totalPools * 5);    // 5 points per pool created
 
     return Math.round(score);
   }

@@ -284,7 +284,7 @@ export default function CreatePoolPage() {
                     min="1"
                   />
                   <div className="text-xs text-muted-foreground mt-1">
-                    Minimum $1 USDC. You earn 70% of pool rewards if your position is correct.
+                    Minimum $1 USDC. You earn 20% of pool rewards if your position is correct.
                   </div>
                 </div>
 
@@ -400,12 +400,12 @@ export default function CreatePoolPage() {
                   <div>
                     <div className="font-medium text-foreground mb-1">If your position is CORRECT:</div>
                     <div className="flex justify-between mb-2">
-                      <span>You earn:</span>
-                      <span className="font-semibold text-primary">70%</span>
+                      <span>You (analyst) earn:</span>
+                      <span className="font-semibold text-primary">20%</span>
                     </div>
                     <div className="flex justify-between">
                       <span>&quot;Agree&quot; stakers earn:</span>
-                      <span className="font-semibold text-accent">30%</span>
+                      <span className="font-semibold text-accent">80%</span>
                     </div>
                   </div>
                   <div className="h-px bg-border"></div>

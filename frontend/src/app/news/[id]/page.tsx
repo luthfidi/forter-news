@@ -382,8 +382,8 @@ export default function NewsDetailPage() {
                 <h3 className="font-bold mb-4">💰 Reward Split</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Pool Creator</span>
-                    <span className="font-semibold text-primary">70%</span>
+                    <span className="text-muted-foreground">Pool Creator (Analyst)</span>
+                    <span className="font-semibold text-primary">20%</span>
                   </div>
                   <div className="text-xs text-muted-foreground">
                     If pool position correct
@@ -391,7 +391,7 @@ export default function NewsDetailPage() {
                   <div className="h-px bg-border my-2"></div>
                   <div className="flex justify-between items-center">
                     <span className="text-muted-foreground">Winning Stakers</span>
-                    <span className="font-semibold text-accent">30%</span>
+                    <span className="font-semibold text-accent">80%</span>
                   </div>
                   <div className="text-xs text-muted-foreground">
                     Split proportionally

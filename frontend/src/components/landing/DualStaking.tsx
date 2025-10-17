@@ -42,7 +42,7 @@ export default function DualStaking() {
                   <Zap className="w-4 h-4 text-primary" />
                   <span className="text-sm text-muted-foreground">Reward Share</span>
                 </div>
-                <span className="font-bold text-primary text-lg">30%</span>
+                <span className="font-bold text-primary text-lg">80%</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -97,7 +97,7 @@ export default function DualStaking() {
                   <Zap className="w-4 h-4 text-accent" />
                   <span className="text-sm text-muted-foreground">Reward Share</span>
                 </div>
-                <span className="font-bold text-accent text-lg">70%</span>
+                <span className="font-bold text-accent text-lg">20%</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -138,11 +138,11 @@ export default function DualStaking() {
             {/* Distribution Bar */}
             <div className="relative">
               <div className="flex h-16 rounded-xl overflow-hidden shadow-lg border border-border/50">
-                <div className="flex-[30] bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center text-white font-bold text-base md:text-lg">
-                  30%
+                <div className="flex-[80] bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center text-white font-bold text-base md:text-lg">
+                  80%
                 </div>
-                <div className="flex-[70] bg-gradient-to-r from-accent to-accent/80 flex items-center justify-center text-foreground font-bold text-base md:text-lg">
-                  70%
+                <div className="flex-[20] bg-gradient-to-r from-accent to-accent/80 flex items-center justify-center text-foreground font-bold text-base md:text-lg">
+                  20%
                 </div>
               </div>
             </div>
@@ -165,7 +165,7 @@ export default function DualStaking() {
                   <div className="text-sm font-semibold text-accent">Credibility Ecosystem</div>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  50% to correct informers + 20% to their backers
+                  20% to correct analysts who create quality analysis pools
                 </p>
               </div>
             </div>

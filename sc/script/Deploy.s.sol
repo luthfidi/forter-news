@@ -59,22 +59,29 @@ contract DeployScript is Script {
             address(reputationNFT)
         );
         
-        // 6. Initialize reputation tiers
-        reputationNFT.addTier(0, "Novice", 0, "ipfs://novice");
-        reputationNFT.addTier(1, "Analyst", 1000, "ipfs://analyst");
-        reputationNFT.addTier(2, "Expert", 5000, "ipfs://expert");
-        reputationNFT.addTier(3, "Master", 20000, "ipfs://master");
-        
-        // Transfer ownership if needed
-        // reputationNFT.transferOwnership(address(governance));
-        
+        // 6. Transfer ownership of ReputationNFT to Forter for automated reputation updates
+        reputationNFT.transferOwnership(address(forter));
+
         vm.stopBroadcast();
-        
-        // Log deployed addresses
-        console.log("Token deployed at:", address(token));
+
+        // ============================================
+        // DEPLOYMENT SUMMARY - COPY TO .env FILES
+        // ============================================
+        console.log("\n=== DEPLOYMENT COMPLETED SUCCESSFULLY ===\n");
+        console.log("Token (MockToken) deployed at:", address(token));
         console.log("ReputationNFT deployed at:", address(reputationNFT));
         console.log("Governance deployed at:", address(governance));
-        console.log("Forter deployed at:", address(forter));
+        console.log("Forter (Main Contract) deployed at:", address(forter));
         console.log("StakingPool deployed at:", address(forter.stakingPool()));
+        console.log("\n=== COPY THESE TO YOUR .env FILES ===\n");
+        console.log("# Smart Contract .env");
+        console.log("# (Already saved in broadcast folder)\n");
+        console.log("# Frontend .env");
+        console.log("NEXT_PUBLIC_TOKEN_ADDRESS=%s", address(token));
+        console.log("NEXT_PUBLIC_REPUTATION_NFT_ADDRESS=%s", address(reputationNFT));
+        console.log("NEXT_PUBLIC_GOVERNANCE_ADDRESS=%s", address(governance));
+        console.log("NEXT_PUBLIC_FORTER_ADDRESS=%s", address(forter));
+        console.log("NEXT_PUBLIC_STAKINGPOOL_ADDRESS=%s", address(forter.stakingPool()));
+        console.log("\n=========================================\n");
     }
 }

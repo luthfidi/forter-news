@@ -242,10 +242,16 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
             </Button>
           </div>
 
-          {/* Warning */}
-          <div className="mt-4 p-3 rounded-lg bg-card/50 text-xs text-muted-foreground">
-            ⚠️ <strong>Risk Warning:</strong> Staking involves risk of loss. Only stake what you can afford to lose.
-            Rewards depend on the pool creator&apos;s position being correct/wrong.
+          {/* Warning & Info */}
+          <div className="mt-4 space-y-2">
+            <div className="p-3 rounded-lg bg-card/50 text-xs text-muted-foreground">
+              ⚠️ <strong>Risk Warning:</strong> Staking involves risk of loss. Only stake what you can afford to lose.
+              Rewards depend on the pool creator&apos;s position being correct/wrong.
+            </div>
+            <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 text-xs text-blue-600">
+              ℹ️ <strong>Reward Distribution:</strong> Winners (both pool creator and stakers) share the losing pool
+              proportionally based on stake amounts. All winning stakers receive equal ROI regardless of role.
+            </div>
           </div>
         </CardContent>
       </Card>

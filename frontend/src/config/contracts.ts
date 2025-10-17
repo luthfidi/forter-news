@@ -11,7 +11,7 @@ import type { Address, ContractAddresses, ContractConfig, IntegrationConfig } fr
 export const contractAddresses: ContractAddresses = {
   forter: process.env.NEXT_PUBLIC_FORTER_ADDRESS as Address,
   reputationNFT: process.env.NEXT_PUBLIC_REPUTATION_NFT_ADDRESS as Address,
-  stakingPool: process.env.NEXT_PUBLIC_STAKING_POOL_ADDRESS as Address,
+  stakingPool: process.env.NEXT_PUBLIC_STAKINGPOOL_ADDRESS as Address,
   governance: process.env.NEXT_PUBLIC_GOVERNANCE_ADDRESS as Address,
   token: process.env.NEXT_PUBLIC_TOKEN_ADDRESS as Address,
 };
@@ -70,18 +70,19 @@ export const config: IntegrationConfig = {
  */
 export function validateContractConfig(): { isValid: boolean; missing: string[] } {
   const missing: string[] = [];
-  
+
   if (!contractAddresses.forter) missing.push('NEXT_PUBLIC_FORTER_ADDRESS');
   if (!contractAddresses.reputationNFT) missing.push('NEXT_PUBLIC_REPUTATION_NFT_ADDRESS');
+  if (!contractAddresses.stakingPool) missing.push('NEXT_PUBLIC_STAKINGPOOL_ADDRESS');
   if (!contractAddresses.governance) missing.push('NEXT_PUBLIC_GOVERNANCE_ADDRESS');
   if (!contractAddresses.token) missing.push('NEXT_PUBLIC_TOKEN_ADDRESS');
-  
+
   const isValid = missing.length === 0;
-  
+
   if (!isValid) {
     console.warn('[Contracts] Missing environment variables:', missing);
   }
-  
+
   return { isValid, missing };
 }
 

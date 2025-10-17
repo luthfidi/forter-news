@@ -86,30 +86,45 @@ export function usePoolStaking() {
 
     // Total pool after user stake
     const newTotalPool = totalStaked + stakeAmount;
-    const platformFee = newTotalPool * 0.02; // 2%
+    const platformFee = newTotalPool * 0.02; // 2% protocol fee
     const rewardPool = newTotalPool - platformFee;
 
-    if (position === 'agree') {
-      // If pool creator correct, user gets share of 30% distributed among agree stakers
-      // Creator gets 70% (unused in calculation but part of distribution logic)
-      const stakersReward = rewardPool * 0.3; // Stakers get 30%
+    // NOTE: Current smart contract implements PROPORTIONAL SPLIT
+    // All winning stakers (including pool creator) share the losing pool proportionally by stake amount
+    // There is NO separate 20% analyst / 80% staker split yet (planned for v2)
 
+    // Determine winning and losing pools based on position
+    let winningPool: number;
+    let losingPool: number;
+
+    if (position === 'agree') {
+      // User agrees with pool creator's position
       const newAgreeTotal = agreeStakes + stakeAmount;
-      const userShare = (stakeAmount / newAgreeTotal) * stakersReward;
+      winningPool = newAgreeTotal;
+      losingPool = disagreeStakes;
+
+      // If pool position correct: user wins
+      const userShareOfWinning = stakeAmount / winningPool;
+      const userWinnings = losingPool * userShareOfWinning;
 
       return {
         minReward: 0, // If pool wrong, lose everything
-        maxReward: stakeAmount + userShare,
+        maxReward: stakeAmount + userWinnings, // Stake back + share of losing pool
         breakEven: stakeAmount
       };
     } else {
-      // If pool creator wrong, disagree stakers take 98% of total pool
+      // User disagrees with pool creator's position
       const newDisagreeTotal = disagreeStakes + stakeAmount;
-      const userShare = (stakeAmount / newDisagreeTotal) * rewardPool;
+      winningPool = newDisagreeTotal;
+      losingPool = agreeStakes;
+
+      // If pool position wrong: user wins
+      const userShareOfWinning = stakeAmount / winningPool;
+      const userWinnings = losingPool * userShareOfWinning;
 
       return {
         minReward: 0, // If pool correct, lose everything
-        maxReward: userShare,
+        maxReward: stakeAmount + userWinnings, // Stake back + share of losing pool
         breakEven: stakeAmount
       };
     }

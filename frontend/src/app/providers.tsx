@@ -5,9 +5,12 @@ import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { OnchainKitProvider } from '@coinbase/onchainkit';
+import { base } from 'viem/chains';
 
 import { config } from '@/lib/wagmi';
 import '@rainbow-me/rainbowkit/styles.css';
+import '@coinbase/onchainkit/styles.css';
 
 const queryClient = new QueryClient();
 
@@ -42,11 +45,24 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
-          <MiniAppProvider>
-            {children}
-          </MiniAppProvider>
-        </RainbowKitProvider>
+        <OnchainKitProvider
+          apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
+          chain={base}
+          config={{
+            appearance: {
+              mode: 'auto',
+            },
+            wallet: {
+              display: 'modal',
+            },
+          }}
+        >
+          <RainbowKitProvider>
+            <MiniAppProvider>
+              {children}
+            </MiniAppProvider>
+          </RainbowKitProvider>
+        </OnchainKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

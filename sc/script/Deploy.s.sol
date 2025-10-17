@@ -2,17 +2,19 @@
 pragma solidity ^0.8.20;
 
 import {Script} from "forge-std/Script.sol";
+import {console} from "forge-std/console.sol";
 import {Forter} from "../src/Forter.sol";
 import {ReputationNFT} from "../src/ReputationNFT.sol";
 import {StakingPool} from "../src/StakingPool.sol";
-import {Governance} from "../src/Governance.sol";
+import {ForterGovernance} from "../src/Governance.sol";
 import {MockToken} from "../test/ForterTestSetup.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
 contract DeployScript is Script {
     // Contract instances
     MockToken public token;
     ReputationNFT public reputationNFT;
-    Governance public governance;
+    ForterGovernance public governance;
     Forter public forter;
     
     // Deployment parameters
@@ -35,7 +37,7 @@ contract DeployScript is Script {
         reputationNFT = new ReputationNFT();
         
         // 3. Deploy Governance
-        governance = new Governance(
+        governance = new ForterGovernance(
             ERC20Votes(address(token)),
             MIN_STAKE,
             MAX_NEWS_DURATION,
@@ -48,7 +50,7 @@ contract DeployScript is Script {
         forter = new Forter(
             address(token),
             address(reputationNFT),
-            address(governance)
+            payable(address(governance))
         );
         
         // 5. Set up governance with contract addresses

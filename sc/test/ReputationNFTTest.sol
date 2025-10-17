@@ -4,55 +4,71 @@ pragma solidity ^0.8.20;
 import "./ForterTestSetup.sol";
 
 contract ReputationNFTTest is ForterTestSetup {
-    function testMintReputationNFT() public {
-        uint256 initialBalance = reputationNFT.balanceOf(user1);
-        
-        // Mint a reputation NFT to user1
-        vm.prank(owner);
-        reputationNFT.mint(user1, 100); // 100 reputation points
-        
-        assertEq(reputationNFT.balanceOf(user1), initialBalance + 1);
-        assertEq(reputationNFT.getReputationScore(user1), 100);
-    }
-    
     function testIncreaseReputation() public {
-        // First mint an NFT
-        vm.prank(owner);
-        reputationNFT.mint(user1, 100);
-        
-        // Increase reputation
-        vm.prank(owner);
-        reputationNFT.increaseReputation(user1, 50);
-        
-        assertEq(reputationNFT.getReputationScore(user1), 150);
+        uint256 initialBalance = reputationNFT.balanceOf(user1);
+
+        // Increase reputation (will mint NFT if first time)
+        vm.prank(address(forter));
+        reputationNFT.increaseReputation(user1, 100);
+
+        // Should have minted an NFT
+        assertEq(reputationNFT.balanceOf(user1), initialBalance + 1);
+
+        // Check reputation score
+        (uint256 score,,,,,,) = reputationNFT.getUserReputation(user1);
+        assertEq(score, 100);
     }
-    
+
+    function testIncreaseReputationMultipleTimes() public {
+        // First increase
+        vm.prank(address(forter));
+        reputationNFT.increaseReputation(user1, 100);
+
+        // Second increase
+        vm.prank(address(forter));
+        reputationNFT.increaseReputation(user1, 50);
+
+        // Check reputation score
+        (uint256 score,,,,,,) = reputationNFT.getUserReputation(user1);
+        assertEq(score, 150);
+    }
+
     function testReputationTiers() public {
-        // Add reputation tiers
-        vm.startPrank(owner);
-        reputationNFT.addTier(0, "Novice", 0, "ipfs://novice");
-        reputationNFT.addTier(1, "Expert", 1000, "ipfs://expert");
-        reputationNFT.addTier(2, "Master", 5000, "ipfs://master");
-        
-        // Mint initial reputation
-        reputationNFT.mint(user1, 100);
-        assertEq(reputationNFT.getTierName(user1), "Novice");
-        
-        // Increase to Expert
-        reputationNFT.increaseReputation(user1, 1000);
-        assertEq(reputationNFT.getTierName(user1), "Expert");
-        
-        // Increase to Master
-        reputationNFT.increaseReputation(user1, 4000);
-        assertEq(reputationNFT.getTierName(user1), "Master");
-        
+        vm.startPrank(address(forter));
+
+        // Increase reputation to 100 (Analyst tier)
+        reputationNFT.increaseReputation(user1, 150);
+        (,,,, uint256 tier1, string memory tierName1,) = reputationNFT.getUserReputation(user1);
+        assertEq(tier1, 1); // Analyst
+        assertEq(tierName1, "Analyst");
+
+        // Increase to 600 (Expert tier)
+        reputationNFT.increaseReputation(user1, 450);
+        (,,,, uint256 tier2, string memory tierName2,) = reputationNFT.getUserReputation(user1);
+        assertEq(tier2, 2); // Expert
+        assertEq(tierName2, "Expert");
+
+        // Increase to 1200 (Master tier)
+        reputationNFT.increaseReputation(user1, 600);
+        (,,,, uint256 tier3, string memory tierName3,) = reputationNFT.getUserReputation(user1);
+        assertEq(tier3, 3); // Master
+        assertEq(tierName3, "Master");
+
         vm.stopPrank();
     }
-    
-    function testOnlyOwnerCanAddTiers() public {
-        // Non-owner should not be able to add tiers
-        vm.prank(user1);
-        vm.expectRevert("Ownable: caller is not the owner");
-        reputationNFT.addTier(0, "Novice", 0, "ipfs://novice");
+
+    function testRecordPrediction() public {
+        vm.startPrank(address(forter));
+
+        // Record correct prediction
+        reputationNFT.recordPrediction(user1, true);
+
+        // Check stats
+        (,, uint256 totalPreds, uint256 correctPreds,, string memory tierName,) = reputationNFT.getUserReputation(user1);
+        assertEq(totalPreds, 1);
+        assertEq(correctPreds, 1);
+        assertEq(tierName, "Novice");
+
+        vm.stopPrank();
     }
 }

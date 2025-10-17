@@ -9,12 +9,13 @@ import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
-contract ForterGovernance is 
-    Governor, 
-    GovernorSettings, 
-    GovernorCountingSimple, 
-    GovernorVotes, 
-    GovernorVotesQuorumFraction 
+contract ForterGovernance is
+    Governor,
+    GovernorSettings,
+    GovernorCountingSimple,
+    GovernorVotes,
+    GovernorVotesQuorumFraction,
+    Ownable2Step
 {
     // Protocol parameters
     uint256 public minStakeAmount;
@@ -22,7 +23,7 @@ contract ForterGovernance is
     uint256 public minNewsDuration;
     uint256 public protocolFee;
     address public feeRecipient;
-    
+
     // Contract references
     address public stakingPool;
     address public reputationNFT;
@@ -43,7 +44,7 @@ contract ForterGovernance is
         uint256 _minNewsDuration,
         uint256 _protocolFee,
         address _feeRecipient
-    ) 
+    )
         Governor("ForterGovernor")
         GovernorSettings(
             1, /* 1 block */
@@ -52,6 +53,7 @@ contract ForterGovernance is
         )
         GovernorVotes(_token)
         GovernorVotesQuorumFraction(4) // 4%
+        Ownable(msg.sender)
     {
         _updateParameters(
             _minStakeAmount,
@@ -105,36 +107,36 @@ contract ForterGovernance is
         );
     }
     
-    // Set contract dependencies (only callable once)
+    // Set contract dependencies (only callable once, by owner during initialization)
     function setDependencies(
         address _stakingPool,
         address _reputationNFT
-    ) external onlyGovernance {
+    ) external onlyOwner {
         require(stakingPool == address(0) && reputationNFT == address(0), "Already set");
         require(_stakingPool != address(0) && _reputationNFT != address(0), "Invalid address");
-        
+
         stakingPool = _stakingPool;
         reputationNFT = _reputationNFT;
     }
     
     // The following functions are overrides required by Solidity
-    function votingDelay() public view override(IGovernor, GovernorSettings) returns (uint256) {
+    function votingDelay() public view override(Governor, GovernorSettings) returns (uint256) {
         return super.votingDelay();
     }
-    
-    function votingPeriod() public view override(IGovernor, GovernorSettings) returns (uint256) {
+
+    function votingPeriod() public view override(Governor, GovernorSettings) returns (uint256) {
         return super.votingPeriod();
     }
-    
-    function quorum(uint256 blockNumber) 
-        public 
-        view 
-        override(IGovernor, GovernorVotesQuorumFraction) 
-        returns (uint256) 
+
+    function quorum(uint256 blockNumber)
+        public
+        view
+        override(Governor, GovernorVotesQuorumFraction)
+        returns (uint256)
     {
         return super.quorum(blockNumber);
     }
-    
+
     function proposalThreshold() public view override(Governor, GovernorSettings) returns (uint256) {
         return super.proposalThreshold();
     }

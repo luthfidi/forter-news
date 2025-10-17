@@ -146,7 +146,7 @@ class ReputationService {
    */
   async getTopAnalysts(limit: number = 10): Promise<ReputationData[]> {
     const allAnalysts = await this.getAllAnalysts();
-    const sorted = sortAnalysts(allAnalysts, 'score');
+    const sorted = sortAnalysts(allAnalysts, 'accuracy');
     return sorted.slice(0, limit);
   }
 

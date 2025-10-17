@@ -160,6 +160,12 @@ export interface CreatePoolInput {
   creatorStake: number;
 }
 
+export interface StakeInput {
+  poolId: string;
+  position: 'agree' | 'disagree';
+  amount: number;
+}
+
 // Resolution Input (for admin)
 export interface ResolveNewsInput {
   newsId: string;

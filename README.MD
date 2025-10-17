@@ -1,16 +1,19 @@
-# Forter - Farcaster Porter
+# Forter - Forecast Porter
 
 ## Executive Summary
+
 Forter adalah **Information Finance Protocol** - platform Web3 yang mengubah informasi kredibel menjadi aset finansial. Kami bukan prediction market untuk gambling - kami adalah infrastruktur **permissionless** untuk memverifikasi, memonetisasi, dan membangun reputasi berbasis analisis yang akurat.
 
 **Tagline**: "Stake on Credibility, Not Luck"
 
 **Core Innovation**: Permissionless News + Independent Pool mechanism:
+
 1. **Anyone can create NEWS** - Prediksi/statement dengan timeline jelas (permissionless)
 2. **Anyone can create POOL** - Analisis dengan reasoning + own stake pool per news
 3. **Stake on specific pool** - Back reasoning yang paling kredibel (Setuju/Tidak Setuju)
 
 **Key Difference from Traditional Markets:**
+
 - Bukan 1 market dengan shared pool
 - Tapi 1 NEWS dengan banyak INDEPENDENT POOLS
 - Setiap pool punya stake pool sendiri
@@ -19,6 +22,7 @@ Forter adalah **Information Finance Protocol** - platform Web3 yang mengubah inf
 Platform ini lahir dari konsep "Forecast Porter" - di mana para analis menjadi "porter" yang membawa wawasan berharga dalam ekosistem yang fully permissionless.
 
 ## Table of Contents
+
 1. [Problem Statement](#problem-statement)
 2. [Solution Overview](#solution-overview)
 3. [Our Unique Value Proposition](#our-unique-value-proposition)
@@ -39,6 +43,7 @@ Platform ini lahir dari konsep "Forecast Porter" - di mana para analis menjadi "
 ## Problem Statement
 
 ### Current Market Problems
+
 - **Information Overload**: Di era digital, kita dibanjiri informasi tapi sulit membedakan signal dari noise
 - **No Skin in the Game**: Analis dan influencer membuat prediksi tanpa konsekuensi jika salah
 - **Pure Speculation Focus**: Platform prediction market existing seperti Polymarket fokus pada betting, bukan knowledge discovery
@@ -46,6 +51,7 @@ Platform ini lahir dari konsep "Forecast Porter" - di mana para analis menjadi "
 - **Monetization Gap**: Analyst yang bagus tapi belum punya audience besar kesulitan monetize keahlian mereka
 
 ### Our Target Users
+
 1. **Retail Investors & Decision Makers**: Butuh sumber analisis terpercaya
 2. **Emerging Professional Analysts**: Ingin build verifiable reputation dan monetize accuracy (bukan just followers)
 3. **Communities & DAOs**: Perlu collective intelligence untuk keputusan strategis
@@ -54,7 +60,9 @@ Platform ini lahir dari konsep "Forecast Porter" - di mana para analis menjadi "
 ## Solution Overview
 
 ### The Forter Philosophy
+
 Forter menggabungkan dua konsep kunci:
+
 - **Forecast**: Proyeksi berbasis data dan analisis, bukan tebakan
 - **Porter**: Pembawa wawasan sekaligus penjaga kredibilitas
 
@@ -62,14 +70,14 @@ Forter menggabungkan dua konsep kunci:
 
 ### Information Finance vs Prediction Markets
 
-| Aspect | Traditional Prediction Market | Forter (Information Finance) |
-|--------|------------------------------|------------------------------|
-| **Purpose** | Bet on outcomes | Fund credible analysis |
-| **Incentive** | Win bets | Earn yield on verified insights |
-| **Users** | Speculators | Analysts, researchers, informed investors |
-| **Token Flow** | Gambling-style pools | Research-based staking |
-| **Core Value** | Entertainment + speculation | Knowledge discovery + accountability |
-| **Resolution** | Outcome only | Outcome + analyst credibility |
+| Aspect         | Traditional Prediction Market | Forter (Information Finance)              |
+| -------------- | ----------------------------- | ----------------------------------------- |
+| **Purpose**    | Bet on outcomes               | Fund credible analysis                    |
+| **Incentive**  | Win bets                      | Earn yield on verified insights           |
+| **Users**      | Speculators                   | Analysts, researchers, informed investors |
+| **Token Flow** | Gambling-style pools          | Research-based staking                    |
+| **Core Value** | Entertainment + speculation   | Knowledge discovery + accountability      |
+| **Resolution** | Outcome only                  | Outcome + analyst credibility             |
 
 ### Core Features
 
@@ -106,7 +114,9 @@ Forter menggabungkan dua konsep kunci:
 ### The 5 Pillars of Forter's Differentiation
 
 #### 1. 🌐 Fully Permissionless Architecture
+
 Unlike admin-curated prediction markets, Forter is **fully open**:
+
 - **Anyone can create NEWS** - No approval needed, instant publishing
 - **Anyone can create POOL** - Multiple independent analyses per news
 - **Anyone can stake** - Back the reasoning you believe in
@@ -116,13 +126,16 @@ Unlike admin-curated prediction markets, Forter is **fully open**:
 ⚠️ **Trade-off**: Allow spam initially, but filter via stake amounts and reputation
 
 #### 2. 🧠 Independent Pool Economics
+
 Each POOL is an **independent financial instrument** with its own stake pool:
+
 - Not a shared pot where everyone competes
 - Each pool = unique position + reasoning + own stakes
 - Stakers back **specific arguments**, not just outcomes
 - Multiple pools can coexist with different reasoning
 
 **Example:**
+
 ```
 NEWS: "ETH to $5000 by Dec 2024"
 ├─ Pool A: "YES because ETF approval" → Own stake pool
@@ -133,7 +146,9 @@ All resolve at same time, but independent rewards!
 ```
 
 #### 3. 🔗 On-Chain Reputation & Accountability
+
 Every analyst builds a **permanent, verifiable track record** on-chain via **Dynamic Soulbound NFTs (SBTs)**:
+
 - Reputation stored immutably
 - Transparent accuracy stats
 - Historical performance per topic (crypto, macro, tech, etc.)
@@ -142,13 +157,17 @@ Every analyst builds a **permanent, verifiable track record** on-chain via **Dyn
 **No more "trust me bro"** — credibility becomes quantifiable and portable.
 
 #### 4. ⚖️ Data-Verified Truth Resolution
+
 Resolutions aren't based on subjective votes, but on **verifiable data sources** via oracles & AI agents:
+
 - Oracle + AI verification = fewer disputes, higher credibility
 - Integrates public data (economic indicators, price feeds, news APIs)
 - Bridges DeFi logic (verifiable outcomes) with research logic (verifiable sources)
 
 #### 5. 🧭 Bridging Analysts, Investors, and DAOs
+
 Forter connects **people who know** (analysts) with **people who decide** (investors, DAOs, funds):
+
 - Investors get access to trustworthy, crowd-verified insights
 - Analysts get paid for **proven accuracy**, not follower count
 - DAOs can use Forter for **more credible collective decisions**
@@ -159,29 +178,33 @@ Forter connects **people who know** (analysts) with **people who decide** (inves
 
 ### Why Would Users Create Pools on Forter?
 
-**The Critical Question:** *"If I already have my own audience and can charge $100/signal, why risk money on Forter?"*
+**The Critical Question:** _"If I already have my own audience and can charge $100/signal, why risk money on Forter?"_
 
 #### The Honest Answer:
 
 1. **On-chain Proof of Credibility**
+
    - Your track record isn't a screenshot — it's cryptographically proven
    - Build **immutable reputation capital**, not just social clout
    - Portable across ecosystems (future: DeFi credit scores, DAO governance)
    - Tier badge becomes a verifiable credential
 
 2. **Earn from Your Analysis (Not Just Followers)**
+
    - Get rewarded for **accuracy**, not audience size
    - 70% of pool stakes goes to you if correct
    - Scale earnings without subscription friction
    - One good analysis can attract hundreds of stakers
 
 3. **No Gatekeeping or Approval Needed**
+
    - Anyone can create pools — no whitelist, no waiting
    - Build reputation from zero through consistent performance
    - Equal opportunity for emerging analysts
    - Your work speaks for itself
 
 4. **Flexible Participation Model**
+
    - Create pools when you have high conviction
    - Stake small or large based on confidence
    - Also stake on others' pools to diversify
@@ -194,6 +217,7 @@ Forter connects **people who know** (analysts) with **people who decide** (inves
    - Build your on-chain portfolio before it's crowded
 
 **Target Segment:**
+
 - **Emerging analysts** (crypto, macro, AI) who want verifiable credibility
 - **Researchers** who want to monetize insights without building audience first
 - **DAO contributors** who need on-chain proof of forecasting ability
@@ -297,15 +321,16 @@ Every User Can:
 
 **Important Distinction:**
 
-| Aspect | How It Works |
-|--------|--------------|
-| **Activities** | Anyone can do NEWS creation, POOL creation, and staking |
-| **Reputation/Tier** | Calculated **only from POOL creation performance** (analysis quality) |
+| Aspect              | How It Works                                                               |
+| ------------------- | -------------------------------------------------------------------------- |
+| **Activities**      | Anyone can do NEWS creation, POOL creation, and staking                    |
+| **Reputation/Tier** | Calculated **only from POOL creation performance** (analysis quality)      |
 | **Staking History** | Tracked separately, visible for transparency, but **does not affect tier** |
-| **Profile** | Shows both pool creation history AND staking history |
-| **Terminology** | Contextual: "Creator" in pool context, "User" generically |
+| **Profile**         | Shows both pool creation history AND staking history                       |
+| **Terminology**     | Contextual: "Creator" in pool context, "User" generically                  |
 
 **Why This Matters:**
+
 - **No gatekeeping** - Everyone starts equal
 - **Tier reflects analysis quality** - Not betting luck
 - **Transparency** - All activity is public and verifiable
@@ -314,6 +339,7 @@ Every User Can:
 ### User Activities & Reputation
 
 **1. NEWS Creation**
+
 - Anyone can create news/prediction (permissionless)
 - Set clear resolution criteria + timeline
 - Auto-posted to Farcaster dengan link
@@ -321,6 +347,7 @@ Every User Can:
 - Builds overall platform contribution reputation
 
 **2. POOL Creation (Affects Tier & Reputation)**
+
 - Create analysis dengan position (YES/NO)
 - Write detailed reasoning + evidence
 - **Upload chart/image for visual evidence** (optional)
@@ -329,6 +356,7 @@ Every User Can:
 - **This activity directly affects your tier and SBT**
 
 **Tier Calculation:**
+
 ```javascript
 // Tier based ONLY on pool creation accuracy
 const accuracy = correctPools / totalPoolsCreated * 100;
@@ -341,6 +369,7 @@ else → Novice 🥉
 ```
 
 **3. Staking on Pools (Does NOT Affect Tier)**
+
 - Browse pools under any news
 - Stake on "Setuju" (back the pool's position)
 - Stake on "Tidak Setuju" (against the pool)
@@ -349,12 +378,14 @@ else → Novice 🥉
 - **Tracked separately for transparency, but doesn't change your tier**
 
 **Why Staking Doesn't Affect Tier:**
+
 - Forter is about **information finance**, not betting
 - Tier represents **analysis credibility**, not speculation success
 - Staking can be lucky guesses; pool creation requires reasoning
 - Keeps the incentive aligned with quality analysis
 
 **4. Research & Browsing**
+
 - Browse news + pools without participating
 - Follow top analysts di Farcaster
 - Use platform as research tool
@@ -364,6 +395,7 @@ else → Novice 🥉
 ### News + Pool Lifecycle
 
 #### Phase 1: NEWS Creation (Day 0)
+
 - **Anyone** creates NEWS (permissionless)
 - Set parameters:
   - Title/statement (e.g., "ETH to $5000 by Dec 2024")
@@ -374,6 +406,7 @@ else → Novice 🥉
 - NEWS goes live immediately
 
 #### Phase 2: POOL Creation Period (Day 0 - Resolution Date -1)
+
 - **Anyone** can create POOL under any NEWS
 - Pool requirements:
   - Position: YES or NO
@@ -386,6 +419,7 @@ else → Novice 🥉
 - Multiple pools can coexist under same NEWS
 
 #### Phase 3: Staking Period (Day 0 - Resolution Date -1)
+
 - Users browse pools under NEWS
 - Stake on specific pools:
   - "Setuju" = back the pool's position + reasoning
@@ -394,6 +428,7 @@ else → Novice 🥉
 - Can stake on multiple different pools
 
 #### Phase 4: Resolution (Resolution Date)
+
 - Oracle checks verifiable outcome
 - ALL pools under the NEWS resolve simultaneously
 - Per-pool resolution:
@@ -404,6 +439,7 @@ else → Novice 🥉
 - 24-hour challenge period for disputes
 
 #### Phase 5: Settlement (Per Pool)
+
 - **Each pool distributes independently:**
   - Platform fee 2% dari pool total
   - 70% ke pool creator (if correct position)
@@ -443,16 +479,17 @@ Every wallet address has a public profile page showing complete activity history
 
 **Public vs Private Data:**
 
-| Data Type | Public View | My Profile View |
-|-----------|-------------|-----------------|
-| Tier & Accuracy | ✅ Visible | ✅ Visible |
-| Pool Creation History | ✅ Visible | ✅ Visible |
-| Staking History | ✅ Visible | ✅ Visible |
-| Win/Loss Ratios | ✅ Visible | ✅ Visible |
-| Total Earned (exact $) | ❌ Hidden | ✅ Visible |
-| Category Expertise | ✅ Visible | ✅ Visible |
+| Data Type              | Public View | My Profile View |
+| ---------------------- | ----------- | --------------- |
+| Tier & Accuracy        | ✅ Visible  | ✅ Visible      |
+| Pool Creation History  | ✅ Visible  | ✅ Visible      |
+| Staking History        | ✅ Visible  | ✅ Visible      |
+| Win/Loss Ratios        | ✅ Visible  | ✅ Visible      |
+| Total Earned (exact $) | ❌ Hidden   | ✅ Visible      |
+| Category Expertise     | ✅ Visible  | ✅ Visible      |
 
 **Why Hide Exact Earnings Publicly:**
+
 - Privacy protection
 - Prevent targeting/manipulation
 - Focus on accuracy metrics, not money
@@ -461,18 +498,21 @@ Every wallet address has a public profile page showing complete activity history
 **Profile Features:**
 
 1. **Pools Created Tab**
+
    - Active pools with current stats
    - Resolved pools with outcomes (won/lost)
    - Reasoning & evidence for each
    - Filter by category, status, outcome
 
 2. **Stakes History Tab**
+
    - All stakes across different pools
    - Position (Agree/Disagree)
    - Outcome & earnings (if resolved)
    - Grouped by news or chronological
 
 3. **News Created Tab**
+
    - All news created by user
    - Resolution status
    - Number of pools per news
@@ -490,11 +530,12 @@ Every wallet address has a public profile page showing complete activity history
 For MVP, news resolution is handled by **hardcoded admin wallets**. This ensures quick iteration and testing before decentralized oracle integration.
 
 **Admin Configuration:**
+
 ```javascript
 // In config/admin.ts
 export const ADMIN_WALLETS = [
-  '0x...primary-admin-wallet',
-  '0x...backup-admin-wallet'
+  "0x...primary-admin-wallet",
+  "0x...backup-admin-wallet",
 ];
 ```
 
@@ -543,6 +584,7 @@ pools.forEach(pool => {
 **Post-Resolution Display:**
 
 News detail page after resolution:
+
 ```
 ┌─────────────────────────────────────────┐
 │  ⚠️ RESOLVED                            │
@@ -553,6 +595,7 @@ News detail page after resolution:
 ```
 
 Pool card after resolution:
+
 ```
 ┌─────────────────────────────────────────┐
 │  [🏆 RESOLVED] Pool #1234               │
@@ -567,6 +610,7 @@ Pool card after resolution:
 ```
 
 **Future Enhancements:**
+
 - Chainlink oracle integration for automated resolution
 - Multi-sig DAO voting for disputed resolutions
 - Challenge period with stake-weighted voting
@@ -575,6 +619,7 @@ Pool card after resolution:
 ### Reputation System (Overview)
 
 **Soulbound NFT Components:**
+
 - Overall accuracy percentage
 - Total markets participated
 - Category-specific expertise
@@ -582,10 +627,11 @@ Pool card after resolution:
 - Trust badges
 
 **Calculation Method (MVP):**
+
 - Simple accuracy: (Correct/Total) × 100%
 - Future: ELO-based system untuk complexity weighting
 
-*For detailed technical implementation of Dynamic NFTs, see the [Dynamic Reputation NFT System](#dynamic-reputation-nft-system) section below.*
+_For detailed technical implementation of Dynamic NFTs, see the [Dynamic Reputation NFT System](#dynamic-reputation-nft-system) section below._
 
 ## Dynamic Reputation NFT System
 
@@ -596,12 +642,14 @@ Unlike static NFT profile pictures, **Forter's Reputation NFTs update their visu
 ### Core Concept
 
 Each user receives a **Soulbound Token (SBT)** that:
+
 - **Cannot be transferred** (tied to their wallet/identity)
 - **Updates its image** based on accuracy tiers
 - **Updates metadata** after each pool resolution
 - Acts as a **portable reputation passport** across Web3
 
 **SBT Minting:**
+
 - SBT is minted **on first pool creation** (not on wallet connect or first stake)
 - Why? Because tier is calculated from pool creation performance
 - Staking-only users don't get SBT until they create their first pool
@@ -628,13 +676,13 @@ flowchart LR
 
 Performance tiers determine which image is displayed:
 
-| Tier | Accuracy Range | Image/Badge | Additional Benefits |
-|------|---------------|-------------|---------------------|
-| **Novice** | 0-49% | 🥉 Bronze Badge | Basic access |
-| **Analyst** | 50-69% | 🥈 Silver Badge | Standard visibility |
-| **Expert** | 70-84% | 🥇 Gold Badge | Featured in leaderboard |
-| **Master** | 85-94% | 💎 Diamond Badge | Priority display, higher staking multiplier |
-| **Legend** | 95-100% | 👑 Crown Badge | Exclusive benefits, DAO governance rights |
+| Tier        | Accuracy Range | Image/Badge      | Additional Benefits                         |
+| ----------- | -------------- | ---------------- | ------------------------------------------- |
+| **Novice**  | 0-49%          | 🥉 Bronze Badge  | Basic access                                |
+| **Analyst** | 50-69%         | 🥈 Silver Badge  | Standard visibility                         |
+| **Expert**  | 70-84%         | 🥇 Gold Badge    | Featured in leaderboard                     |
+| **Master**  | 85-94%         | 💎 Diamond Badge | Priority display, higher staking multiplier |
+| **Legend**  | 95-100%        | 👑 Crown Badge   | Exclusive benefits, DAO governance rights   |
 
 ### Metadata Structure
 
@@ -680,6 +728,7 @@ The NFT metadata (stored on IPFS) updates to reflect:
 #### 1. Smart Contract Architecture
 
 **ReputationSBT.sol:**
+
 ```solidity
 // Core functions
 function updateReputation(address user, bool wasCorrect) external onlyMarketContract
@@ -735,18 +784,21 @@ Each tier has a unique visual design reflecting credibility level.
 ### Why This Matters
 
 #### For Pool Creators:
+
 - **Visual proof** of credibility that's instantly recognizable
 - **Gamification** encourages consistent high performance
 - **Portable reputation** usable across platforms
 - **Career capital** - SBT becomes your on-chain resume
 
 #### For All Users (Including Stakers):
+
 - **Quick assessment** of pool creator quality (just look at their badge)
 - **Trust signals** reduce due diligence time when evaluating pools
 - **Historical verification** via on-chain metadata
 - **Anyone can build reputation** by creating pools
 
 #### For the Ecosystem:
+
 - **Reputation becomes composable** (other dApps can read it)
 - **Sybil resistance** (can't fake on-chain performance)
 - **Network effects** (the more integrations, the more valuable the NFT)
@@ -755,6 +807,7 @@ Each tier has a unique visual design reflecting credibility level.
 ### Future Enhancements
 
 **Phase 2+:**
+
 - **Category-specific badges** (Economics Expert, Crypto Master, etc.)
 - **Special edition NFTs** for perfect streaks or tournament wins
 - **Animated NFTs** where performance affects animation speed/style
@@ -764,16 +817,19 @@ Each tier has a unique visual design reflecting credibility level.
 ### NFT Value Proposition (Realistic)
 
 **What the NFT IS:**
+
 - An **identity and credibility record**
 - A **functional utility token** (unlocks features, governance)
 - A **reputation primitive** (other protocols can integrate it)
 
 **What the NFT is NOT:**
+
 - NOT a tradable collectible (it's soulbound)
 - NOT speculative (value = utility + reputation, not hype)
 - NOT a "profile picture project"
 
 **Real Value Comes From:**
+
 - Network adoption (more platforms recognize Forter reputation)
 - Ecosystem integration (DeFi protocols use it for credit scoring, DAOs for governance)
 - Professional signaling (analysts showcase it as proof of expertise)
@@ -808,24 +864,28 @@ Each tier has a unique visual design reflecting credibility level.
 ### Key Components
 
 **Frontend Layer:**
+
 - Next.js 14 dengan App Router
 - Responsive design untuk mobile-first
 - Real-time updates via websockets
 - Farcaster frame support
 
 **Backend Services:**
+
 - RESTful API untuk data operations
 - Farcaster hub integration untuk social features
 - PostgreSQL untuk off-chain data
 - Redis untuk caching dan sessions
 
 **Smart Contracts:**
+
 - Market Factory: Deploy dan manage markets
 - Staking Pool: Handle dual-staking mechanism
 - Reputation SBT: Non-transferable reputation tokens
 - Treasury: Platform fee collection
 
 **External Integrations:**
+
 - Farcaster (via Neynar): Identity dan social graph
 - IPFS (via Pinata): NFT metadata + image storage
 - Oracle (future): Chainlink/UMA untuk resolution
@@ -839,6 +899,7 @@ Analysts can enhance their pools with visual evidence (charts, graphs, screensho
 **Implementation Phases:**
 
 **Phase 1 (MVP - URL-based):**
+
 - Single image support via URL paste
 - User pastes link from Imgur, Twitter, etc.
 - Preview displayed in pool card
@@ -848,12 +909,13 @@ Analysts can enhance their pools with visual evidence (charts, graphs, screensho
 ```typescript
 interface Pool {
   // ... other fields
-  imageUrl?: string;        // Optional chart/visual evidence
-  imageCaption?: string;    // Brief description
+  imageUrl?: string; // Optional chart/visual evidence
+  imageCaption?: string; // Brief description
 }
 ```
 
 **Phase 2 (Beta - File Upload):**
+
 - Direct file upload (max 5MB)
 - Automatic upload to IPFS via Pinata
 - Support for PNG, JPG, WebP formats
@@ -861,6 +923,7 @@ interface Pool {
 - Multiple images support (max 3-5)
 
 **Phase 3 (Production - Multi-media):**
+
 - Video clips for analysis
 - PDF document embedding
 - GIF support for engagement
@@ -868,6 +931,7 @@ interface Pool {
 - OCR for automatic chart data extraction
 
 **Storage Strategy:**
+
 ```
 MVP: External URL (free, instant)
   ↓
@@ -877,6 +941,7 @@ Production: IPFS + Arweave mirror ($5/GB one-time)
 ```
 
 **Why Images Matter:**
+
 - 📊 **Technical Analysis**: Charts speak louder than words
 - 🎯 **Quality Signal**: Serious analysts include visual proof
 - 💬 **Engagement**: Pools with images get 3-5x more stakes
@@ -884,6 +949,7 @@ Production: IPFS + Arweave mirror ($5/GB one-time)
 - 🚀 **Virality**: Image previews boost Farcaster engagement
 
 **UX Flow:**
+
 1. Analyst creates pool with reasoning
 2. Optionally adds image URL or uploads file
 3. Preview shown before publishing
@@ -894,10 +960,12 @@ Production: IPFS + Arweave mirror ($5/GB one-time)
 ## Tokenomics & Incentives
 
 ### Token Usage
+
 - **Staking Token**: USDC on Base network
 - **No Platform Token**: Fokus pada utility, bukan speculation
 
 ### Fee Structure
+
 - Platform Fee: 2% dari total pool
 - Minimum Stake: $0.5 USDC (testnet) / $5 USDC (mainnet)
 - No withdrawal fees
@@ -969,13 +1037,14 @@ Distribution:
 
 #### Understanding Pool Staking
 
-| Stake Type | Meaning | Win Condition | Reward Share |
-|------------|---------|---------------|--------------|
-| **Pool Creator Stake** | Creator's conviction | Pool position correct | 70% of pool |
-| **"Setuju" Stake** | Back the pool's position | Pool position correct | Split 30% proportionally |
-| **"Tidak Setuju" Stake** | Bet against the pool | Pool position wrong | Take 98% (all stakes minus fee) |
+| Stake Type               | Meaning                  | Win Condition         | Reward Share                    |
+| ------------------------ | ------------------------ | --------------------- | ------------------------------- |
+| **Pool Creator Stake**   | Creator's conviction     | Pool position correct | 70% of pool                     |
+| **"Setuju" Stake**       | Back the pool's position | Pool position correct | Split 30% proportionally        |
+| **"Tidak Setuju" Stake** | Bet against the pool     | Pool position wrong   | Take 98% (all stakes minus fee) |
 
 **Key Points:**
+
 - Each pool is **fully independent**
 - Pool creator gets 70% **only if their position is correct**
 - "Setuju" stakers = backing the pool's position + reasoning
@@ -984,6 +1053,7 @@ Distribution:
 - But each pool's rewards are calculated separately
 
 ### Anti-Gaming Mechanisms
+
 - Farcaster ID age >30 days
 - Minimum 10 casts requirement
 - Quadratic staking untuk influence
@@ -1024,12 +1094,14 @@ interface NewsCreationRequirements {
 ```
 
 **How It Works:**
+
 1. User pays $10 USDC deposit to create NEWS
 2. If NEWS attracts 3+ pools with $50+ total stakes within 7 days → **deposit refunded**
 3. If NEWS gets no pools or flagged as spam → **deposit slashed to treasury**
 4. This creates **skin in the game** for NEWS creators
 
 **Smart Contract Interface:**
+
 ```solidity
 contract NewsFactory {
   uint256 public constant NEWS_DEPOSIT = 10 * 10**6; // 10 USDC
@@ -1055,6 +1127,7 @@ contract NewsFactory {
 ```
 
 **Benefits:**
+
 - ✅ Prevents spam (costs $10 per spam attempt)
 - ✅ Incentivizes quality (get money back if good)
 - ✅ Still permissionless (anyone can pay)
@@ -1070,10 +1143,10 @@ contract NewsFactory {
 
 ```typescript
 interface PoolCreationRequirements {
-  minReasoningLength: 100;     // Chars (force thoughtful analysis)
-  minCreatorStake: 1;          // $1 USDC minimum (testnet: $0.5)
-  evidenceRequired: false;     // Optional but encouraged
-  imageRecommended: true;      // Pools with images rank higher
+  minReasoningLength: 100; // Chars (force thoughtful analysis)
+  minCreatorStake: 1; // $1 USDC minimum (testnet: $0.5)
+  evidenceRequired: false; // Optional but encouraged
+  imageRecommended: true; // Pools with images rank higher
 }
 ```
 
@@ -1101,6 +1174,7 @@ function calculatePoolQualityScore(pool: Pool): number {
 ```
 
 **How It's Used:**
+
 - Sorting: High-quality pools shown first
 - Filtering: Hide pools below quality threshold (score < 30)
 - Discovery: "Top Quality" filter for premium content
@@ -1115,11 +1189,11 @@ function calculatePoolQualityScore(pool: Pool): number {
 
 ```typescript
 interface NewsQualityMetrics {
-  totalPools: number;           // More pools = more interest
-  totalStaked: number;          // More stakes = more conviction
-  avgPoolQuality: number;       // Avg quality score of pools
-  creatorReputation: number;    // Creator's track record
-  timeToFirstPool: number;      // Fast pool creation = good topic
+  totalPools: number; // More pools = more interest
+  totalStaked: number; // More stakes = more conviction
+  avgPoolQuality: number; // Avg quality score of pools
+  creatorReputation: number; // Creator's track record
+  timeToFirstPool: number; // Fast pool creation = good topic
 }
 
 function calculateNewsQualityScore(news: News): number {
@@ -1127,10 +1201,10 @@ function calculateNewsQualityScore(news: News): number {
 
   // Weighted score
   const score = {
-    poolCount: Math.min(pools.length * 10, 30),        // 0-30 pts
-    totalStake: Math.min(news.totalStaked / 10, 30),  // 0-30 pts (every $10 = 1pt)
-    avgQuality: calculateAvgPoolQuality(pools),       // 0-25 pts
-    speed: calculateSpeedScore(news),                 // 0-15 pts
+    poolCount: Math.min(pools.length * 10, 30), // 0-30 pts
+    totalStake: Math.min(news.totalStaked / 10, 30), // 0-30 pts (every $10 = 1pt)
+    avgQuality: calculateAvgPoolQuality(pools), // 0-25 pts
+    speed: calculateSpeedScore(news), // 0-15 pts
   };
 
   return Object.values(score).reduce((a, b) => a + b, 0);
@@ -1140,27 +1214,28 @@ function calculateNewsQualityScore(news: News): number {
 **Use Cases:**
 
 **1. Default Sorting:**
+
 ```typescript
 // Show high-quality NEWS first
-const sortedNews = news.sort((a, b) =>
-  calculateNewsQualityScore(b) - calculateNewsQualityScore(a)
+const sortedNews = news.sort(
+  (a, b) => calculateNewsQualityScore(b) - calculateNewsQualityScore(a)
 );
 ```
 
 **2. Filters:**
+
 ```typescript
 // "Quality Threshold" filter
-const qualityNews = news.filter(n =>
-  calculateNewsQualityScore(n) >= 50
-);
+const qualityNews = news.filter((n) => calculateNewsQualityScore(n) >= 50);
 
 // "Trending" = quality + recent
 const trending = news
-  .filter(n => isRecent(n) && calculateNewsQualityScore(n) >= 40)
+  .filter((n) => isRecent(n) && calculateNewsQualityScore(n) >= 40)
   .sort((a, b) => b.qualityScore - a.qualityScore);
 ```
 
 **3. UI Badges:**
+
 ```
 ┌─────────────────────────────────┐
 │ NEWS: "BTC to $100k by Dec"     │
@@ -1178,28 +1253,28 @@ const trending = news
 ```typescript
 // Default View: Quality-First
 const defaultFilter = {
-  minQualityScore: 40,        // Hide low-quality
-  sortBy: 'qualityScore',     // Best first
-  showArchived: false,        // Hide old/dead NEWS
+  minQualityScore: 40, // Hide low-quality
+  sortBy: "qualityScore", // Best first
+  showArchived: false, // Hide old/dead NEWS
 };
 
 // Advanced Filters
 interface NewsFilters {
   qualityThreshold: {
-    all: 0,
-    decent: 40,
-    good: 60,
-    excellent: 80,
+    all: 0;
+    decent: 40;
+    good: 60;
+    excellent: 80;
   };
   activityLevel: {
-    any: 0,
-    active: '>=1 pool',
-    popular: '>=3 pools',
-    trending: '>=5 pools + $100 stakes',
+    any: 0;
+    active: ">=1 pool";
+    popular: ">=3 pools";
+    trending: ">=5 pools + $100 stakes";
   };
-  status: 'all' | 'active' | 'resolved';
+  status: "all" | "active" | "resolved";
   category: string;
-  creatorTier: 'all' | 'expert+' | 'master+' | 'legend';
+  creatorTier: "all" | "expert+" | "master+" | "legend";
 }
 ```
 
@@ -1237,16 +1312,16 @@ interface NewsFilters {
 
 ### Risk Mitigation Matrix
 
-| Risk | Severity | Mitigation | Status |
-|------|----------|-----------|--------|
-| **Spam NEWS** | 🔴 High | $10 deposit requirement | ✅ Planned (MVP) |
-| **Low-Quality Pools** | 🟡 Medium | Min stake + quality scoring | ✅ Planned (MVP) |
-| **Liquidity Fragmentation** | 🟡 Medium | Quality sorting, hide low-stakes | ✅ Planned (MVP) |
-| **Oracle Centralization** | 🟡 Medium | Multi-sig admin → UMA integration | 🔨 Roadmap (Phase 2) |
-| **Sybil Attacks** | 🟡 Medium | Farcaster ID + deposit costs | ✅ Planned (MVP) |
-| **User Confusion (Complex UX)** | 🟡 Medium | Onboarding flow + templates | 🔨 Roadmap (Phase 1) |
-| **Slow Adoption** | 🟡 Medium | Seed 20-30 analysts, incentives | 🔨 Go-to-market |
-| **Regulatory** | 🟢 Low | Information market (not gambling) | 🔨 Legal review |
+| Risk                            | Severity  | Mitigation                        | Status               |
+| ------------------------------- | --------- | --------------------------------- | -------------------- |
+| **Spam NEWS**                   | 🔴 High   | $10 deposit requirement           | ✅ Planned (MVP)     |
+| **Low-Quality Pools**           | 🟡 Medium | Min stake + quality scoring       | ✅ Planned (MVP)     |
+| **Liquidity Fragmentation**     | 🟡 Medium | Quality sorting, hide low-stakes  | ✅ Planned (MVP)     |
+| **Oracle Centralization**       | 🟡 Medium | Multi-sig admin → UMA integration | 🔨 Roadmap (Phase 2) |
+| **Sybil Attacks**               | 🟡 Medium | Farcaster ID + deposit costs      | ✅ Planned (MVP)     |
+| **User Confusion (Complex UX)** | 🟡 Medium | Onboarding flow + templates       | 🔨 Roadmap (Phase 1) |
+| **Slow Adoption**               | 🟡 Medium | Seed 20-30 analysts, incentives   | 🔨 Go-to-market      |
+| **Regulatory**                  | 🟢 Low    | Information market (not gambling) | 🔨 Legal review      |
 
 ---
 
@@ -1297,19 +1372,21 @@ contract QualityControl {
 
 **Critical Distinction for Regulatory & User Perception:**
 
-| Aspect | Prediction Market (Gambling) | Forter (Information Finance) |
-|--------|------------------------------|------------------------------|
-| **Primary Activity** | Betting on outcomes | Funding quality analysis |
-| **User Incentive** | Win bets | Earn yield on research |
-| **Value Creation** | Entertainment | Knowledge discovery |
-| **Target User** | Speculators | Researchers, analysts, DAOs |
-| **Success Metric** | Betting luck | Analysis accuracy |
-| **Reputation** | Win rate | Track record of correct reasoning |
+| Aspect               | Prediction Market (Gambling) | Forter (Information Finance)      |
+| -------------------- | ---------------------------- | --------------------------------- |
+| **Primary Activity** | Betting on outcomes          | Funding quality analysis          |
+| **User Incentive**   | Win bets                     | Earn yield on research            |
+| **Value Creation**   | Entertainment                | Knowledge discovery               |
+| **Target User**      | Speculators                  | Researchers, analysts, DAOs       |
+| **Success Metric**   | Betting luck                 | Analysis accuracy                 |
+| **Reputation**       | Win rate                     | Track record of correct reasoning |
 
 **Marketing Message:**
+
 > "Forter isn't a casino for predictions. It's a marketplace where quality research earns returns. Think of it as **funding research papers with upside** - if the analysis is correct, both the analyst and backers earn."
 
 **This positioning:**
+
 - ✅ Attracts serious users (not just gamblers)
 - ✅ Reduces regulatory risk (information vs gambling)
 - ✅ Aligns incentives with quality (not speculation)
@@ -1320,18 +1397,21 @@ contract QualityControl {
 ### Implementation Priority
 
 **Phase 1 (MVP - Current Focus):**
+
 - ✅ Quality scoring algorithms (frontend calculation)
 - ✅ Frontend filters (quality, activity, sort)
 - ✅ Min stake requirements (UI enforcement)
 - ✅ Pool quality indicators (badges, scores)
 
 **Phase 2 (Testnet):**
+
 - 🔨 NEWS deposit smart contract
 - 🔨 Refund/slash mechanism
 - 🔨 On-chain quality metrics
 - 🔨 Community reporting system
 
 **Phase 3 (Mainnet):**
+
 - 🔨 Advanced spam detection (ML-based)
 - 🔨 Reputation-weighted filtering
 - 🔨 Curation DAO (optional)
@@ -1342,6 +1422,7 @@ contract QualityControl {
 ## Development Roadmap
 
 ### Phase 0: MVP (Hackathon - December 2024)
+
 - ✅ Core smart contracts
 - ✅ Basic UI dengan market browsing
 - ✅ Farcaster authentication
@@ -1349,18 +1430,21 @@ contract QualityControl {
 - ✅ 8 curated demo markets
 
 ### Phase 1: Testnet Launch (Q1 2025)
+
 - Live testnet deployment on Base Sepolia
 - Neynar API integration
 - Real user testing dengan testnet USDC
 - Basic analytics dashboard
 
 ### Phase 2: Mainnet Beta (Q2 2025)
+
 - Mainnet deployment dengan limited markets
 - AI news aggregator untuk semi-automated resolution
 - Enhanced reputation system
 - Mobile-responsive design
 
 ### Phase 3: Scale (Q3-Q4 2025)
+
 - Chainlink oracle integration
 - Community-created markets
 - Advanced analytics dan API
@@ -1369,13 +1453,15 @@ contract QualityControl {
 ## Setup Instructions
 
 ### Prerequisites
-- Node.js 20+ 
+
+- Node.js 20+
 - PostgreSQL 14+
 - Redis 6+
 - Farcaster account
 - Base network wallet
 
 ### Environment Variables
+
 ```bash
 # Backend
 DATABASE_URL=
@@ -1394,6 +1480,7 @@ ETHERSCAN_API_KEY=
 ```
 
 ### Local Development Setup
+
 1. Clone repository
 2. Install dependencies untuk semua packages
 3. Setup database dengan migrations
@@ -1404,18 +1491,21 @@ ETHERSCAN_API_KEY=
 ## Testing Strategy
 
 ### Smart Contract Testing
+
 - Unit tests untuk setiap fungsi
 - Integration tests untuk full user flows
 - Gas optimization tests
 - Security audit preparation
 
 ### Backend Testing
+
 - API endpoint tests
 - Farcaster integration mocks
 - Database transaction tests
 - Load testing untuk scaling
 
 ### Frontend Testing
+
 - Component unit tests
 - E2E tests untuk critical paths
 - Wallet connection tests
@@ -1424,6 +1514,7 @@ ETHERSCAN_API_KEY=
 ## Demo Scenarios
 
 ### Scenario 1: NEWS Creator
+
 1. Alice connects wallet + Farcaster
 2. Clicks "Create NEWS"
 3. Fills form:
@@ -1437,6 +1528,7 @@ ETHERSCAN_API_KEY=
 7. Alice builds reputation as quality news creator
 
 ### Scenario 2: POOL Creator (Analyst)
+
 1. Bob browses active NEWS
 2. Sees Alice's BTC news
 3. Creates POOL:
@@ -1451,6 +1543,7 @@ ETHERSCAN_API_KEY=
 7. Bob earns 70% of pool + reputation boost
 
 ### Scenario 3: Strategic Pool Staker
+
 1. Carol browses pools under BTC news
 2. Sees 5 different pools with different reasoning
 3. Analyzes each pool:
@@ -1462,6 +1555,7 @@ ETHERSCAN_API_KEY=
 7. Carol profits from both pools
 
 ### Scenario 4: Reputation Building Journey
+
 1. David consistently creates accurate pools
 2. After 20 pools:
    - 17 correct predictions (85% accuracy)
@@ -1476,6 +1570,7 @@ ETHERSCAN_API_KEY=
 ## Architecture Comparison: Why Permissionless Pools?
 
 ### Model A: Traditional Admin Markets (NOT our model)
+
 ```
 ❌ What most prediction markets do:
 
@@ -1495,6 +1590,7 @@ Issues:
 ```
 
 ### Model B: Forter's Permissionless Pools (OUR model)
+
 ```
 ✅ What Forter does differently:
 
@@ -1531,32 +1627,35 @@ Benefits:
 
 ### Key Architectural Differences
 
-| Aspect | Traditional Markets | Forter Pools |
-|--------|-------------------|--------------|
-| **Creation** | Admin/DAO curated | Fully permissionless |
-| **Structure** | 1 market = 1 pool | 1 news = many pools |
-| **Stakes** | Shared pool (compete) | Independent pools (coexist) |
-| **Reasoning** | Optional text | Core to each pool |
-| **Resolution** | Binary outcome | Same outcome, different pools |
-| **Rewards** | Winner-take-all | Per-pool distribution |
-| **Spam Control** | Curation | Minimum stakes + reputation |
-| **Innovation** | Incremental | Fundamental shift |
+| Aspect           | Traditional Markets   | Forter Pools                  |
+| ---------------- | --------------------- | ----------------------------- |
+| **Creation**     | Admin/DAO curated     | Fully permissionless          |
+| **Structure**    | 1 market = 1 pool     | 1 news = many pools           |
+| **Stakes**       | Shared pool (compete) | Independent pools (coexist)   |
+| **Reasoning**    | Optional text         | Core to each pool             |
+| **Resolution**   | Binary outcome        | Same outcome, different pools |
+| **Rewards**      | Winner-take-all       | Per-pool distribution         |
+| **Spam Control** | Curation              | Minimum stakes + reputation   |
+| **Innovation**   | Incremental           | Fundamental shift             |
 
 ### Why This Matters
 
 **For Analysts:**
+
 - Don't compete with others in same pool
 - Your reasoning is the differentiator
 - Build reputation on unique insights
 - Multiple revenue streams per news
 
 **For Stakers:**
+
 - Back specific arguments, not just outcomes
 - Can diversify across multiple pools
 - Benefit from reasoning quality
 - More strategic opportunities
 
 **For the Ecosystem:**
+
 - Permissionless = faster innovation
 - More data = better insights
 - Nuanced information discovery
@@ -1582,11 +1681,13 @@ Forter bukan sekadar prediction market. Ini adalah **Information Finance Protoco
 ### What Makes Us Different
 
 We're not building:
+
 - ❌ A gambling platform disguised as predictions
 - ❌ A social media for hot takes
 - ❌ Another token speculation game
 
 We're building:
+
 - ✅ A reputation layer for credible information
 - ✅ A financial system for knowledge workers
 - ✅ A trust infrastructure for Web3 decision-making
@@ -1594,6 +1695,7 @@ We're building:
 ### The Vision: "Permissionless Information Finance"
 
 Imagine a world where:
+
 - **Anyone can create predictions** - No gatekeepers, no approval needed
 - **Every argument gets its own economic value** - Reasoning quality = financial reward
 - **DAOs use Forter reputation** for governance weights & decision-making
@@ -1609,6 +1711,7 @@ Forter is not just a product - it's a **permissionless primitive** for the infor
 ### From Centralized to Truly Open
 
 We're not building another curated platform. We're building the infrastructure for:
+
 - ✅ Permissionless information creation
 - ✅ Independent economic incentives per argument
 - ✅ Verifiable credibility without gatekeepers
@@ -1636,6 +1739,7 @@ We're not building another curated platform. We're building the infrastructure f
 ## 🚀 MVP Development Checklist (Frontend Focus)
 
 ### ✅ Already Built (Current State)
+
 - [x] Homepage landing page with Hero, Features, How It Works
 - [x] News browse page with filtering & search
 - [x] News detail page with pools listing
@@ -1649,7 +1753,9 @@ We're not building another curated platform. We're building the infrastructure f
 ### 🔨 To Be Built (Priority Order)
 
 #### **Phase 1: Profile & History System**
+
 1. **Profile Page (`/profile/[address]`)**
+
    - [ ] Public profile view for any wallet
    - [ ] Stats overview cards (pools created, stakes made, win/loss)
    - [ ] Tier badge display with accuracy
@@ -1658,6 +1764,7 @@ We're not building another curated platform. We're building the infrastructure f
    - [ ] Responsive mobile layout
 
 2. **My Profile Integration**
+
    - [ ] "My Profile" button in header
    - [ ] Navigate to own profile automatically
    - [ ] Show exact earnings (private data) when viewing own profile
@@ -1670,7 +1777,9 @@ We're not building another curated platform. We're building the infrastructure f
    - [ ] ActivityTimeline component
 
 #### **Phase 2: Admin Resolution System**
+
 4. **Admin Interface**
+
    - [ ] Admin config file with hardcoded wallets
    - [ ] Admin Actions section (conditional render on news detail)
    - [ ] Resolve News modal
@@ -1686,6 +1795,7 @@ We're not building another curated platform. We're building the infrastructure f
    - [ ] Win/loss indicators
 
 #### **Phase 3: Enhanced Mock Data**
+
 6. **Extended Mock Data**
    - [ ] More POOL_STAKES for testing history
    - [ ] Mock REPUTATION_DATA per wallet
@@ -1693,7 +1803,9 @@ We're not building another curated platform. We're building the infrastructure f
    - [ ] Multiple users with different activity patterns
 
 #### **Phase 4: UX Enhancements**
+
 7. **Navigation Updates**
+
    - [ ] Add "My Profile" to header
    - [ ] Clickable creator addresses → profile page
    - [ ] Breadcrumb improvements
@@ -1705,6 +1817,7 @@ We're not building another curated platform. We're building the infrastructure f
    - [ ] My Activity filter (news/pools I participated in)
 
 #### **Phase 5: Mobile Optimization**
+
 9. **Mobile-First Adjustments**
    - [ ] Profile page mobile layout
    - [ ] News detail sidebar → bottom section on mobile
@@ -1713,6 +1826,7 @@ We're not building another curated platform. We're building the infrastructure f
    - [ ] Bottom tab navigation (optional)
 
 ### 🎯 Success Criteria for MVP
+
 - ✅ User can browse news and pools
 - ✅ User can create news and pools (mock)
 - ✅ User can stake on pools (mock)
@@ -1724,6 +1838,7 @@ We're not building another curated platform. We're building the infrastructure f
 - ✅ Mock data simulates real user flows
 
 ### 📝 Notes for Team
+
 - **Tachul (FE Polish):** Focus on styling consistency, animations, PWA setup
 - **Luthfi (FE Features):** Profile system, admin resolution, history components
 - **Zidan (Contract):** Align with types in `types/index.ts`, prepare for integration
@@ -1731,4 +1846,4 @@ We're not building another curated platform. We're building the infrastructure f
 
 ---
 
-*"In a world flooded with noise, credibility is the new currency. Forter makes it liquid."*
+_"In a world flooded with noise, credibility is the new currency. Forter makes it liquid."_

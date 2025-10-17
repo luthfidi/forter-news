@@ -16,30 +16,32 @@ const geistMono = Geist_Mono({
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Forter - Farcaster Porter",
-    description: "Stake on credibility, not luck. Build on-chain reputation through verifiable analysis and earn from accurate insights.",
+    title: "Forter - Forecast Porter",
+    description:
+      "Stake on credibility, not luck. Build on-chain reputation through verifiable analysis and earn from accurate insights.",
     icons: {
       icon: [
         { url: "/forter.ico", type: "image/x-icon" },
-        { url: "/forter.png", type: "image/png" }
+        { url: "/forter.png", type: "image/png" },
       ],
       shortcut: "/forter.ico",
-      apple: "/forter.png"
+      apple: "/forter.png",
     },
     openGraph: {
-      title: "Forter - Farcaster Porter",
-      description: "Permissionless information finance protocol. Create predictions, analyze with reasoning, and build on-chain reputation.",
+      title: "Forter - Forecast Porter",
+      description:
+        "Permissionless information finance protocol. Create predictions, analyze with reasoning, and build on-chain reputation.",
       images: [
         {
           url: "https://forter.app/og-image.png",
           width: 1200,
           height: 630,
-          alt: "Forter - Farcaster Porter"
-        }
+          alt: "Forter - Forecast Porter",
+        },
       ],
       type: "website",
-      siteName: "Forter"
-    }
+      siteName: "Forter",
+    },
   };
 }
 

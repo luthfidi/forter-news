@@ -19,7 +19,7 @@ export const minikitConfig = {
   },
   miniapp: {
     version: "1",
-    name: "Forter - Farcaster Porter",
+    name: "Forter - Forecast Porter",
     subtitle: "Stake on Credibility, Not Luck",
     description:
       "Permissionless information finance protocol. Create predictions, analyze with reasoning, and build on-chain reputation through verifiable insights.",
@@ -44,7 +44,7 @@ export const minikitConfig = {
     ],
     heroImageUrl: `${ROOT_URL}/hero-image.png`,
     tagline: "Transform credibility into yield",
-    ogTitle: "Forter - Farcaster Porter",
+    ogTitle: "Forter - Forecast Porter",
     ogDescription:
       "Stake on credibility, not luck. Build on-chain reputation through verifiable analysis and earn from accurate insights.",
     ogImageUrl: `${ROOT_URL}/og-image.png`,

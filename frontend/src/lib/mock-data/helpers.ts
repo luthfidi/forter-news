@@ -131,7 +131,7 @@ export function getAnalystsByCategory(category?: string): ReputationData[] {
 // Sort analysts
 export function sortAnalysts(
   analysts: ReputationData[],
-  sortBy: 'accuracy' | 'totalPools' | 'recent' = 'accuracy'
+  sortBy: 'accuracy' | 'totalPools' | 'recent' | 'score' | 'successRate' | 'totalStaked' = 'accuracy'
 ): ReputationData[] {
   const sorted = [...analysts];
 
@@ -147,6 +147,15 @@ export function sortAnalysts(
     sorted.sort((a, b) => b.totalPools - a.totalPools);
   } else if (sortBy === 'recent') {
     sorted.sort((a, b) => (b.memberSince?.getTime() ?? 0) - (a.memberSince?.getTime() ?? 0));
+  } else if (sortBy === 'score') {
+    // Sort by score (use accuracy as score for reputation data)
+    sorted.sort((a, b) => b.accuracy - a.accuracy);
+  } else if (sortBy === 'successRate') {
+    // Sort by success rate (use accuracy for reputation data)
+    sorted.sort((a, b) => b.accuracy - a.accuracy);
+  } else if (sortBy === 'totalStaked') {
+    // Sort by total pools (reputation doesn't track totalStaked, use totalPools)
+    sorted.sort((a, b) => b.totalPools - a.totalPools);
   }
 
   return sorted;

@@ -231,7 +231,11 @@ class StakingService {
    * - User's position (agree/disagree)
    * - Reward distribution algorithm
    */
-  async claimRewards(poolId: string, _userAddress: string): Promise<number> {
+  async claimRewards(
+    poolId: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _userAddress: string
+  ): Promise<number> {
     // TODO: Add contract integration here
 
     await new Promise(resolve => setTimeout(resolve, 1500));

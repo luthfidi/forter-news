@@ -277,8 +277,11 @@ class ReputationService {
    */
   async updateReputation(
     address: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _qualityScore: number,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _wasCorrect: boolean,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _amountStaked: number
   ): Promise<void> {
     // TODO: This should be done by smart contract internally

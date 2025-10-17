@@ -1,10 +1,10 @@
 'use client';
 
-import CustomConnectButton from '@/components/wallet/CustomConnectButton';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAccount } from 'wagmi';
 import Image from 'next/image';
+import { Wallet } from '@coinbase/onchainkit/wallet';
 
 export default function Header() {
   const pathname = usePathname();
@@ -57,7 +57,7 @@ export default function Header() {
         )}
       </nav>
       <div className="flex items-center gap-3">
-        <CustomConnectButton />
+        <Wallet />
       </div>
     </header>
   );

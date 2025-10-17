@@ -1,5 +1,12 @@
 import { News, CreateNewsInput } from '@/types';
-import { MOCK_NEWS, getNewsById as mockGetNewsById, getNewsByCategory as mockGetNewsByCategory } from '@/lib/mock-data';
+import { MOCK_NEWS, getNewsById as mockGetNewsById } from '@/lib/mock-data';
+import { isContractsEnabled } from '@/config/contracts';
+import { 
+  getNewsCount, 
+  getNewsById as getNewsContractById, 
+  createNewsContract,
+  handleContractError 
+} from '@/lib/contracts/utils';
 
 /**
  * NEWS SERVICE
@@ -57,48 +64,104 @@ class NewsService {
    * Get all news (active + resolved)
    *
    * Contract Integration:
-   * - Function: getAllNews() or filter events
+   * - Function: getNewsCount() + getNewsInfo(id) for each
    * - Returns: News[] struct array
    */
   async getAll(): Promise<News[]> {
-    // TODO: Add contract integration here
-    // if (USE_CONTRACTS) { ... }
+    if (!isContractsEnabled()) {
+      // Fallback to mock data
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return MOCK_NEWS;
+    }
 
-    // Simulate API delay for realistic testing
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      console.log('[NewsService] Fetching news from contracts...');
+      
+      // Get total news count
+      const totalCount = await getNewsCount();
+      console.log('[NewsService] Total news count:', totalCount);
 
-    return MOCK_NEWS;
+      if (totalCount === 0) {
+        return [];
+      }
+
+      // Fetch each news item
+      const newsPromises = Array.from({ length: totalCount }, (_, i) => 
+        getNewsContractById(i.toString())
+      );
+
+      const newsResults = await Promise.all(newsPromises);
+      const validNews = newsResults.filter(Boolean) as News[];
+
+      console.log('[NewsService] Fetched', validNews.length, 'news items from contracts');
+      return validNews;
+
+    } catch (error) {
+      console.error('[NewsService] Contract fetch failed, falling back to mock data:', error);
+      
+      // Fallback to mock data on error
+      if (process.env.NODE_ENV === 'development') {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return MOCK_NEWS;
+      }
+      
+      throw new Error(handleContractError(error));
+    }
   }
 
   /**
    * Get news by ID
    *
    * Contract Integration:
-   * - Function: getNews(uint256 newsId)
+   * - Function: getNewsInfo(uint256 newsId)
    * - Returns: News struct
    */
   async getById(id: string): Promise<News | undefined> {
-    // TODO: Add contract integration here
-    // if (USE_CONTRACTS) { ... }
+    if (!isContractsEnabled()) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      return mockGetNewsById(id);
+    }
 
-    await new Promise(resolve => setTimeout(resolve, 300));
+    try {
+      console.log('[NewsService] Fetching news by ID from contract:', id);
+      
+      const news = await getNewsContractById(id);
+      
+      if (news) {
+        console.log('[NewsService] Successfully fetched news:', news.title);
+      } else {
+        console.log('[NewsService] News not found with ID:', id);
+      }
+      
+      return news || undefined;
 
-    return mockGetNewsById(id);
+    } catch (error) {
+      console.error('[NewsService] Contract getById failed, falling back to mock:', error);
+      
+      // Fallback to mock data on error
+      if (process.env.NODE_ENV === 'development') {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        return mockGetNewsById(id);
+      }
+      
+      return undefined;
+    }
   }
 
   /**
    * Get news by category
    *
    * Contract Integration:
-   * - Option 1: Filter client-side after fetching all
-   * - Option 2: Add getNewsByCategory(Category category) to contract
+   * - Filter client-side after fetching all (since contract doesn't have category filter)
    */
   async getByCategory(category: string): Promise<News[]> {
-    // TODO: Add contract integration here
-
-    await new Promise(resolve => setTimeout(resolve, 400));
-
-    return mockGetNewsByCategory(category);
+    const allNews = await this.getAll();
+    
+    if (category === 'All') {
+      return allNews;
+    }
+    
+    return allNews.filter(news => news.category === category);
   }
 
   /**
@@ -116,52 +179,69 @@ class NewsService {
   /**
    * Create new news
    *
-   * Contract Integration (CRITICAL):
-   * ```typescript
-   * const hash = await writeContract({
-   *   address: contracts.newsFactory,
-   *   abi: NewsFactoryABI,
-   *   functionName: 'createNews',
-   *   args: [
-   *     input.title,
-   *     input.description,
-   *     Math.floor(input.endDate.getTime() / 1000), // Unix timestamp
-   *     input.resolutionCriteria,
-   *     categoryToEnum(input.category), // Convert to uint8
-   *   ],
-   *   value: parseUnits('10', 6), // $10 USDC deposit
-   * });
-   *
-   * // Wait for confirmation
-   * const receipt = await waitForTransaction({ hash });
-   *
-   * // Extract newsId from event
-   * const newsId = receipt.logs[0].topics[1];
-   *
-   * return this.getById(newsId);
-   * ```
+   * Contract Integration:
+   * - Function: createNews(title, description, category, resolutionCriteria, resolveTime)
+   * - Emits: NewsCreated event with newsId
    */
   async create(input: CreateNewsInput): Promise<News> {
-    // TODO: Add contract integration here
+    if (!isContractsEnabled()) {
+      // Mock implementation for development
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-    // Mock implementation
-    await new Promise(resolve => setTimeout(resolve, 1500));
+      const newNews: News = {
+        id: `news-${Date.now()}`,
+        title: input.title,
+        description: input.description,
+        category: input.category,
+        endDate: input.endDate,
+        resolutionCriteria: input.resolutionCriteria,
+        creatorAddress: '0xuser...mock',
+        createdAt: new Date(),
+        status: 'active',
+        totalPools: 0,
+        totalStaked: 0
+      };
 
-    const newNews: News = {
-      id: `news-${Date.now()}`,
-      title: input.title,
-      description: input.description,
-      category: input.category,
-      endDate: input.endDate,
-      resolutionCriteria: input.resolutionCriteria,
-      creatorAddress: '0xuser...mock', // TODO: Get from connected wallet
-      createdAt: new Date(),
-      status: 'active',
-      totalPools: 0,
-      totalStaked: 0
-    };
+      return newNews;
+    }
 
-    return newNews;
+    try {
+      console.log('[NewsService] Creating news via smart contract...', input);
+
+      // Call smart contract to create news
+      const result = await createNewsContract(
+        input.title,
+        input.description,
+        input.category,
+        input.resolutionCriteria,
+        input.endDate
+      );
+
+      if (!result.success) {
+        throw new Error(result.error || 'Transaction failed');
+      }
+
+      console.log('[NewsService] News creation transaction successful:', result.hash);
+
+      // Get the current news count to find the latest news ID
+      // Note: This assumes the new news gets the next sequential ID
+      const newsCount = await getNewsCount();
+      const newNewsId = (newsCount - 1).toString(); // Latest news has highest ID
+      
+      // Fetch the newly created news
+      const newNews = await this.getById(newNewsId);
+      
+      if (!newNews) {
+        throw new Error('Failed to fetch created news from contract');
+      }
+
+      console.log('[NewsService] Successfully created and fetched new news:', newNews.title);
+      return newNews;
+
+    } catch (error) {
+      console.error('[NewsService] Create news failed:', error);
+      throw new Error(handleContractError(error));
+    }
   }
 
   /**

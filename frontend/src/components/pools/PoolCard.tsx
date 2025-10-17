@@ -219,35 +219,30 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
             <span className="text-muted-foreground">${pool.totalStaked.toLocaleString()}</span>
           </div>
 
-          {/* Progress bars */}
-          <div className="space-y-2">
-            {/* Agree (Back Pool) */}
-            <div>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-emerald-600">Agree (Back this pool)</span>
-                <span className="font-medium">${pool.agreeStakes.toLocaleString()} ({agreePercentage}%)</span>
-              </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
-                  style={{ width: `${agreePercentage}%` }}
-                />
-              </div>
+          {/* Progress bar legend */}
+          <div className="flex justify-between text-xs mb-2">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded bg-gradient-to-r from-emerald-400 to-emerald-500"></div>
+              <span className="text-emerald-600">Agree</span>
+              <span className="font-medium">${pool.agreeStakes.toLocaleString()} ({agreePercentage}%)</span>
             </div>
+            <div className="flex items-center gap-2">
+              <span className="font-medium">${pool.disagreeStakes.toLocaleString()} ({disagreePercentage}%)</span>
+              <span className="text-rose-600">Disagree</span>
+              <div className="w-3 h-3 rounded bg-gradient-to-r from-rose-400 to-rose-500"></div>
+            </div>
+          </div>
 
-            {/* Disagree (Against Pool) */}
-            <div>
-              <div className="flex justify-between text-xs mb-1">
-                <span className="text-rose-600">Disagree (Against pool)</span>
-                <span className="font-medium">${pool.disagreeStakes.toLocaleString()} ({disagreePercentage}%)</span>
-              </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-rose-400 to-rose-500 transition-all duration-500"
-                  style={{ width: `${disagreePercentage}%` }}
-                />
-              </div>
-            </div>
+          {/* Single combined progress bar */}
+          <div className="h-6 bg-muted rounded-full overflow-hidden flex">
+            <div
+              className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
+              style={{ width: `${agreePercentage}%` }}
+            />
+            <div
+              className="h-full bg-gradient-to-r from-rose-400 to-rose-500 transition-all duration-500"
+              style={{ width: `${disagreePercentage}%` }}
+            />
           </div>
 
           {/* Creator Stake */}
@@ -278,7 +273,7 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
             <Button
               onClick={() => handleStakeButtonClick('disagree')}
               variant="outline"
-              className="flex-1 border-rose-500/50 text-rose-600 hover:bg-rose-500 hover:text-white hover:border-rose-500"
+              className="flex-1 hover:border-rose-500/50 bg-rose-500 hover:bg-rose-600 text-white border-rose-500"
               size="sm"
             >
               Stake Disagree

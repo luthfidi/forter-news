@@ -8,6 +8,12 @@ import {
   calculateTier,
   getTierIcon,
 } from '@/lib/mock-data';
+import { isContractsEnabled } from '@/config/contracts';
+import type { Address } from '@/types/contracts';
+import { 
+  getUserReputation,
+  handleContractError 
+} from '@/lib/contracts/utils';
 
 /**
  * REPUTATION SERVICE
@@ -50,24 +56,44 @@ class ReputationService {
    * Get reputation data for a specific user
    *
    * Contract Integration:
-   * - Function: getReputation(address user)
+   * - Function: getUserReputation(address user)
    * - Returns: Reputation struct with score, tier, stats
    */
   async getByAddress(address: string): Promise<ReputationData | undefined> {
-    // TODO: Add contract integration here
-    // if (USE_CONTRACTS) {
-    //   const data = await readContract({
-    //     address: contracts.reputationNFT,
-    //     abi: ReputationNFTABI,
-    //     functionName: 'getReputation',
-    //     args: [address as `0x${string}`],
-    //   });
-    //   return this.mapContractToReputation(data);
-    // }
+    if (!isContractsEnabled()) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      return mockGetReputationData(address);
+    }
 
-    await new Promise(resolve => setTimeout(resolve, 300));
+    try {
+      console.log('[ReputationService] Fetching reputation from contract:', address);
+      
+      const reputation = await getUserReputation(address as Address);
+      
+      if (reputation) {
+        console.log('[ReputationService] Successfully fetched reputation:', {
+          address: reputation.address,
+          accuracy: reputation.accuracy,
+          tier: reputation.tier,
+          totalPools: reputation.totalPools
+        });
+      } else {
+        console.log('[ReputationService] No reputation found for address:', address);
+      }
+      
+      return reputation || undefined;
 
-    return mockGetReputationData(address);
+    } catch (error) {
+      console.error('[ReputationService] Contract getByAddress failed, falling back to mock:', error);
+      
+      // Fallback to mock data on error
+      if (process.env.NODE_ENV === 'development') {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        return mockGetReputationData(address);
+      }
+      
+      return undefined;
+    }
   }
 
   /**
@@ -81,31 +107,35 @@ class ReputationService {
    * Recommended: Use The Graph to index all reputation holders
    */
   async getAllAnalysts(): Promise<ReputationData[]> {
-    // TODO: Add contract integration here
-    // if (USE_CONTRACTS) {
-    //   // Use The Graph query
-    //   const response = await fetch(SUBGRAPH_URL, {
-    //     method: 'POST',
-    //     body: JSON.stringify({
-    //       query: `{
-    //         reputations(orderBy: score, orderDirection: desc) {
-    //           user
-    //           score
-    //           tier
-    //           poolsCreated
-    //           totalStaked
-    //           successRate
-    //         }
-    //       }`
-    //     })
-    //   });
-    //   const { data } = await response.json();
-    //   return data.reputations;
-    // }
+    if (!isContractsEnabled()) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return mockGetAllAnalysts();
+    }
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      console.log('[ReputationService] Fetching all analysts from contract...');
+      
+      // For contract integration, we'd need to:
+      // 1. Query ReputationUpdated events to get all users with reputation
+      // 2. Or use The Graph subgraph to index reputation data
+      // 3. Or implement a contract function to iterate through NFT holders
+      
+      // For now, fall back to mock data since this requires event indexing
+      console.log('[ReputationService] All analysts require event indexing, falling back to mock');
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return mockGetAllAnalysts();
 
-    return mockGetAllAnalysts();
+    } catch (error) {
+      console.error('[ReputationService] Contract getAllAnalysts failed, falling back to mock:', error);
+      
+      // Fallback to mock data on error
+      if (process.env.NODE_ENV === 'development') {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return mockGetAllAnalysts();
+      }
+      
+      throw new Error(handleContractError(error));
+    }
   }
 
   /**

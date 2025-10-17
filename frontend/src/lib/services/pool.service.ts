@@ -5,6 +5,16 @@ import {
   getPoolById as mockGetPoolById,
   getPoolsByCreator as mockGetPoolsByCreator
 } from '@/lib/mock-data';
+import { isContractsEnabled, contracts } from '@/config/contracts';
+import { readContract } from 'wagmi/actions';
+import { config as wagmiConfig } from '@/lib/wagmi';
+import type { Address } from '@/types/contracts';
+import { 
+  getPoolsByNewsId as getPoolsByNewsIdContract, 
+  getPoolById as getPoolByIdContract,
+  createPoolContract,
+  handleContractError 
+} from '@/lib/contracts/utils';
 
 /**
  * POOL SERVICE
@@ -52,17 +62,43 @@ class PoolService {
    * Get all pools (active + resolved)
    *
    * Contract Integration:
-   * - Function: getAllPools() or filter events
-   * - Returns: Pool[] struct array
+   * - Aggregate pools from all news items
+   * - No direct contract function for this, so we iterate through news
    */
   async getAll(): Promise<Pool[]> {
-    // TODO: Add contract integration here
-    // if (USE_CONTRACTS) { ... }
+    if (!isContractsEnabled()) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return MOCK_POOLS;
+    }
 
-    // Simulate API delay for realistic testing
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      console.log('[PoolService] Fetching all pools from contracts...');
+      
+      // Import newsService to get all news items
+      const { newsService } = await import('./news.service');
+      const allNews = await newsService.getAll();
+      
+      // Get pools for each news item
+      const poolPromises = allNews.map(news => this.getByNewsId(news.id));
+      const poolArrays = await Promise.all(poolPromises);
+      
+      // Flatten the arrays
+      const allPools = poolArrays.flat();
+      
+      console.log('[PoolService] Fetched', allPools.length, 'pools total from contracts');
+      return allPools;
 
-    return MOCK_POOLS;
+    } catch (error) {
+      console.error('[PoolService] Contract getAll failed, falling back to mock:', error);
+      
+      // Fallback to mock data on error
+      if (process.env.NODE_ENV === 'development') {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return MOCK_POOLS;
+      }
+      
+      throw new Error(handleContractError(error));
+    }
   }
 
   /**
@@ -74,51 +110,125 @@ class PoolService {
    * - This is the primary way to display pools on news detail page
    */
   async getByNewsId(newsId: string): Promise<Pool[]> {
-    // TODO: Add contract integration here
-    // if (USE_CONTRACTS) {
-    //   const data = await readContract({
-    //     address: contracts.poolFactory,
-    //     abi: PoolFactoryABI,
-    //     functionName: 'getPoolsByNewsId',
-    //     args: [BigInt(newsId)],
-    //   });
-    //   return this.mapContractToPools(data);
-    // }
+    if (!isContractsEnabled()) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      return mockGetPoolsByNewsId(newsId);
+    }
 
-    await new Promise(resolve => setTimeout(resolve, 300));
+    try {
+      console.log('[PoolService] Fetching pools for news ID from contract:', newsId);
+      
+      const pools = await getPoolsByNewsIdContract(newsId);
+      
+      console.log('[PoolService] Found', pools.length, 'pools for news ID', newsId);
+      return pools;
 
-    return mockGetPoolsByNewsId(newsId);
+    } catch (error) {
+      console.error('[PoolService] Contract getByNewsId failed, falling back to mock:', error);
+      
+      // Fallback to mock data on error
+      if (process.env.NODE_ENV === 'development') {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        return mockGetPoolsByNewsId(newsId);
+      }
+      
+      throw new Error(handleContractError(error));
+    }
   }
 
   /**
    * Get pool by ID
    *
    * Contract Integration:
-   * - Function: getPool(uint256 poolId)
+   * - Function: getPoolInfo(uint256 newsId, uint256 poolId)
    * - Returns: Pool struct
+   * - Note: Requires both newsId and poolId (limitation of current contract design)
    */
-  async getById(id: string): Promise<Pool | undefined> {
-    // TODO: Add contract integration here
+  async getById(id: string, newsId?: string): Promise<Pool | undefined> {
+    if (!isContractsEnabled()) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      return mockGetPoolById(id);
+    }
 
-    await new Promise(resolve => setTimeout(resolve, 300));
+    // For contract calls, we need both newsId and poolId
+    if (!newsId) {
+      console.warn('[PoolService] getById requires newsId for contract calls, falling back to mock');
+      await new Promise(resolve => setTimeout(resolve, 300));
+      return mockGetPoolById(id);
+    }
 
-    return mockGetPoolById(id);
+    try {
+      console.log('[PoolService] Fetching pool by ID from contract:', { poolId: id, newsId });
+      
+      const pool = await getPoolByIdContract(newsId, id);
+      
+      if (pool) {
+        console.log('[PoolService] Successfully fetched pool:', pool.reasoning.substring(0, 50) + '...');
+      } else {
+        console.log('[PoolService] Pool not found with ID:', id);
+      }
+      
+      return pool || undefined;
+
+    } catch (error) {
+      console.error('[PoolService] Contract getById failed, falling back to mock:', error);
+      
+      // Fallback to mock data on error
+      if (process.env.NODE_ENV === 'development') {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        return mockGetPoolById(id);
+      }
+      
+      return undefined;
+    }
   }
 
   /**
    * Get pools by creator address
    *
    * Contract Integration:
-   * - Option 1: Filter client-side after fetching all
-   * - Option 2: Add getPoolsByCreator(address creator) to contract
-   * - Option 3: Index events off-chain (The Graph, etc.)
+   * - Uses getPoolsByCreator(address creator) from contract
+   * - Returns array of newsIds and poolIds that need to be fetched individually
    */
   async getByCreator(creatorAddress: string): Promise<Pool[]> {
-    // TODO: Add contract integration here
+    if (!isContractsEnabled()) {
+      await new Promise(resolve => setTimeout(resolve, 400));
+      return mockGetPoolsByCreator(creatorAddress);
+    }
 
-    await new Promise(resolve => setTimeout(resolve, 400));
+    try {
+      console.log('[PoolService] Fetching pools by creator from contract:', creatorAddress);
+      
+      // Call contract function to get newsIds and poolIds for creator
+      const result = await readContract(wagmiConfig, {
+        address: contracts.forter.address,
+        abi: contracts.forter.abi,
+        functionName: 'getPoolsByCreator',
+        args: [creatorAddress as Address],
+      }) as { newsIds: bigint[]; poolIds: bigint[] };
 
-    return mockGetPoolsByCreator(creatorAddress);
+      // Fetch each pool individually
+      const poolPromises = result.newsIds.map((newsId, index) => 
+        this.getById(result.poolIds[index].toString(), newsId.toString())
+      );
+
+      const pools = await Promise.all(poolPromises);
+      const validPools = pools.filter(Boolean) as Pool[];
+      
+      console.log('[PoolService] Found', validPools.length, 'pools for creator:', creatorAddress);
+      return validPools;
+
+    } catch (error) {
+      console.error('[PoolService] Contract getByCreator failed, falling back to mock:', error);
+      
+      // Fallback to mock data on error
+      if (process.env.NODE_ENV === 'development') {
+        await new Promise(resolve => setTimeout(resolve, 400));
+        return mockGetPoolsByCreator(creatorAddress);
+      }
+      
+      throw new Error(handleContractError(error));
+    }
   }
 
   /**
@@ -136,55 +246,74 @@ class PoolService {
   /**
    * Create new pool (analysis of NEWS)
    *
-   * Contract Integration (CRITICAL):
-   * ```typescript
-   * const hash = await writeContract({
-   *   address: contracts.poolFactory,
-   *   abi: PoolFactoryABI,
-   *   functionName: 'createPool',
-   *   args: [
-   *     BigInt(input.newsId),
-   *     input.position === 'YES' ? 1 : 0, // Enum: YES=1, NO=0
-   *     input.reasoning,
-   *     input.evidence,
-   *     parseUnits(input.creatorStake.toString(), 6), // USDC amount
-   *   ],
-   *   value: 0n, // Or gas token if needed
-   * });
-   *
-   * // Wait for confirmation
-   * const receipt = await waitForTransaction({ hash });
-   *
-   * // Extract poolId from event
-   * const poolId = receipt.logs[0].topics[1];
-   *
-   * return this.getById(poolId);
-   * ```
+   * Contract Integration:
+   * - Function: createPool(newsId, reasoning, evidenceLinks, imageUrl, imageCaption, position, creatorStake)
+   * - Requires: USDC approval first
+   * - Emits: PoolCreated event with poolId
    */
   async create(input: CreatePoolInput): Promise<Pool> {
-    // TODO: Add contract integration here
+    if (!isContractsEnabled()) {
+      // Mock implementation for development
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-    // Mock implementation
-    await new Promise(resolve => setTimeout(resolve, 1500));
+      const newPool: Pool = {
+        id: `pool-${Date.now()}`,
+        newsId: input.newsId,
+        creatorAddress: '0xuser...mock',
+        createdAt: new Date(),
+        position: input.position,
+        reasoning: input.reasoning,
+        evidence: input.evidence,
+        qualityScore: 0,
+        creatorStake: input.creatorStake,
+        agreeStakes: 0,
+        disagreeStakes: 0,
+        totalStaked: input.creatorStake,
+        status: 'active',
+        outcome: null,
+        imageUrl: input.imageUrl,
+        imageCaption: input.imageCaption,
+      };
 
-    const newPool: Pool = {
-      id: `pool-${Date.now()}`,
-      newsId: input.newsId,
-      creatorAddress: '0xuser...mock', // TODO: Get from connected wallet
-      createdAt: new Date(),
-      position: input.position,
-      reasoning: input.reasoning,
-      evidence: input.evidence,
-      qualityScore: 0, // Calculated later
-      creatorStake: input.creatorStake,
-      agreeStakes: 0,
-      disagreeStakes: 0,
-      totalStaked: input.creatorStake, // Initial stake = creator stake
-      status: 'active',
-      outcome: null,
-    };
+      return newPool;
+    }
 
-    return newPool;
+    try {
+      console.log('[PoolService] Creating pool via smart contract...', input);
+
+      // Call smart contract to create pool
+      const result = await createPoolContract(
+        input.newsId,
+        input.reasoning,
+        input.evidence,
+        input.imageUrl || '',
+        input.imageCaption || '',
+        input.position,
+        input.creatorStake
+      );
+
+      if (!result.success) {
+        throw new Error(result.error || 'Transaction failed');
+      }
+
+      console.log('[PoolService] Pool creation transaction successful:', result.hash);
+
+      // Get the updated pools list to find the new pool
+      // Note: We'll get the latest pool by fetching all pools for this news
+      const pools = await this.getByNewsId(input.newsId);
+      const newPool = pools[pools.length - 1]; // Assume newest pool is last
+      
+      if (!newPool) {
+        throw new Error('Failed to fetch created pool from contract');
+      }
+
+      console.log('[PoolService] Successfully created and fetched new pool:', newPool.reasoning.substring(0, 50) + '...');
+      return newPool;
+
+    } catch (error) {
+      console.error('[PoolService] Create pool failed:', error);
+      throw new Error(handleContractError(error));
+    }
   }
 
   /**

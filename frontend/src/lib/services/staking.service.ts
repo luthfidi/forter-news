@@ -171,8 +171,7 @@ class StakingService {
       userAddress: '0xuser...mock', // TODO: Get from connected wallet
       position: input.position,
       amount: input.amount,
-      timestamp: new Date(),
-      txHash: `0xmock${Date.now()}`, // TODO: Real transaction hash
+      createdAt: new Date(),
     };
 
     return newStake;
@@ -232,7 +231,7 @@ class StakingService {
    * - User's position (agree/disagree)
    * - Reward distribution algorithm
    */
-  async claimRewards(poolId: string, userAddress: string): Promise<number> {
+  async claimRewards(poolId: string, _userAddress: string): Promise<number> {
     // TODO: Add contract integration here
 
     await new Promise(resolve => setTimeout(resolve, 1500));

@@ -1,6 +1,5 @@
 import { ReputationData } from '@/types';
 import {
-  MOCK_REPUTATION,
   getReputationData as mockGetReputationData,
   getAllAnalysts as mockGetAllAnalysts,
   getAnalystsByTier as mockGetAnalystsByTier,
@@ -280,9 +279,9 @@ class ReputationService {
    */
   async updateReputation(
     address: string,
-    qualityScore: number,
-    wasCorrect: boolean,
-    amountStaked: number
+    _qualityScore: number,
+    _wasCorrect: boolean,
+    _amountStaked: number
   ): Promise<void> {
     // TODO: This should be done by smart contract internally
     // Frontend should never call this directly

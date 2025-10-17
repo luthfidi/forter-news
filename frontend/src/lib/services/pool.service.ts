@@ -146,7 +146,7 @@ class PoolService {
    *     BigInt(input.newsId),
    *     input.position === 'YES' ? 1 : 0, // Enum: YES=1, NO=0
    *     input.reasoning,
-   *     input.evidenceLinks,
+   *     input.evidence,
    *     parseUnits(input.creatorStake.toString(), 6), // USDC amount
    *   ],
    *   value: 0n, // Or gas token if needed
@@ -174,7 +174,7 @@ class PoolService {
       createdAt: new Date(),
       position: input.position,
       reasoning: input.reasoning,
-      evidenceLinks: input.evidenceLinks,
+      evidence: input.evidence,
       qualityScore: 0, // Calculated later
       creatorStake: input.creatorStake,
       agreeStakes: 0,
@@ -230,7 +230,7 @@ class PoolService {
 
     return pools.filter(pool =>
       pool.reasoning.toLowerCase().includes(lowercaseQuery) ||
-      pool.evidenceLinks.some(link => link.toLowerCase().includes(lowercaseQuery)) ||
+      pool.evidence.some(link => link.toLowerCase().includes(lowercaseQuery)) ||
       pool.creatorAddress.toLowerCase().includes(lowercaseQuery)
     );
   }

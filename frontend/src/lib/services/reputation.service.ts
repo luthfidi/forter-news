@@ -209,7 +209,7 @@ class ReputationService {
 
     return allAnalysts.filter(analyst =>
       analyst.address.toLowerCase().includes(lowercaseQuery) ||
-      (analyst.farcasterName && analyst.farcasterName.toLowerCase().includes(lowercaseQuery))
+      (analyst.specialty && analyst.specialty.toLowerCase().includes(lowercaseQuery))
     );
   }
 

@@ -1,101 +1,925 @@
-
-╭-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------╮
-| Type        | Signature                                                                                        | Selector                                                           |
-+=====================================================================================================================================================================================+
-| event       | Approval(address,address,uint256)                                                                | 0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925 |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| event       | ApprovalForAll(address,address,bool)                                                             | 0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31 |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| event       | OwnershipTransferred(address,address)                                                            | 0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0 |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| event       | PredictionRecorded(address,bool)                                                                 | 0xd97ffe447dbfe837324aabd735e82a66d70505e61a03999a71e7f1d9650b4a9f |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| event       | ReputationIncreased(address,uint256,uint256)                                                     | 0x1184f90af155d0111e012d312573e4629b957416262135b177d8f05a626b7233 |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| event       | ReputationUpdated(address,uint256,uint256)                                                       | 0x5b88a2e3fc1a53234357ab78c104df11c33ccfa79886793654565ad70b8afb6e |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| event       | TierAdded(uint256,string,uint256)                                                                | 0x32431b33ee3c4bb849e7f853b20f22c2aa519c033953f013411b4fab3d657782 |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| event       | Transfer(address,address,uint256)                                                                | 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| error       | ERC721IncorrectOwner(address,uint256,address)                                                    | 0x64283d7b                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| error       | ERC721InsufficientApproval(address,uint256)                                                      | 0x177e802f                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| error       | ERC721InvalidApprover(address)                                                                   | 0xa9fbf51f                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| error       | ERC721InvalidOperator(address)                                                                   | 0x5b08ba18                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| error       | ERC721InvalidOwner(address)                                                                      | 0x89c62b64                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| error       | ERC721InvalidReceiver(address)                                                                   | 0x64a0ae92                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| error       | ERC721InvalidSender(address)                                                                     | 0x73c6ac6e                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| error       | ERC721NonexistentToken(uint256)                                                                  | 0x7e273289                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| error       | OwnableInvalidOwner(address)                                                                     | 0x1e4fbdf7                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| error       | OwnableUnauthorizedAccount(address)                                                              | 0x118cdaa7                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | addTier(uint256,string,uint256,string) nonpayable                                                | 0x1f0d4ed9                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | approve(address,uint256) nonpayable                                                              | 0x095ea7b3                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | balanceOf(address) view returns (uint256)                                                        | 0x70a08231                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | getApproved(uint256) view returns (address)                                                      | 0x081812fc                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | getTierInfo(uint256) view returns (string,string,uint256)                                        | 0xcc9d7519                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | getUserReputation(address) view returns (uint256,uint256,uint256,uint256,uint256,string,uint256) | 0xbaccbfdb                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | getUserTier(address) view returns (uint256,string)                                               | 0xe4d2620e                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | hasNFT(address) view returns (bool)                                                              | 0x785f8ee3                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | increaseReputation(address,uint256) nonpayable                                                   | 0xded86d68                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | isApprovedForAll(address,address) view returns (bool)                                            | 0xe985e9c5                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | name() view returns (string)                                                                     | 0x06fdde03                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | owner() view returns (address)                                                                   | 0x8da5cb5b                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | ownerOf(uint256) view returns (address)                                                          | 0x6352211e                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | recordPrediction(address,bool) nonpayable                                                        | 0xb9287018                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | renounceOwnership() nonpayable                                                                   | 0x715018a6                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | reputationTiers(uint256) view returns (string,string,uint256)                                    | 0x0f96f2d3                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | safeTransferFrom(address,address,uint256) nonpayable                                             | 0x42842e0e                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | safeTransferFrom(address,address,uint256,bytes) nonpayable                                       | 0xb88d4fde                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | setApprovalForAll(address,bool) nonpayable                                                       | 0xa22cb465                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | supportsInterface(bytes4) view returns (bool)                                                    | 0x01ffc9a7                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | symbol() view returns (string)                                                                   | 0x95d89b41                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | tokenIdToUser(uint256) view returns (address)                                                    | 0xfd764f22                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | tokenURI(uint256) view returns (string)                                                          | 0xc87b56dd                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | totalSupply() view returns (uint256)                                                             | 0x18160ddd                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | transferFrom(address,address,uint256) nonpayable                                                 | 0x23b872dd                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | transferOwnership(address) nonpayable                                                            | 0xf2fde38b                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | updateTierURI(uint256,string) nonpayable                                                         | 0x6a75aca2                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | userReputations(address) view returns (uint256,uint256,uint256,uint256)                          | 0xf8b11691                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| function    | userToTokenId(address) view returns (uint256)                                                    | 0xaf24b07b                                                         |
-|-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------|
-| constructor | constructor() nonpayable                                                                         |                                                                    |
-╰-------------+--------------------------------------------------------------------------------------------------+--------------------------------------------------------------------╯
-
+[
+  {
+    "type": "constructor",
+    "inputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "addTier",
+    "inputs": [
+      {
+        "name": "tierId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "minScore",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "uri",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "approve",
+    "inputs": [
+      {
+        "name": "to",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "balanceOf",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getApproved",
+    "inputs": [
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getTierInfo",
+    "inputs": [
+      {
+        "name": "tierId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "uri",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "minScore",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getUserReputation",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "score",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "lastUpdated",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "totalPredictions",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "correctPredictions",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "tier",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "tierName",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "accuracy",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getUserTier",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hasNFT",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "increaseReputation",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "points",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "isApprovedForAll",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "operator",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "name",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "ownerOf",
+    "inputs": [
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "recordPrediction",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "correct",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "renounceOwnership",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "reputationTiers",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "tokenURI",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "minScore",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "safeTransferFrom",
+    "inputs": [
+      {
+        "name": "from",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "safeTransferFrom",
+    "inputs": [
+      {
+        "name": "from",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "data",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setApprovalForAll",
+    "inputs": [
+      {
+        "name": "operator",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "approved",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "supportsInterface",
+    "inputs": [
+      {
+        "name": "interfaceId",
+        "type": "bytes4",
+        "internalType": "bytes4"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "symbol",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "tokenIdToUser",
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "tokenURI",
+    "inputs": [
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "totalSupply",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "transferFrom",
+    "inputs": [
+      {
+        "name": "from",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "transferOwnership",
+    "inputs": [
+      {
+        "name": "newOwner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateTierURI",
+    "inputs": [
+      {
+        "name": "tierId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "newURI",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "userReputations",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "score",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "lastUpdated",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "totalPredictions",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "correctPredictions",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "userToTokenId",
+    "inputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "Approval",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "approved",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ApprovalForAll",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "operator",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "approved",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OwnershipTransferred",
+    "inputs": [
+      {
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "PredictionRecorded",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "correct",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ReputationIncreased",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "points",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "newScore",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ReputationUpdated",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newScore",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TierAdded",
+    "inputs": [
+      {
+        "name": "tierId",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "minScore",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Transfer",
+    "inputs": [
+      {
+        "name": "from",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "to",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "ERC721IncorrectOwner",
+    "inputs": [
+      {
+        "name": "sender",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ERC721InsufficientApproval",
+    "inputs": [
+      {
+        "name": "operator",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ERC721InvalidApprover",
+    "inputs": [
+      {
+        "name": "approver",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ERC721InvalidOperator",
+    "inputs": [
+      {
+        "name": "operator",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ERC721InvalidOwner",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ERC721InvalidReceiver",
+    "inputs": [
+      {
+        "name": "receiver",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ERC721InvalidSender",
+    "inputs": [
+      {
+        "name": "sender",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ERC721NonexistentToken",
+    "inputs": [
+      {
+        "name": "tokenId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "OwnableInvalidOwner",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "OwnableUnauthorizedAccount",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
+  }
+]

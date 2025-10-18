@@ -1,32 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { News, CreateNewsInput } from '@/types';
-import { MOCK_NEWS, getNewsById, getNewsByCategory, getNewsCategories } from '@/lib/mock-data';
+import { getNewsById, getNewsByCategory, getNewsCategories } from '@/lib/mock-data';
+import { newsService } from '@/lib/services/news.service';
 
 export function useNews() {
   const { newsList, setNewsList, loading, setLoading } = useGlobalStore();
   const [error, setError] = useState<string | null>(null);
 
-  const fetchNews = async () => {
+  const fetchNews = useCallback(async () => {
     try {
       setLoading('news', true);
       setError(null);
 
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // In a real app, this would be an API call
-      // const response = await fetch('/api/news');
-      // const data = await response.json();
-
-      setNewsList(MOCK_NEWS);
+      // Use newsService which handles both contract and mock data
+      const newsData = await newsService.getAll();
+      setNewsList(newsData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch news');
       console.error('Error fetching news:', err);
     } finally {
       setLoading('news', false);
     }
-  };
+  }, [setLoading, setNewsList]);
 
   const getNews = (id: string): News | undefined => {
     return getNewsById(id);
@@ -76,31 +72,16 @@ export function useNews() {
       setLoading('news', true);
       setError(null);
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Use newsService which handles both contract and mock data
+      const newNews = await newsService.create(input);
 
-      // Mock: Create new news object
-      const newNews: News = {
-        id: `news-${Date.now()}`,
-        title: input.title,
-        description: input.description,
-        category: input.category,
-        endDate: input.endDate,
-        resolutionCriteria: input.resolutionCriteria,
-        creatorAddress: '0xuser...mock', // TODO: Get from wallet
-        createdAt: new Date(),
-        status: 'active',
-        totalPools: 0,
-        totalStaked: 0
-      };
-
-      // Mock: Auto-post to Farcaster
+      // Auto-post to Farcaster
       console.log('Posting to Farcaster:', {
         text: `Just created a new prediction on @forter!\n\n${newNews.title}\n\nCreate pools and stake: forter.app/news/${newNews.id}`,
         embeds: []
       });
 
-      // Update local state
+      // Update local state with new news
       setNewsList([newNews, ...newsList]);
 
       return newNews;
@@ -149,9 +130,9 @@ export function useFilteredNews(
   sortBy: 'endDate' | 'totalStaked' | 'totalPools' | 'createdAt' = 'totalStaked'
 ) {
   const { newsList } = useNews();
-  const [filteredNews, setFilteredNews] = useState<News[]>([]);
 
-  useEffect(() => {
+  // Use useMemo to prevent unnecessary re-calculations
+  const filteredNews = useMemo(() => {
     let filtered = newsList;
 
     // Apply category filter
@@ -170,7 +151,7 @@ export function useFilteredNews(
     }
 
     // Apply sorting
-    filtered = [...filtered].sort((a, b) => {
+    return [...filtered].sort((a, b) => {
       switch (sortBy) {
         case 'endDate':
           return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
@@ -184,8 +165,6 @@ export function useFilteredNews(
           return 0;
       }
     });
-
-    setFilteredNews(filtered);
   }, [newsList, searchQuery, selectedCategory, sortBy]);
 
   return filteredNews;

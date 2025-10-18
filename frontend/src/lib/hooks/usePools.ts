@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { Pool, CreatePoolInput } from '@/types';
 import { MOCK_POOLS, getPoolsByNewsId, getPoolById, getPoolStats } from '@/lib/mock-data';
+import { config } from '@/config/contracts';
 
 export function usePools(newsId?: string) {
   const { pools, setPools, loading, setLoading } = useGlobalStore();
@@ -67,6 +68,11 @@ export function usePools(newsId?: string) {
     try {
       setLoading('pools', true);
       setError(null);
+
+      // Validate minimum stake amount
+      if (input.creatorStake < config.MIN_STAKE_AMOUNT) {
+        throw new Error(`Minimum stake is $${config.MIN_STAKE_AMOUNT} USDC`);
+      }
 
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));

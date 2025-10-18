@@ -77,7 +77,7 @@ export default function CreatePoolPage() {
     return (
       formData.reasoning.trim().length >= 100 &&
       formData.creatorStake &&
-      parseFloat(formData.creatorStake) >= 1
+      parseFloat(formData.creatorStake) >= 20
     );
   };
 
@@ -277,14 +277,14 @@ export default function CreatePoolPage() {
                   </label>
                   <Input
                     type="number"
-                    placeholder="10"
+                    placeholder="20"
                     value={formData.creatorStake}
                     onChange={(e) => setFormData({ ...formData, creatorStake: e.target.value })}
                     className="bg-background border-border"
-                    min="1"
+                    min="20"
                   />
                   <div className="text-xs text-muted-foreground mt-1">
-                    Minimum $1 USDC. You earn 20% of pool rewards if your position is correct.
+                    Minimum $20 USDC. You earn 20% of pool rewards if your position is correct.
                   </div>
                 </div>
 

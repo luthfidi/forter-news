@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { Pool, CreatePoolInput } from '@/types';
-import { MOCK_POOLS, getPoolsByNewsId, getPoolById, getPoolStats } from '@/lib/mock-data';
+import { getPoolStats } from '@/lib/mock-data';
 import { config } from '@/config/contracts';
 import { poolService } from '@/lib/services/pool.service';
 
@@ -14,17 +14,12 @@ export function usePools(newsId?: string) {
       setLoading('pools', true);
       setError(null);
 
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-
-      // In a real app, this would be an API call
-      // const response = await fetch(`/api/pools?newsId=${targetNewsId || newsId}`);
-      // const data = await response.json();
-
       const effectiveNewsId = targetNewsId || newsId;
+      
+      // Use poolService which handles both contract and mock data
       const poolsData = effectiveNewsId
-        ? getPoolsByNewsId(effectiveNewsId)
-        : MOCK_POOLS;
+        ? await poolService.getByNewsId(effectiveNewsId)
+        : await poolService.getAll();
 
       setPools(poolsData);
     } catch (err) {
@@ -35,13 +30,13 @@ export function usePools(newsId?: string) {
     }
   }, [newsId, setLoading, setPools]);
 
-  const getPool = (id: string): Pool | undefined => {
-    return getPoolById(id);
-  };
+  const getPool = useCallback(async (id: string, newsId?: string): Promise<Pool | undefined> => {
+    return poolService.getById(id, newsId);
+  }, []);
 
-  const getPoolsByNews = (targetNewsId: string): Pool[] => {
-    return getPoolsByNewsId(targetNewsId);
-  };
+  const getPoolsByNews = useCallback(async (targetNewsId: string): Promise<Pool[]> => {
+    return poolService.getByNewsId(targetNewsId);
+  }, []);
 
   const filterPoolsByPosition = (position: 'YES' | 'NO'): Pool[] => {
     return pools.filter(pool => pool.position === position);

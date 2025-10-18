@@ -23,12 +23,15 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
   const [stakeAmount, setStakeAmount] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Calculate percentages
+  // Calculate percentages (including creator stake based on pool position)
+  const creatorAgreeStakes = pool.position === 'YES' ? pool.agreeStakes + pool.creatorStake : pool.agreeStakes;
+  const creatorDisagreeStakes = pool.position === 'NO' ? pool.disagreeStakes + pool.creatorStake : pool.disagreeStakes;
+  
   const agreePercentage = pool.totalStaked > 0
-    ? Math.round((pool.agreeStakes / pool.totalStaked) * 100)
+    ? Math.round((creatorAgreeStakes / pool.totalStaked) * 100)
     : 0;
   const disagreePercentage = pool.totalStaked > 0
-    ? Math.round((pool.disagreeStakes / pool.totalStaked) * 100)
+    ? Math.round((creatorDisagreeStakes / pool.totalStaked) * 100)
     : 0;
 
   // Mock reputation data
@@ -224,17 +227,17 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded bg-gradient-to-r from-emerald-400 to-emerald-500"></div>
               <span className="text-emerald-600">Agree</span>
-              <span className="font-medium">${pool.agreeStakes.toLocaleString()} ({agreePercentage}%)</span>
+              <span className="font-medium">${creatorAgreeStakes.toLocaleString()} ({agreePercentage}%)</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-medium">${pool.disagreeStakes.toLocaleString()} ({disagreePercentage}%)</span>
+              <span className="font-medium">${creatorDisagreeStakes.toLocaleString()} ({disagreePercentage}%)</span>
               <span className="text-rose-600">Disagree</span>
               <div className="w-3 h-3 rounded bg-gradient-to-r from-rose-400 to-rose-500"></div>
             </div>
           </div>
 
           {/* Single combined progress bar */}
-          <div className="h-6 bg-muted rounded-full overflow-hidden flex">
+          <div className="h-4 bg-muted rounded-full overflow-hidden flex">
             <div
               className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
               style={{ width: `${agreePercentage}%` }}
@@ -245,13 +248,13 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
             />
           </div>
 
-          {/* Creator Stake */}
-          <div className="mt-3 pt-3 border-t border-border/30">
-            <div className="flex justify-between text-xs">
-              <span className="text-muted-foreground">Creator&apos;s Stake</span>
-              <span className="font-medium">${pool.creatorStake.toLocaleString()}</span>
-            </div>
-          </div>
+          {/* Creator position indicator */}
+          {/* <div className="mt-2 text-xs text-muted-foreground text-center">
+            Creator staked ${pool.creatorStake.toLocaleString()} on <span className={pool.position === 'YES' ? 'text-emerald-600' : 'text-rose-600'}>
+              {pool.position === 'YES' ? 'Agree' : 'Disagree'}
+            </span>
+          </div> */}
+
         </div>
 
         {/* Action Buttons */}

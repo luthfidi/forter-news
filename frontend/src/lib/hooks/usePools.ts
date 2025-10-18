@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { Pool, CreatePoolInput } from '@/types';
 import { MOCK_POOLS, getPoolsByNewsId, getPoolById, getPoolStats } from '@/lib/mock-data';
 import { config } from '@/config/contracts';
+import { poolService } from '@/lib/services/pool.service';
 
 export function usePools(newsId?: string) {
   const { pools, setPools, loading, setLoading } = useGlobalStore();
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPools = async (targetNewsId?: string) => {
+  const fetchPools = useCallback(async (targetNewsId?: string) => {
     try {
       setLoading('pools', true);
       setError(null);
@@ -32,7 +33,7 @@ export function usePools(newsId?: string) {
     } finally {
       setLoading('pools', false);
     }
-  };
+  }, [newsId, setLoading, setPools]);
 
   const getPool = (id: string): Pool | undefined => {
     return getPoolById(id);
@@ -74,36 +75,17 @@ export function usePools(newsId?: string) {
         throw new Error(`Minimum stake is $${config.MIN_STAKE_AMOUNT} USDC`);
       }
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Use poolService.create() which handles both mock and contract integration
+      const newPool = await poolService.create(input);
 
-      // Mock: Create new pool object
-      const newPool: Pool = {
-        id: `pool-${Date.now()}`,
-        newsId: input.newsId,
-        creatorAddress: '0xuser...mock', // TODO: Get from wallet
-        position: input.position,
-        reasoning: input.reasoning,
-        evidence: input.evidence.filter(e => e.trim()),
-        imageUrl: input.imageUrl,
-        imageCaption: input.imageCaption,
-        creatorStake: input.creatorStake,
-        agreeStakes: 0,
-        disagreeStakes: 0,
-        totalStaked: input.creatorStake,
-        status: 'active',
-        outcome: null,
-        createdAt: new Date()
-      };
-
-      // Mock: Auto-post to Farcaster
+      // Auto-post to Farcaster
       console.log('Creating pool and posting to Farcaster:', {
         poolId: newPool.id,
         text: `Just created a pool on @forter!\n\nPosition: ${newPool.position}\n\nStake & discuss: forter.app/news/${input.newsId}`,
         embeds: input.imageUrl ? [input.imageUrl] : []
       });
 
-      // Update local state
+      // Update local state with new pool
       setPools([newPool, ...pools]);
 
       return newPool;
@@ -128,8 +110,7 @@ export function usePools(newsId?: string) {
     if (newsId) {
       fetchPools(newsId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newsId]);
+  }, [newsId, fetchPools]);
 
   return {
     pools,
@@ -152,14 +133,12 @@ export function useFilteredPools(
   positionFilter: 'all' | 'YES' | 'NO' = 'all'
 ) {
   const { pools } = usePools(newsId);
-  const [filteredPools, setFilteredPools] = useState<Pool[]>([]);
 
-  useEffect(() => {
-    const filtered = positionFilter === 'all'
+  // Use useMemo to prevent unnecessary re-calculations
+  const filteredPools = useMemo(() => {
+    return positionFilter === 'all'
       ? pools
       : pools.filter(pool => pool.position === positionFilter);
-
-    setFilteredPools(filtered);
   }, [pools, positionFilter]);
 
   return filteredPools;

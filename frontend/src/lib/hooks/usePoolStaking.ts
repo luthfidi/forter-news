@@ -82,55 +82,62 @@ export function usePoolStaking() {
     stakeAmount: number,
     position: 'agree' | 'disagree'
   ): { minReward: number; maxReward: number; breakEven: number } => {
-    const { agreeStakes, disagreeStakes, totalStaked } = pool;
+    const { agreeStakes, disagreeStakes, totalStaked, creatorStake } = pool;
 
     // Total pool after user stake
     const newTotalPool = totalStaked + stakeAmount;
     const platformFee = newTotalPool * 0.02; // 2% protocol fee
 
-    // NOTE: Smart contract NOW implements 20/80 SPLIT with auto-distribute
-    // - Creator gets 20% of remaining pool (after 2% fee)
+    // FIXED: Smart contract implements 20/80 SPLIT with auto-distribute
+    // - Creator gets 20% of remaining pool (after 2% fee) IF pool correct
     // - Winning stakers get 80% of remaining pool
-    // - Creator is EXCLUDED from winning staker pool (no double-dipping)
+    // - Creator stake is EXCLUDED from winning staker pool (no double-dipping)
     // - Rewards are auto-distributed on resolution (no manual claim)
 
     // NEW 20/80 SPLIT LOGIC
-    const remaining = newTotalPool - platformFee; // 98% remaining
-    // const creatorReward = remaining * 0.20; // 20% to creator (not used in calculation)
+    const remaining = newTotalPool - platformFee; // 98% remaining after platform fee
+    // const creatorReward = remaining * 0.20; // 20% to creator (only if pool correct)
     const stakersPool = remaining * 0.80;   // 80% to stakers
 
-    // Determine winning pool (EXCLUDE creator stake from agree pool)
-    let winningPool: number;
-    let userWins: boolean;
+    // Determine winning pool based on position
+    // CRITICAL FIX: EXCLUDE creator stake from winning pool calculation
+    let winningPoolTotal: number;
+    let userPotentialReward: number;
 
     if (position === 'agree') {
       // User agrees with pool creator's position
+      // If pool is CORRECT:
+      // - Creator gets 20% (creatorReward)
+      // - Agree stakers get 80%, BUT creator stake is excluded from distribution
       const newAgreeTotal = agreeStakes + stakeAmount;
-      // EXCLUDE creator stake from winning pool calculation
-      winningPool = newAgreeTotal; // Note: creator stake should be excluded in real implementation
-      userWins = true; // Assuming pool correct for max reward
+      const agreePoolExcludingCreator = newAgreeTotal - creatorStake;
+
+      winningPoolTotal = agreePoolExcludingCreator;
+
+      // User's proportional share of 80% stakers pool
+      const userShare = winningPoolTotal > 0 ? stakeAmount / winningPoolTotal : 0;
+      userPotentialReward = stakersPool * userShare;
     } else {
       // User disagrees with pool creator's position
+      // If pool is WRONG:
+      // - Creator gets 0%
+      // - Disagree stakers get 98% (all remaining after platform fee)
       const newDisagreeTotal = disagreeStakes + stakeAmount;
-      winningPool = newDisagreeTotal;
-      userWins = true; // Assuming pool wrong for max reward
+
+      winningPoolTotal = newDisagreeTotal;
+
+      // User's proportional share of full remaining pool (98%)
+      const userShare = winningPoolTotal > 0 ? stakeAmount / winningPoolTotal : 0;
+      userPotentialReward = remaining * userShare; // Full 98% pool for disagree winners
     }
 
-    if (!userWins) {
-      return {
-        minReward: 0,
-        maxReward: 0,
-        breakEven: stakeAmount
-      };
-    }
-
-    // User gets proportional share of 80% stakers pool
-    const userShare = stakeAmount / winningPool;
-    const userReward = stakersPool * userShare;
+    // Calculate both scenarios
+    const maxReward = userPotentialReward; // If user's position wins
+    const minReward = 0; // If user's position loses (loses entire stake)
 
     return {
-      minReward: 0, // If pool wrong, lose everything
-      maxReward: userReward, // Proportional share of 80% (stake not returned, just profit)
+      minReward,
+      maxReward,
       breakEven: stakeAmount
     };
   };

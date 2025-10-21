@@ -246,40 +246,18 @@ class ReputationService {
   /**
    * Calculate reputation score for an address
    *
+   * UPDATED: Now uses point-based system with stake multipliers
    * Contract Integration:
-   * - Can be done on-chain (expensive) or off-chain (The Graph)
-   * - Algorithm factors:
-   *   1. Pool creation quality (quality scores)
-   *   2. Prediction accuracy (correct outcomes)
-   *   3. Total value staked
-   *   4. Community engagement
-   *
-   * Formula (example):
-   * score = (avgQualityScore * 40) + (successRate * 30) + (totalStaked * 0.01) + (poolsCreated * 5)
+   * - Points = Σ (Base Points × Stake Multiplier)
+   * - Base: +100 correct, -30 wrong
+   * - Multipliers: 1.0x (<$100), 1.5x ($100-$499), 2.0x ($500-$999), 2.5x ($1K-$4.9K), 3.0x ($5K+)
    */
   async calculateScore(address: string): Promise<number> {
-    // TODO: Add contract integration here
-    // if (USE_CONTRACTS) {
-    //   const score = await readContract({
-    //     address: contracts.reputationNFT,
-    //     abi: ReputationNFTABI,
-    //     functionName: 'calculateScore',
-    //     args: [address as `0x${string}`],
-    //   });
-    //   return Number(score);
-    // }
-
-    // Mock calculation
     const reputation = await this.getByAddress(address);
     if (!reputation) return 0;
 
-    // ReputationData only has: accuracy, totalPools, correctPools, wrongPools, activePools
-    // Simplified score calculation using available fields
-    const score =
-      (reputation.accuracy * 0.7) + // 70% weight on accuracy
-      (reputation.totalPools * 5);    // 5 points per pool created
-
-    return Math.round(score);
+    // Return reputation points from contract or mock data
+    return reputation.reputationPoints || 0;
   }
 
   /**
@@ -351,11 +329,11 @@ class ReputationService {
   }
 
   /**
-   * Get reputation tier for a score
-   * (Pure function, no contract call needed)
+   * Get reputation tier for reputation points and total pools
+   * UPDATED: Now uses point-based system with minimum pool requirements
    */
-  getTier(score: number): string {
-    return calculateTier(score);
+  getTier(reputationPoints: number, totalPools: number = 0): string {
+    return calculateTier(reputationPoints, totalPools);
   }
 
   /**

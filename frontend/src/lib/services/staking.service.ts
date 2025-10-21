@@ -164,7 +164,7 @@ class StakingService {
    * - Requires: USDC approval first (2-step transaction)
    * - Emits: Staked event
    */
-  async stake(input: StakeInput): Promise<PoolStake> {
+  async stake(input: StakeInput, newsId?: string): Promise<PoolStake> {
     if (!isContractsEnabled()) {
       // Mock implementation for development
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -184,14 +184,27 @@ class StakingService {
     try {
       console.log('[StakingService] Creating stake via smart contract...', input);
 
-      // We need the newsId for the contract call
-      // For now, we'll use a default newsId since we don't have it in the input
-      // In a real app, we'd store newsId with the poolId or pass it in the input
-      const newsId = '0'; // TODO: Get actual newsId from pool or pass in input
+      // Get newsId - either from parameter or fetch pool to get it
+      let resolvedNewsId = newsId;
+
+      if (!resolvedNewsId) {
+        console.log('[StakingService] newsId not provided, fetching pool to get newsId...');
+        // Import poolService to get pool data
+        const { poolService } = await import('./pool.service');
+        const allPools = await poolService.getAll();
+        const pool = allPools.find(p => p.id === input.poolId);
+
+        if (!pool) {
+          throw new Error(`Pool not found with ID: ${input.poolId}`);
+        }
+
+        resolvedNewsId = pool.newsId;
+        console.log('[StakingService] Resolved newsId from pool:', resolvedNewsId);
+      }
 
       // Call smart contract to create stake
       const result = await stakeOnPoolContract(
-        newsId,
+        resolvedNewsId,
         input.poolId,
         input.amount,
         input.position === 'agree' // true = agree, false = disagree

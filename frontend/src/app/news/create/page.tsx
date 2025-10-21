@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAccount } from 'wagmi';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,11 +10,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { DatePicker } from '@/components/ui/date-picker';
 import Link from 'next/link';
+import FloatingIndicator from '@/components/shared/FloatingIndicator';
+import { useTransactionFeedback } from '@/lib/hooks/useTransactionFeedback';
+import { newsService } from '@/lib/services';
 
 const CATEGORIES = ['Crypto', 'Macro', 'Tech', 'Sports', 'Politics'];
 
 export default function CreateNewsPage() {
   const router = useRouter();
+  const { address, isConnected } = useAccount();
+  const { feedback, executeTransaction } = useTransactionFeedback();
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -25,19 +32,52 @@ export default function CreateNewsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
+    if (!isConnected || !address) {
+      alert('Please connect your wallet first');
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const news = await executeTransaction(
+        async () => {
+          const result = await newsService.create({
+            title: formData.title,
+            description: formData.description,
+            category: formData.category,
+            endDate: new Date(formData.endDate),
+            resolutionCriteria: formData.resolutionCriteria
+          });
 
-    // Mock: Auto-post to Farcaster
-    console.log('Posting to Farcaster:', {
-      text: `Just created a new prediction on @forter!\n\n${formData.title}\n\nCreate pools and stake: forter.app/news/new-id`,
-      embeds: []
-    });
+          return {
+            success: true,
+            data: result,
+            hash: result.id // In contract mode, this would be tx hash
+          };
+        },
+        'Creating NEWS on blockchain...',
+        'NEWS created successfully!',
+        'primary'
+      );
 
-    // Redirect to news page
-    router.push('/news');
+      if (news) {
+        // Mock: Auto-post to Farcaster
+        console.log('Posting to Farcaster:', {
+          text: `Just created a new prediction on @forter!\n\n${formData.title}\n\nCreate pools and stake: forter.app/news/${news.id}`,
+          embeds: []
+        });
+
+        // Redirect after success feedback
+        setTimeout(() => {
+          router.push('/news');
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Failed to create news:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isFormValid = () => {
@@ -53,6 +93,9 @@ export default function CreateNewsPage() {
 
   return (
     <div className="min-h-screen pt-20 pb-16">
+      {/* Floating Indicator */}
+      <FloatingIndicator {...feedback} />
+
       <div className="max-w-4xl mx-auto px-4 md:px-6">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
@@ -175,10 +218,14 @@ export default function CreateNewsPage() {
                   </Button>
                   <Button
                     onClick={handleSubmit}
-                    disabled={!isFormValid() || isSubmitting}
+                    disabled={!isFormValid() || isSubmitting || !isConnected}
                     className="flex-1 bg-gradient-to-r from-primary to-primary/90"
                   >
-                    {isSubmitting ? 'Creating...' : 'Create NEWS & Post to FC'}
+                    {!isConnected
+                      ? 'Connect Wallet First'
+                      : isSubmitting
+                      ? 'Creating...'
+                      : 'Create NEWS & Post to FC'}
                   </Button>
                 </div>
               </CardContent>

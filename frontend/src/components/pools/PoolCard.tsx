@@ -8,7 +8,11 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useAccount } from 'wagmi';
 import { usePoolStaking } from '@/lib/hooks/usePoolStaking';
+import { useTransactionFeedback } from '@/lib/hooks/useTransactionFeedback';
+import FloatingIndicator from '@/components/shared/FloatingIndicator';
+import { tokenService } from '@/lib/services';
 
 interface PoolCardProps {
   pool: Pool;
@@ -16,7 +20,10 @@ interface PoolCardProps {
 }
 
 export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
+  const { address, isConnected } = useAccount();
   const { stakeOnPool, calculatePotentialReward, loading } = usePoolStaking();
+  const { feedback, executeTransaction, showError } = useTransactionFeedback();
+
   const [showFullReasoning, setShowFullReasoning] = useState(false);
   const [showStakeInput, setShowStakeInput] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<'agree' | 'disagree' | null>(null);
@@ -77,9 +84,45 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
   };
 
   const handleConfirmStake = async () => {
-    if (stakeAmount && parseFloat(stakeAmount) >= 1 && selectedPosition) {
-      setIsSubmitting(true);
-      const result = await stakeOnPool(pool.id, selectedPosition, parseFloat(stakeAmount));
+    if (!isConnected || !address) {
+      showError('Please connect your wallet first');
+      return;
+    }
+
+    if (!stakeAmount || parseFloat(stakeAmount) < 1 || !selectedPosition) {
+      return;
+    }
+
+    const amount = parseFloat(stakeAmount);
+
+    // Validate balance
+    const hasBalance = await tokenService.hasSufficientBalance(address as `0x${string}`, amount);
+    if (!hasBalance) {
+      showError('Insufficient USDC balance');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const result = await executeTransaction(
+        async () => {
+          const stake = await stakeOnPool(pool.id, selectedPosition, amount, pool.newsId);
+
+          if (!stake) {
+            return { success: false, error: 'Staking failed' };
+          }
+
+          return {
+            success: true,
+            data: stake,
+            hash: stake.id // In contract mode, this would be tx hash
+          };
+        },
+        `Staking ${amount} USDC on ${selectedPosition === 'agree' ? 'Support' : 'Oppose'}...`,
+        `Successfully staked ${amount} USDC!`,
+        selectedPosition === 'agree' ? 'primary' : 'accent'
+      );
 
       if (result) {
         // Success! Reset state and notify parent
@@ -88,7 +131,9 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
         setStakeAmount('');
         onStakeSuccess?.();
       }
-
+    } catch (error) {
+      console.error('Staking error:', error);
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -108,12 +153,16 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
   };
 
   return (
-    <Card className={`border transition-all duration-300 hover:shadow-md ${
-      pool.status === 'resolved'
-        ? 'border-accent/50 bg-accent/5 hover:bg-accent/10'
-        : 'border-border bg-card hover:bg-secondary'
-    }`}>
-      <CardContent className="p-6">
+    <>
+      {/* Floating Indicator */}
+      <FloatingIndicator {...feedback} />
+
+      <Card className={`border transition-all duration-300 hover:shadow-md ${
+        pool.status === 'resolved'
+          ? 'border-accent/50 bg-accent/5 hover:bg-accent/10'
+          : 'border-border bg-card hover:bg-secondary'
+      }`}>
+        <CardContent className="p-6">
         {/* Resolved Badge (if resolved) */}
         {pool.status === 'resolved' && pool.outcome && (
           <div className="mb-4 pb-4 border-b border-border/30">
@@ -507,5 +556,6 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useAccount } from 'wagmi';
 import { getNewsById } from '@/lib/mock-data';
 import { News } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,11 +12,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import Image from 'next/image';
+import FloatingIndicator from '@/components/shared/FloatingIndicator';
+import { useTransactionFeedback } from '@/lib/hooks/useTransactionFeedback';
+import { poolService, tokenService } from '@/lib/services';
 
 export default function CreatePoolPage() {
   const params = useParams();
   const router = useRouter();
   const newsId = params.id as string;
+  const { address, isConnected } = useAccount();
+  const { feedback, executeTransaction, showError } = useTransactionFeedback();
 
   const [news, setNews] = useState<News | null>(null);
   const [formData, setFormData] = useState({
@@ -119,20 +125,69 @@ export default function CreatePoolPage() {
   };
 
   const handleSubmit = async () => {
+    if (!isConnected || !address) {
+      showError('Please connect your wallet first');
+      return;
+    }
+
+    const stakeAmount = parseFloat(formData.creatorStake);
+
+    // Validate balance (if using contracts)
+    if (address) {
+      const hasBalance = await tokenService.hasSufficientBalance(address as `0x${string}`, stakeAmount);
+      if (!hasBalance) {
+        showError('Insufficient USDC balance');
+        return;
+      }
+    }
+
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Filter empty evidence links
+      const evidenceLinks = formData.evidenceLinks.filter(link => link.trim() !== '');
 
-    // Mock: Auto-post to Farcaster
-    console.log('Creating pool and posting to Farcaster:', {
-      newsId,
-      ...formData,
-      text: `Just created a pool on @forter!\n\n${news?.title}\nPosition: ${formData.position}\n\nStake & discuss: forter.app/news/${newsId}`
-    });
+      const pool = await executeTransaction(
+        async () => {
+          const result = await poolService.create({
+            newsId,
+            position: formData.position,
+            reasoning: formData.reasoning,
+            evidence: evidenceLinks,
+            imageUrl: formData.imageUrl,
+            imageCaption: formData.imageCaption,
+            creatorStake: stakeAmount
+          });
 
-    // Redirect to news detail page
-    router.push(`/news/${newsId}`);
+          return {
+            success: true,
+            data: result,
+            hash: result.id // In contract mode, this would be tx hash
+          };
+        },
+        'Creating pool on blockchain...',
+        `Pool created successfully! Staked ${stakeAmount} USDC`,
+        'primary'
+      );
+
+      if (pool) {
+        // Mock: Auto-post to Farcaster
+        console.log('Posting pool to Farcaster:', {
+          newsId,
+          poolId: pool.id,
+          text: `Just created a pool on @forter!\n\n${news?.title}\nPosition: ${formData.position}\n\nStake & discuss: forter.app/news/${newsId}`
+        });
+
+        // Redirect after success
+        setTimeout(() => {
+          router.push(`/news/${newsId}`);
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Failed to create pool:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isFormValid = () => {
@@ -171,6 +226,9 @@ export default function CreatePoolPage() {
 
   return (
     <div className="min-h-screen pt-20 pb-16">
+      {/* Floating Indicator */}
+      <FloatingIndicator {...feedback} />
+
       <div className="max-w-4xl mx-auto px-4 md:px-6">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
@@ -432,10 +490,14 @@ export default function CreatePoolPage() {
                   </Button>
                   <Button
                     onClick={handleSubmit}
-                    disabled={!isFormValid() || isSubmitting}
+                    disabled={!isFormValid() || isSubmitting || !isConnected}
                     className="flex-1 bg-gradient-to-r from-primary to-primary/90"
                   >
-                    {isSubmitting ? 'Creating...' : 'Create Pool & Post to FC'}
+                    {!isConnected
+                      ? 'Connect Wallet First'
+                      : isSubmitting
+                      ? 'Creating...'
+                      : 'Create Pool & Post to FC'}
                   </Button>
                 </div>
 

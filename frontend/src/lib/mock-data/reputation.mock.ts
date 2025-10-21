@@ -1,9 +1,9 @@
 import { ReputationData } from '@/types';
 
 /**
- * MOCK REPUTATION DATA - UPDATED FOR POINT-BASED SYSTEM
+ * MOCK REPUTATION DATA - UPDATED FOR OCT 2025
  *
- * This file contains mock data for user reputation with NEW point-based calculation:
+ * This file contains mock data for user reputation with point-based calculation:
  * Points = Σ (±100 per pool) × Stake Multiplier
  * Stake Multipliers: 1.0x (<$100), 1.5x ($100-$499), 2.0x ($500-$999), 2.5x ($1K-$4.9K), 3.0x ($5K+)
  *
@@ -16,169 +16,152 @@ import { ReputationData } from '@/types';
 export const MOCK_REPUTATION: Record<string, ReputationData> = {
   '0x1234...5678': {
     address: '0x1234...5678',
-    accuracy: 87,
-    totalPools: 12,
-    correctPools: 10,        // High accuracy with good volume
+    accuracy: 92,
+    totalPools: 15,
+    correctPools: 13,        // High accuracy with good volume
     wrongPools: 2,
-    activePools: 2,
-    reputationPoints: 1250,  // 10 correct × 2.0x avg + 2 wrong × -1.5x = 1250 points
+    activePools: 2,          // pool-1 (BTC), pool-8 (ETH resolved YES)
+    reputationPoints: 3850,  // 13 correct × 2.5x avg + 2 wrong × -1.5x = 3850 points
     tier: 'Master',           // 1000+ points, 10+ pools = Master
     nftTokenId: 1,
     categoryStats: {
-      'Crypto': { total: 8, correct: 7, accuracy: 87.5 },
-      'Tech': { total: 4, correct: 3, accuracy: 75 }
+      'Crypto': { total: 12, correct: 11, accuracy: 91.7 },
+      'Tech': { total: 3, correct: 2, accuracy: 66.7 }
     },
-    currentStreak: 3,
-    bestStreak: 5,
+    currentStreak: 5,
+    bestStreak: 8,
     specialty: 'Crypto',
     memberSince: new Date('2024-09-15')
   },
   '0xabcd...efgh': {
     address: '0xabcd...efgh',
-    accuracy: 50,
-    totalPools: 4,
+    accuracy: 40,
+    totalPools: 6,
     correctPools: 2,
-    wrongPools: 2,
-    activePools: 1,
-    reputationPoints: 350,   // 2 correct × 1.5x + 2 wrong × -1.0x = 300 - 50 = 250, bonus volume = 350
-    tier: 'Analyst',          // 200-499 points = Analyst
+    wrongPools: 3,
+    activePools: 2,          // pool-2 (BTC), pool-9 (ETH resolved NO)
+    reputationPoints: 125,   // 2 correct × 1.5x + 3 wrong × -1.25x = 300 - 175 = 125
+    tier: 'Novice',          // 0-199 points = Novice
     nftTokenId: 2,
     categoryStats: {
-      'Crypto': { total: 4, correct: 2, accuracy: 50 }
+      'Crypto': { total: 6, correct: 2, accuracy: 33.3 }
     },
-    currentStreak: 1,
+    currentStreak: 0,
     bestStreak: 2,
     specialty: 'Crypto',
     memberSince: new Date('2024-09-17')
   },
   '0x9999...1111': {
     address: '0x9999...1111',
-    accuracy: 94,
-    totalPools: 28,
-    correctPools: 26,        // Very experienced with high volume
+    accuracy: 88,
+    totalPools: 12,
+    correctPools: 10,
     wrongPools: 2,
-    activePools: 1,
-    reputationPoints: 6200,  // 26 correct × 2.5x avg + 2 wrong × -2.0x = 6500 - 300 = 6200
-    tier: 'Legend',           // 5000+ points, 20+ pools = Legend
+    activePools: 1,          // pool-10 (Base resolved YES)
+    reputationPoints: 2200,  // 10 correct × 2.2x avg + 2 wrong × -1.0x = 2200
+    tier: 'Master',
     nftTokenId: 3,
     categoryStats: {
-      'Crypto': { total: 20, correct: 19, accuracy: 95 },
-      'Tech': { total: 8, correct: 7, accuracy: 87.5 }
+      'Crypto': { total: 12, correct: 10, accuracy: 83.3 }
     },
-    currentStreak: 8,
-    bestStreak: 12,
-    specialty: 'Crypto, Tech',
-    memberSince: new Date('2024-06-01')
+    currentStreak: 4,
+    bestStreak: 6,
+    specialty: 'Crypto',
+    memberSince: new Date('2025-03-16')
   },
   '0x2222...3333': {
     address: '0x2222...3333',
-    accuracy: 50,
-    totalPools: 2,
-    correctPools: 0,
-    wrongPools: 1,           // pool-13 (wrong)
-    activePools: 1,          // pool-4 (active)
-    tier: 'Analyst',
+    accuracy: 75,
+    totalPools: 8,
+    correctPools: 6,
+    wrongPools: 2,
+    activePools: 1,          // pool-3 (SOL)
+    tier: 'Expert',
     nftTokenId: 4,
     categoryStats: {
-      'Crypto': { total: 1, correct: 0, accuracy: 0 },
-      'Tech': { total: 1, correct: 0, accuracy: 0 }
+      'Crypto': { total: 8, correct: 6, accuracy: 75 }
     },
-    currentStreak: 0,
-    bestStreak: 0,
+    currentStreak: 3,
+    bestStreak: 4,
     specialty: 'Crypto',
     memberSince: new Date('2024-08-05'),
-    reputationPoints: -100  // 1 wrong prediction × 1.0x multiplier = -100 points
+    reputationPoints: 850   // 6 correct × 2.0x - 2 wrong × 1.5x = 1200 - 300 = 900, adjusted to 850
   },
   '0x4444...5555': {
     address: '0x4444...5555',
-    accuracy: 100,
-    totalPools: 2,
-    correctPools: 1,         // pool-14 (correct)
-    wrongPools: 0,
-    activePools: 1,          // pool-5 (active)
-    tier: 'Legend',
+    accuracy: 85,
+    totalPools: 7,
+    correctPools: 6,
+    wrongPools: 1,
+    activePools: 1,          // pool-4 (SOL)
+    tier: 'Expert',
     nftTokenId: 5,
     categoryStats: {
-      'Crypto': { total: 1, correct: 0, accuracy: 0 },
+      'Crypto': { total: 6, correct: 5, accuracy: 83.3 },
       'Tech': { total: 1, correct: 1, accuracy: 100 }
     },
-    currentStreak: 1,
-    bestStreak: 1,
-    specialty: 'Tech',
+    currentStreak: 2,
+    bestStreak: 4,
+    specialty: 'Crypto',
     memberSince: new Date('2024-08-06'),
-    reputationPoints: 100   // 1 correct prediction × 1.0x multiplier = 100 points
+    reputationPoints: 750   // 6 correct × 1.5x - 1 wrong × 1.0x = 900 - 150 = 750
   },
   '0x6666...7777': {
     address: '0x6666...7777',
-    accuracy: 0,
-    totalPools: 1,
-    correctPools: 0,
-    wrongPools: 0,
-    activePools: 1,          // pool-6 (active)
-    reputationPoints: 0,     // No resolved pools yet
-    tier: 'Novice',           // 0-199 points = Novice
+    accuracy: 70,
+    totalPools: 5,
+    correctPools: 3,
+    wrongPools: 1,
+    activePools: 1,          // pool-5 (AGI)
+    reputationPoints: 425,   // 3 correct × 1.5x - 1 wrong × 1.0x = 450 - 100 = 350, bonus = 425
+    tier: 'Analyst',         // 200-499 points = Analyst
     nftTokenId: 6,
     categoryStats: {
-      'Macro': { total: 1, correct: 0, accuracy: 0 }
+      'Tech': { total: 4, correct: 3, accuracy: 75 },
+      'Crypto': { total: 1, correct: 0, accuracy: 0 }
     },
-    currentStreak: 0,
-    bestStreak: 0,
-    specialty: 'Macro',
-    memberSince: new Date('2024-10-09')
+    currentStreak: 2,
+    bestStreak: 3,
+    specialty: 'Tech',
+    memberSince: new Date('2024-09-15')
   },
   '0x8888...9999': {
     address: '0x8888...9999',
-    accuracy: 0,
-    totalPools: 1,
-    correctPools: 0,
-    wrongPools: 0,
-    activePools: 1,          // pool-7 (active)
-    tier: 'Novice',
+    accuracy: 60,
+    totalPools: 6,
+    correctPools: 3,
+    wrongPools: 2,
+    activePools: 1,          // pool-6 (AGI)
+    tier: 'Analyst',
     nftTokenId: 7,
     categoryStats: {
-      'Macro': { total: 1, correct: 0, accuracy: 0 }
+      'Tech': { total: 4, correct: 2, accuracy: 50 },
+      'Crypto': { total: 2, correct: 1, accuracy: 50 }
     },
-    currentStreak: 0,
-    bestStreak: 0,
-    specialty: 'Macro',
-    memberSince: new Date('2024-10-10'),
-    reputationPoints: 0     // No resolved pools yet
+    currentStreak: 1,
+    bestStreak: 2,
+    specialty: 'Tech',
+    memberSince: new Date('2024-09-10'),
+    reputationPoints: 225   // 3 correct × 1.25x - 2 wrong × 1.0x = 375 - 200 = 175, bonus = 225
   },
   '0xaaaa...bbbb': {
     address: '0xaaaa...bbbb',
-    accuracy: 0,
-    totalPools: 1,
-    correctPools: 0,
+    accuracy: 80,
+    totalPools: 4,
+    correctPools: 3,
     wrongPools: 0,
-    activePools: 1,          // pool-8 (active)
-    tier: 'Novice',
+    activePools: 1,          // pool-7 (CBDC)
+    tier: 'Analyst',
     nftTokenId: 8,
     categoryStats: {
+      'Macro': { total: 3, correct: 3, accuracy: 100 },
       'Tech': { total: 1, correct: 0, accuracy: 0 }
     },
-    currentStreak: 0,
-    bestStreak: 0,
-    specialty: 'Tech',
-    memberSince: new Date('2024-10-11'),
-    reputationPoints: 0     // No resolved pools yet
-  },
-  '0xcccc...dddd': {
-    address: '0xcccc...dddd',
-    accuracy: 0,
-    totalPools: 1,
-    correctPools: 0,
-    wrongPools: 0,
-    activePools: 1,          // pool-9 (active)
-    tier: 'Novice',
-    nftTokenId: 9,
-    categoryStats: {
-      'Tech': { total: 1, correct: 0, accuracy: 0 }
-    },
-    currentStreak: 0,
-    bestStreak: 0,
-    specialty: 'Tech',
-    memberSince: new Date('2024-10-12'),
-    reputationPoints: 0     // No resolved pools yet
+    currentStreak: 3,
+    bestStreak: 3,
+    specialty: 'Macro',
+    memberSince: new Date('2024-10-01'),
+    reputationPoints: 300   // 3 correct × 1.0x = 300 points
   },
   // ADMIN WALLET (has resolved pools, builds reputation)
   '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d': {

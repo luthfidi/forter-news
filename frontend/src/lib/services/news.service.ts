@@ -1,12 +1,12 @@
 import { News, CreateNewsInput } from '@/types';
 import { MOCK_NEWS, getNewsById as mockGetNewsById } from '@/lib/mock-data';
 import { isContractsEnabled } from '@/config/contracts';
-import { 
-  getNewsCount, 
-  getNewsById as getNewsContractById, 
-  createNewsContract,
-  handleContractError 
-} from '@/lib/contracts/utils';
+import {
+  getNewsCount,
+  getNewsById,
+  createNews,
+  handleContractError
+} from '@/lib/contracts';
 
 /**
  * NEWS SERVICE
@@ -86,8 +86,8 @@ class NewsService {
       }
 
       // Fetch each news item
-      const newsPromises = Array.from({ length: totalCount }, (_, i) => 
-        getNewsContractById(i.toString())
+      const newsPromises = Array.from({ length: totalCount }, (_, i) =>
+        getNewsById(i.toString())
       );
 
       const newsResults = await Promise.all(newsPromises);
@@ -124,8 +124,8 @@ class NewsService {
 
     try {
       console.log('[NewsService] Fetching news by ID from contract:', id);
-      
-      const news = await getNewsContractById(id);
+
+      const news = await getNewsById(id);
       
       if (news) {
         console.log('[NewsService] Successfully fetched news:', news.title);
@@ -209,7 +209,7 @@ class NewsService {
       console.log('[NewsService] Creating news via smart contract...', input);
 
       // Call smart contract to create news
-      const result = await createNewsContract(
+      const result = await createNews(
         input.title,
         input.description,
         input.category,
@@ -307,14 +307,14 @@ class NewsService {
         resolutionNotes
       });
 
-      // Import resolveNewsContract
-      const { resolveNewsContract } = await import('@/lib/contracts/utils');
+      // Import resolveNews
+      const { resolveNews } = await import('@/lib/contracts');
 
       // Convert outcome to contract enum: 1 = YES, 2 = NO
       const outcomeNum = outcome === 'YES' ? 1 : 2;
 
       // Call smart contract to resolve news
-      const result = await resolveNewsContract(
+      const result = await resolveNews(
         newsId,
         outcomeNum as 0 | 1 | 2,
         resolutionSource,
@@ -369,10 +369,10 @@ class NewsService {
     try {
       console.log('[NewsService] Fetching resolution info from contract:', newsId);
 
-      // Import getNewsResolutionInfoContract
-      const { getNewsResolutionInfoContract } = await import('@/lib/contracts/utils');
+      // Import getNewsResolutionInfo
+      const { getNewsResolutionInfo } = await import('@/lib/contracts');
 
-      const info = await getNewsResolutionInfoContract(newsId);
+      const info = await getNewsResolutionInfo(newsId);
 
       if (info) {
         console.log('[NewsService] Resolution info fetched:', {

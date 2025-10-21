@@ -5,10 +5,10 @@ import {
   getStakesByUser as mockGetStakesByUser,
 } from '@/lib/mock-data';
 import { isContractsEnabled } from '@/config/contracts';
-import { 
-  stakeOnPoolContract,
-  handleContractError 
-} from '@/lib/contracts/utils';
+import {
+  stakeOnPool,
+  handleContractError
+} from '@/lib/contracts';
 
 /**
  * STAKING SERVICE - UPDATED FOR AUTO-DISTRIBUTE
@@ -203,7 +203,7 @@ class StakingService {
       }
 
       // Call smart contract to create stake
-      const result = await stakeOnPoolContract(
+      const result = await stakeOnPool(
         resolvedNewsId,
         input.poolId,
         input.amount,
@@ -258,11 +258,11 @@ class StakingService {
     try {
       console.log('[StakingService] Withdrawing stake and claiming rewards...', { newsId, poolId });
 
-      // Import withdrawStakeContract
-      const { withdrawStakeContract } = await import('@/lib/contracts/utils');
+      // Import withdrawStake
+      const { withdrawStake } = await import('@/lib/contracts');
 
       // Call smart contract to withdraw
-      const result = await withdrawStakeContract(newsId, poolId);
+      const result = await withdrawStake(newsId, poolId);
 
       if (!result.success) {
         throw new Error(result.error || 'Withdrawal transaction failed');
@@ -307,11 +307,11 @@ class StakingService {
     try {
       console.log('[StakingService] Emergency withdrawing stake...', { newsId, poolId });
 
-      // Import emergencyWithdrawContract
-      const { emergencyWithdrawContract } = await import('@/lib/contracts/utils');
+      // Import emergencyWithdraw
+      const { emergencyWithdraw } = await import('@/lib/contracts');
 
       // Call smart contract to emergency withdraw
-      const result = await emergencyWithdrawContract(newsId, poolId);
+      const result = await emergencyWithdraw(newsId, poolId);
 
       if (!result.success) {
         throw new Error(result.error || 'Emergency withdrawal failed');
@@ -508,10 +508,10 @@ class StakingService {
         userAddress
       });
 
-      // Import getUserStakeContract
-      const { getUserStakeContract } = await import('@/lib/contracts/utils');
+      // Import getUserStake
+      const { getUserStake } = await import('@/lib/contracts');
 
-      const stake = await getUserStakeContract(newsId, poolId, userAddress as `0x${string}`);
+      const stake = await getUserStake(newsId, poolId, userAddress as `0x${string}`);
 
       if (!stake) {
         console.log('[StakingService] No stake found for user');

@@ -10,10 +10,10 @@ import {
 } from '@/lib/mock-data';
 import { isContractsEnabled } from '@/config/contracts';
 import type { Address } from '@/types/contracts';
-import { 
+import {
   getUserReputation,
-  handleContractError 
-} from '@/lib/contracts/utils';
+  handleContractError
+} from '@/lib/contracts';
 
 /**
  * REPUTATION SERVICE

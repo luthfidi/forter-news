@@ -9,12 +9,13 @@ import { isContractsEnabled, contracts } from '@/config/contracts';
 import { readContract } from 'wagmi/actions';
 import { config as wagmiConfig } from '@/lib/wagmi';
 import type { Address } from '@/types/contracts';
-import { 
-  getPoolsByNewsId as getPoolsByNewsIdContract, 
-  getPoolById as getPoolByIdContract,
-  createPoolContract,
-  handleContractError 
-} from '@/lib/contracts/utils';
+import {
+  getPoolsByNewsId,
+  getPoolById,
+  createPool,
+  getPoolsByCreator as getPoolsByCreatorContract,
+  handleContractError
+} from '@/lib/contracts';
 
 /**
  * POOL SERVICE
@@ -117,8 +118,8 @@ class PoolService {
 
     try {
       console.log('[PoolService] Fetching pools for news ID from contract:', newsId);
-      
-      const pools = await getPoolsByNewsIdContract(newsId);
+
+      const pools = await getPoolsByNewsId(newsId);
       
       console.log('[PoolService] Found', pools.length, 'pools for news ID', newsId);
       return pools;
@@ -159,8 +160,8 @@ class PoolService {
 
     try {
       console.log('[PoolService] Fetching pool by ID from contract:', { poolId: id, newsId });
-      
-      const pool = await getPoolByIdContract(newsId, id);
+
+      const pool = await getPoolById(newsId, id);
       
       if (pool) {
         console.log('[PoolService] Successfully fetched pool:', pool.reasoning.substring(0, 50) + '...');
@@ -198,14 +199,9 @@ class PoolService {
 
     try {
       console.log('[PoolService] Fetching pools by creator from contract:', creatorAddress);
-      
+
       // Call contract function to get newsIds and poolIds for creator
-      const result = await readContract(wagmiConfig, {
-        address: contracts.forter.address,
-        abi: contracts.forter.abi,
-        functionName: 'getPoolsByCreator',
-        args: [creatorAddress as Address],
-      }) as { newsIds: bigint[]; poolIds: bigint[] };
+      const result = await getPoolsByCreatorContract(creatorAddress as Address);
 
       // Fetch each pool individually
       const poolPromises = result.newsIds.map((newsId, index) => 
@@ -282,7 +278,7 @@ class PoolService {
       console.log('[PoolService] Creating pool via smart contract...', input);
 
       // Call smart contract to create pool
-      const result = await createPoolContract(
+      const result = await createPool(
         input.newsId,
         input.reasoning,
         input.evidence,
@@ -426,10 +422,10 @@ class PoolService {
     try {
       console.log('[PoolService] Fetching pool stake stats from contract:', { newsId, poolId });
 
-      // Import getPoolStakeStatsContract
-      const { getPoolStakeStatsContract } = await import('@/lib/contracts/utils');
+      // Import getPoolStakeStats
+      const { getPoolStakeStats } = await import('@/lib/contracts');
 
-      const stats = await getPoolStakeStatsContract(newsId, poolId);
+      const stats = await getPoolStakeStats(newsId, poolId);
 
       if (stats) {
         console.log('[PoolService] Pool stake stats fetched:', stats);

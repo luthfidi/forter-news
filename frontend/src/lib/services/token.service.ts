@@ -37,7 +37,7 @@ class TokenService {
       console.log('[TokenService] Fetching USDC balance from contract:', address);
 
       // Import getUSDCBalance
-      const { getUSDCBalance } = await import('@/lib/contracts/utils');
+      const { getUSDCBalance } = await import('@/lib/contracts');
 
       const balance = await getUSDCBalance(address as Address);
 
@@ -74,7 +74,7 @@ class TokenService {
       });
 
       // Import getUSDCAllowance
-      const { getUSDCAllowance } = await import('@/lib/contracts/utils');
+      const { getUSDCAllowance } = await import('@/lib/contracts');
 
       const allowance = await getUSDCAllowance(
         ownerAddress as Address,

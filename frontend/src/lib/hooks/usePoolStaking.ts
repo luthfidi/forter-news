@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { PoolStake, Pool } from '@/types';
+import { stakingService } from '@/lib/services';
 
 export function usePoolStaking() {
   const { poolStakes, setPoolStakes, pools, setPools, loading, setLoading } = useGlobalStore();
@@ -9,7 +10,8 @@ export function usePoolStaking() {
   const stakeOnPool = async (
     poolId: string,
     position: 'agree' | 'disagree',
-    amount: number
+    amount: number,
+    newsId?: string
   ): Promise<PoolStake | null> => {
     try {
       setLoading('stakes', true);
@@ -20,21 +22,14 @@ export function usePoolStaking() {
         throw new Error('Minimum stake is $1 USDC');
       }
 
-      // Simulate wallet interaction & transaction
-      console.log('Initiating wallet transaction:', { poolId, position, amount });
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Mock: Create stake record
-      const newStake: PoolStake = {
-        id: `stake-${Date.now()}`,
+      // Use stakingService which handles both contract and mock data
+      const newStake = await stakingService.stake({
         poolId,
-        userAddress: '0xuser...mock', // TODO: Get from wallet
         position,
-        amount,
-        createdAt: new Date()
-      };
+        amount
+      }, newsId);
 
-      // Update pool stakes
+      // Update pool stakes in local state
       const pool = pools.find(p => p.id === poolId);
       if (pool) {
         const updatedPool = {

@@ -8,7 +8,7 @@ import { writeContract, waitForTransactionReceipt } from 'wagmi/actions';
 import { config as wagmiConfig } from '@/lib/wagmi';
 import { contracts } from '@/config/contracts';
 import type { Hash } from '@/types/contracts';
-import type { TransactionResult } from '../types.shared';
+import type { TransactionResult } from '../types';
 
 /**
  * Withdraw stake and claim rewards (after pool resolution)

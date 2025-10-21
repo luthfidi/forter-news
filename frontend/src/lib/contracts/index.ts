@@ -16,7 +16,7 @@ export {
   positionToString,
   stringToPosition,
   handleContractError,
-} from './utils.shared';
+} from './utils';
 
 export type {
   TransactionResult,
@@ -26,7 +26,7 @@ export type {
   StakeContractData,
   PoolStakeStatsContractData,
   NewsResolutionContractData,
-} from './types.shared';
+} from './types';
 
 // ==========================================
 // FORTER CONTRACT
@@ -85,21 +85,3 @@ export {
   approveUSDC,
   transferUSDC,
 } from './Token';
-
-// ==========================================
-// BACKWARD COMPATIBILITY ALIASES
-// ==========================================
-
-// Legacy function names for backward compatibility during migration
-export { getNewsById as getNewsContractById } from './Forter';
-export { getPoolsByNewsId as getPoolsByNewsIdContract } from './Forter';
-export { getPoolById as getPoolByIdContract } from './Forter';
-export { createNews as createNewsContract } from './Forter';
-export { createPool as createPoolContract } from './Forter';
-export { stakeOnPool as stakeOnPoolContract } from './Forter';
-export { resolveNews as resolveNewsContract } from './Forter';
-export { withdrawStake as withdrawStakeContract } from './StakingPool';
-export { emergencyWithdraw as emergencyWithdrawContract } from './StakingPool';
-export { getUserStake as getUserStakeContract } from './Forter';
-export { getPoolStakeStats as getPoolStakeStatsContract } from './StakingPool';
-export { getNewsResolutionInfo as getNewsResolutionInfoContract } from './Forter';

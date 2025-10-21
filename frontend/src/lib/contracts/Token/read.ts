@@ -8,7 +8,7 @@ import { readContract } from 'wagmi/actions';
 import { config as wagmiConfig } from '@/lib/wagmi';
 import { contracts } from '@/config/contracts';
 import type { Address } from '@/types/contracts';
-import { formatUSDC } from '../utils.shared';
+import { formatUSDC } from '../utils';
 
 /**
  * Get USDC balance

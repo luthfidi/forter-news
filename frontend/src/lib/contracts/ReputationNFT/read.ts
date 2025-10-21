@@ -9,7 +9,7 @@ import { config as wagmiConfig } from '@/lib/wagmi';
 import { contracts } from '@/config/contracts';
 import type { Address } from '@/types/contracts';
 import type { ReputationData } from '@/types';
-import type { ReputationContractData } from '../types.shared';
+import type { ReputationContractData } from '../types';
 import { mapContractToReputation } from './mappers';
 
 /**

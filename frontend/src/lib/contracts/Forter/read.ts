@@ -14,9 +14,9 @@ import type {
   PoolContractData,
   StakeContractData,
   NewsResolutionContractData,
-} from '../types.shared';
+} from '../types';
 import { mapContractToNews, mapContractToPool } from './mappers';
-import { formatUSDC, timestampToDate } from '../utils.shared';
+import { formatUSDC, timestampToDate } from '../utils';
 
 /**
  * Get total news count

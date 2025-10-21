@@ -5,7 +5,7 @@
  */
 
 import type { ReputationData } from '@/types';
-import type { ReputationContractData } from '../types.shared';
+import type { ReputationContractData } from '../types';
 
 /**
  * Map tier number to string

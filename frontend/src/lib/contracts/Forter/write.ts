@@ -8,8 +8,8 @@ import { writeContract, waitForTransactionReceipt } from 'wagmi/actions';
 import { config as wagmiConfig } from '@/lib/wagmi';
 import { contracts } from '@/config/contracts';
 import type { Hash } from '@/types/contracts';
-import type { TransactionResult } from '../types.shared';
-import { parseUSDC, dateToTimestamp, stringToPosition } from '../utils.shared';
+import type { TransactionResult } from '../types';
+import { parseUSDC, dateToTimestamp, stringToPosition } from '../utils';
 
 /**
  * Create news

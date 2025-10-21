@@ -8,8 +8,8 @@ import { writeContract, waitForTransactionReceipt } from 'wagmi/actions';
 import { config as wagmiConfig } from '@/lib/wagmi';
 import { contracts } from '@/config/contracts';
 import type { Hash, Address } from '@/types/contracts';
-import type { TransactionResult } from '../types.shared';
-import { parseUSDC } from '../utils.shared';
+import type { TransactionResult } from '../types';
+import { parseUSDC } from '../utils';
 
 /**
  * Approve USDC spending

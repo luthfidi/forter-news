@@ -17,12 +17,18 @@ export function parseUSDC(amount: string | number): bigint {
 }
 
 // Convert USDC wei to readable amount
-export function formatUSDC(amount: bigint): string {
+export function formatUSDC(amount: bigint | undefined | null): string {
+  if (amount === undefined || amount === null) {
+    return '0';
+  }
   return formatUnits(amount, config.USDC_DECIMALS);
 }
 
 // Convert Unix timestamp to Date
-export function timestampToDate(timestamp: bigint): Date {
+export function timestampToDate(timestamp: bigint | undefined | null): Date {
+  if (timestamp === undefined || timestamp === null) {
+    return new Date(0);
+  }
   return new Date(Number(timestamp) * 1000);
 }
 

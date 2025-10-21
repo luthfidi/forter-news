@@ -35,6 +35,7 @@ export async function getNewsCount(): Promise<number> {
  */
 export async function getNewsById(newsId: string): Promise<News | null> {
   try {
+    console.log('[Forter/read] Fetching news with ID:', newsId);
     const data = await readContract(wagmiConfig, {
       address: contracts.forter.address,
       abi: contracts.forter.abi,
@@ -42,7 +43,16 @@ export async function getNewsById(newsId: string): Promise<News | null> {
       args: [BigInt(newsId)],
     }) as NewsContractData;
 
-    return mapContractToNews(data, newsId);
+    console.log('[Forter/read] Raw contract data:', data);
+
+    if (!data) {
+      console.warn('[Forter/read] No data returned from contract');
+      return null;
+    }
+
+    const mappedNews = mapContractToNews(data, newsId);
+    console.log('[Forter/read] Mapped news data:', mappedNews);
+    return mappedNews;
   } catch (error) {
     console.error('[Forter/read] getNewsById failed:', error);
     return null;

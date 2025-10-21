@@ -223,15 +223,28 @@ class NewsService {
 
       console.log('[NewsService] News creation transaction successful:', result.hash);
 
+      // Wait a moment for the blockchain state to update
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
       // Get the current news count to find the latest news ID
-      // Note: This assumes the new news gets the next sequential ID
       const newsCount = await getNewsCount();
-      const newNewsId = (newsCount - 1).toString(); // Latest news has highest ID
+      console.log('[NewsService] Current news count after creation:', newsCount);
       
-      // Fetch the newly created news
-      const newNews = await this.getById(newNewsId);
+      // Try both possible IDs since indexing could be 0-based or 1-based
+      let newNews = null;
+      const possibleIds = [(newsCount - 1).toString(), newsCount.toString()];
+      
+      for (const newsId of possibleIds) {
+        console.log('[NewsService] Trying to fetch news with ID:', newsId);
+        newNews = await this.getById(newsId);
+        if (newNews) {
+          console.log('[NewsService] Successfully found news with ID:', newsId);
+          break;
+        }
+      }
       
       if (!newNews) {
+        console.error('[NewsService] Could not find newly created news. Tried IDs:', possibleIds);
         throw new Error('Failed to fetch created news from contract');
       }
 

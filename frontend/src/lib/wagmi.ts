@@ -1,38 +1,26 @@
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
-import { defineChain } from "viem";
+import { http, fallback } from "viem";
+import { baseSepolia } from "viem/chains";
 
-// Custom Base Sepolia chain
-const customBaseSepolia = defineChain({
-  id: 84532,
-  name: "Base Sepolia",
-  nativeCurrency: {
-    decimals: 18,
-    name: "Ether",
-    symbol: "ETH",
-  },
-  rpcUrls: {
-    default: {
-      http: ["https://sepolia.base.org"],
-    },
-  },
-  blockExplorers: {
-    default: {
-      name: "BaseScan",
-      url: "https://sepolia.basescan.org",
-    },
-  },
-  contracts: {
-    multicall3: {
-      address: "0xca11bde05977b3631167028862be2a173976ca11",
-      blockCreated: 1059647,
-    },
-  },
-  testnet: true,
-});
+// Multiple RPC endpoints for reliability
+const baseSepoliaRPCs = [
+  "https://sepolia.base.org",
+  "https://base-sepolia.blockpi.network/v1/rpc/public",
+  "https://base-sepolia-rpc.publicnode.com",
+];
 
 export const config = getDefaultConfig({
   appName: "Forter - Forecast Porter",
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || "YOUR_PROJECT_ID",
-  chains: [customBaseSepolia],
+  chains: [baseSepolia],
+  transports: {
+    [baseSepolia.id]: fallback(
+      baseSepoliaRPCs.map((url) => http(url, {
+        timeout: 10_000, // 10 seconds
+        retryCount: 3,
+        retryDelay: 1000, // 1 second
+      }))
+    ),
+  },
   ssr: true,
 });

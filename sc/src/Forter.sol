@@ -579,7 +579,8 @@ contract Forter is Ownable2Step, ReentrancyGuard {
 
     // Emergency withdraw any ERC20 tokens (onlyOwner)
     function withdrawToken(address token, uint256 amount) external onlyOwner {
-        IERC20(token).transfer(owner(), amount);
+        bool success = IERC20(token).transfer(owner(), amount);
+        require(success, "Transfer failed");
     }
 
     // Emergency withdraw ETH (onlyOwner)

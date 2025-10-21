@@ -19,7 +19,7 @@ interface IForter {
         string[] memory _evidenceLinks,
         string memory _imageUrl,
         string memory _imageCaption,
-        uint8 _position,
+        uint8 _position, // Note: Interface uses uint8, implementation uses Position enum
         uint256 _creatorStake
     ) external;
 

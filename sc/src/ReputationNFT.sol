@@ -150,10 +150,12 @@ contract ReputationNFT is ERC721, Ownable {
             uint256 stakeMultiplier = _getStakeMultiplier(pools[i].poolTotalStake);
 
             // Apply multiplier (stakeMultiplier is in basis points: 100 = 1.0x)
+            // forge-lint: disable-next-line(unsafe-typecast)
             totalPoints += (basePoints * int256(stakeMultiplier)) / 100;
         }
 
         // Prevent negative total
+        // forge-lint: disable-next-line(unsafe-typecast)
         rep.reputationPoints = totalPoints > 0 ? uint256(totalPoints) : 0;
     }
 

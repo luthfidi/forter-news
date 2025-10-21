@@ -87,7 +87,6 @@ export function usePoolStaking() {
     // Total pool after user stake
     const newTotalPool = totalStaked + stakeAmount;
     const platformFee = newTotalPool * 0.02; // 2% protocol fee
-    const rewardPool = newTotalPool - platformFee;
 
     // NOTE: Smart contract NOW implements 20/80 SPLIT with auto-distribute
     // - Creator gets 20% of remaining pool (after 2% fee)
@@ -97,7 +96,7 @@ export function usePoolStaking() {
 
     // NEW 20/80 SPLIT LOGIC
     const remaining = newTotalPool - platformFee; // 98% remaining
-    const creatorReward = remaining * 0.20; // 20% to creator
+    // const creatorReward = remaining * 0.20; // 20% to creator (not used in calculation)
     const stakersPool = remaining * 0.80;   // 80% to stakers
 
     // Determine winning pool (EXCLUDE creator stake from agree pool)

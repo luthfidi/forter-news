@@ -118,6 +118,7 @@ export function mapContractToReputation(
     tier: mapTierNumberToString(Number(contractData.tier)),
     nftTokenId: undefined, // Need to get separately if needed
     categoryStats: {}, // Need to implement category tracking
+    reputationPoints: Number(contractData.score) || 0, // Add reputation points from contract
   };
 }
 

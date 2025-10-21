@@ -23,8 +23,8 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
   const [stakeAmount, setStakeAmount] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // NEW: Image modal state
-  const [showImageModal, setShowImageModal] = useState(false);
+  // Image click handler state - modal not needed, using new tab
+  // const [showImageModal, setShowImageModal] = useState(false);
 
   // NEW: Calculate percentages WITHOUT including creator stake (20/80 split logic)
   // Creator is separate from staker pools now

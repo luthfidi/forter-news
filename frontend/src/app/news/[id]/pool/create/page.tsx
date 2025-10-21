@@ -30,7 +30,6 @@ export default function CreatePoolPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // NEW: Image upload state
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -66,7 +65,6 @@ export default function CreatePoolPage() {
   // NEW: Image upload handlers
   const handleFileSelect = (file: File) => {
     if (file && file.type.startsWith('image/')) {
-      setSelectedFile(file);
       setIsUploading(true);
 
       // Create preview immediately
@@ -113,7 +111,6 @@ export default function CreatePoolPage() {
   };
 
   const removeImage = () => {
-    setSelectedFile(null);
     setImagePreview('');
     setFormData({ ...formData, imageUrl: '', imageCaption: '' });
     if (fileInputRef.current) {
@@ -447,7 +444,7 @@ export default function CreatePoolPage() {
                   <div className="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200">
                     <div className="flex items-center gap-2 text-sm text-amber-700">
                       <span>💡</span>
-                      <span>Add a chart/image to increase your pool's credibility and earnings potential!</span>
+                      <span>Add a chart/image to increase your pool&apos;s credibility and earnings potential!</span>
                     </div>
                   </div>
                 )}

@@ -86,7 +86,8 @@ export const MOCK_REPUTATION: Record<string, ReputationData> = {
     currentStreak: 0,
     bestStreak: 0,
     specialty: 'Crypto',
-    memberSince: new Date('2024-08-05')
+    memberSince: new Date('2024-08-05'),
+    reputationPoints: -100  // 1 wrong prediction × 1.0x multiplier = -100 points
   },
   '0x4444...5555': {
     address: '0x4444...5555',
@@ -104,7 +105,8 @@ export const MOCK_REPUTATION: Record<string, ReputationData> = {
     currentStreak: 1,
     bestStreak: 1,
     specialty: 'Tech',
-    memberSince: new Date('2024-08-06')
+    memberSince: new Date('2024-08-06'),
+    reputationPoints: 100   // 1 correct prediction × 1.0x multiplier = 100 points
   },
   '0x6666...7777': {
     address: '0x6666...7777',
@@ -139,7 +141,8 @@ export const MOCK_REPUTATION: Record<string, ReputationData> = {
     currentStreak: 0,
     bestStreak: 0,
     specialty: 'Macro',
-    memberSince: new Date('2024-10-10')
+    memberSince: new Date('2024-10-10'),
+    reputationPoints: 0     // No resolved pools yet
   },
   '0xaaaa...bbbb': {
     address: '0xaaaa...bbbb',
@@ -156,7 +159,8 @@ export const MOCK_REPUTATION: Record<string, ReputationData> = {
     currentStreak: 0,
     bestStreak: 0,
     specialty: 'Tech',
-    memberSince: new Date('2024-10-11')
+    memberSince: new Date('2024-10-11'),
+    reputationPoints: 0     // No resolved pools yet
   },
   '0xcccc...dddd': {
     address: '0xcccc...dddd',
@@ -173,7 +177,8 @@ export const MOCK_REPUTATION: Record<string, ReputationData> = {
     currentStreak: 0,
     bestStreak: 0,
     specialty: 'Tech',
-    memberSince: new Date('2024-10-12')
+    memberSince: new Date('2024-10-12'),
+    reputationPoints: 0     // No resolved pools yet
   },
   // ADMIN WALLET (has resolved pools, builds reputation)
   '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d': {
@@ -192,7 +197,8 @@ export const MOCK_REPUTATION: Record<string, ReputationData> = {
     currentStreak: 2,
     bestStreak: 3,
     specialty: 'Crypto, Macro',
-    memberSince: new Date('2024-08-01')
+    memberSince: new Date('2024-08-01'),
+    reputationPoints: 200  // (3 correct × 100) - (1 wrong × 100) = 200 points
   },
   // ADMIN WALLET - Tachul (Co-founder, DeFi specialist)
   '0xa930FDA4B716341c8b5D1b83B67BfC2adFbd1fEd': {
@@ -211,7 +217,8 @@ export const MOCK_REPUTATION: Record<string, ReputationData> = {
     currentStreak: 3,
     bestStreak: 3,
     specialty: 'DeFi, Crypto',
-    memberSince: new Date('2024-07-15')
+    memberSince: new Date('2024-07-15'),
+    reputationPoints: 300  // (4 correct × 100) - (1 wrong × 100) = 300 points
   },
   // ADMIN WALLET - Zidan (Tech analyst, AI/ML focus)
   '0xeF4DB09D536439831FEcaA33fE4250168976535E': {

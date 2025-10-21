@@ -1,5 +1,18 @@
 # Forter - Forecast Porter
 
+> **🎉 Smart Contract Revision Complete - January 21, 2025**
+>
+> All smart contracts have been revised and tested. New features:
+> - ✅ Auto-distribute rewards (no manual claim)
+> - ✅ 20% creator / 80% staker reward split
+> - ✅ Point-based reputation with stake weight multipliers
+> - ✅ Type-safe enums for better security
+>
+> **Status**: Ready for deployment to Base Sepolia
+> **Next**: Frontend integration (see `frontend/FE_REVISION_NOTES.md`)
+
+---
+
 ## Executive Summary
 
 Forter adalah **Information Finance Protocol** - platform Web3 yang mengubah informasi kredibel menjadi aset finansial. Kami bukan prediction market untuk gambling - kami adalah infrastruktur **permissionless** untuk memverifikasi, memonetisasi, dan membangun reputasi berbasis analisis yang akurat.
@@ -618,18 +631,50 @@ Pool card after resolution:
 
 ### Reputation System (Overview)
 
+> **Updated: January 21, 2025** - Point-based system with stake weight
+
 **Soulbound NFT Components:**
 
+- **Reputation Points** (primary metric for tier)
 - Overall accuracy percentage
-- Total markets participated
+- Total pools participated
 - Category-specific expertise
-- Streak indicators
+- Stake weight multiplier tracking
 - Trust badges
 
-**Calculation Method (MVP):**
+**Calculation Method (New):**
 
-- Simple accuracy: (Correct/Total) × 100%
-- Future: ELO-based system untuk complexity weighting
+**Point-Based System with Stake Weight:**
+```
+Total Reputation Points = Σ (Pool Points × Stake Multiplier)
+
+Pool Points:
+├─ Correct prediction: +100 points
+└─ Wrong prediction: -30 points
+
+Stake Multiplier (based on pool total stake):
+├─ < $100:       1.0x (no bonus)
+├─ $100-$499:    1.5x (small pool bonus)
+├─ $500-$999:    2.0x (medium pool bonus)
+├─ $1,000-$4,999: 2.5x (large pool bonus)
+└─ $5,000+:      3.0x (whale pool bonus)
+```
+
+**Why This System?**
+- Rewards analysts who stake more (skin in the game)
+- Prevents spam with low-stake pools
+- Encourages high-quality, well-researched analysis
+- Fairer than pure accuracy percentage
+
+**Example:**
+```
+Analyst A: 100% accuracy, 1 pool, $10 stake
+→ +100 × 1.0x = 100 points → Novice
+
+Analyst B: 90% accuracy, 10 pools, avg $500 stake
+→ 9 correct × (100 × 2.0x) + 1 wrong × (-30 × 2.0x)
+→ 1,800 - 60 = 1,740 points → Master
+```
 
 _For detailed technical implementation of Dynamic NFTs, see the [Dynamic Reputation NFT System](#dynamic-reputation-nft-system) section below._
 
@@ -674,15 +719,23 @@ flowchart LR
 
 ### NFT Tier System
 
+> **Updated: January 21, 2025** - Point-based tiers with minimum pool requirements
+
 Performance tiers determine which image is displayed:
 
-| Tier        | Accuracy Range | Image/Badge      | Additional Benefits                         |
-| ----------- | -------------- | ---------------- | ------------------------------------------- |
-| **Novice**  | 0-49%          | 🥉 Bronze Badge  | Basic access                                |
-| **Analyst** | 50-69%         | 🥈 Silver Badge  | Standard visibility                         |
-| **Expert**  | 70-84%         | 🥇 Gold Badge    | Featured in leaderboard                     |
-| **Master**  | 85-94%         | 💎 Diamond Badge | Priority display, higher staking multiplier |
-| **Legend**  | 95-100%        | 👑 Crown Badge   | Exclusive benefits, DAO governance rights   |
+| Tier        | Points Required | Min Pools | Image/Badge      | Additional Benefits                         |
+| ----------- | --------------- | --------- | ---------------- | ------------------------------------------- |
+| **Novice**  | 0-199           | 0         | 🥉 Bronze Badge  | Basic access, learning phase                |
+| **Analyst** | 200-499         | 0         | 🥈 Silver Badge  | Standard visibility, proven track record    |
+| **Expert**  | 500-999         | 5+        | 🥇 Gold Badge    | Featured in leaderboard, established analyst |
+| **Master**  | 1,000-4,999     | 10+       | 💎 Diamond Badge | Priority display, proven expert             |
+| **Legend**  | 5,000+          | 20+       | 👑 Crown Badge   | Elite status, DAO governance rights         |
+
+**Tier Calculation Notes:**
+- Points calculated with stake weight multipliers (see Reputation System section)
+- Minimum pool requirements prevent tier-rushing with few high-stake pools
+- Negative points possible (many wrong predictions) but floor at 0
+- Tier can go UP or DOWN based on recent performance
 
 ### Metadata Structure
 
@@ -695,17 +748,26 @@ The NFT metadata (stored on IPFS) updates to reflect:
   "image": "ipfs://QmXXX/tier-diamond.png",
   "attributes": [
     {
-      "trait_type": "Accuracy",
-      "value": 87.5,
-      "display_type": "percentage"
-    },
-    {
-      "trait_type": "Markets Participated",
-      "value": 42
+      "trait_type": "Reputation Points",
+      "value": 1740,
+      "display_type": "number"
     },
     {
       "trait_type": "Tier",
       "value": "Master"
+    },
+    {
+      "trait_type": "Accuracy",
+      "value": 90,
+      "display_type": "percentage"
+    },
+    {
+      "trait_type": "Total Pools",
+      "value": 10
+    },
+    {
+      "trait_type": "Correct Pools",
+      "value": 9
     },
     {
       "trait_type": "Specialty",
@@ -972,9 +1034,11 @@ Production: IPFS + Arweave mirror ($5/GB one-time)
 
 ### Reward Distribution
 
+> **Updated: January 21, 2025** - New 20/80 split with auto-distribute
+
 **Per-Pool Distribution Model:**
 
-Each POOL is independent dengan reward structure sendiri:
+Each POOL is independent dengan reward structure sendiri. Rewards are **automatically distributed** when news is resolved (no manual claim needed):
 
 ```
 Single Pool Total Stakes (100%)
@@ -983,13 +1047,21 @@ Single Pool Total Stakes (100%)
     │
     └── Reward Pool (98%)
          │
-         ├── Pool Creator (70%)
+         ├── Pool Creator (20% of remaining) ✨ AUTO-DISTRIBUTED
          │    └── If pool position CORRECT
+         │    └── Creator is EXCLUDED from staker pool
          │
-         └── Winning Stakers (30%)
+         └── Winning Stakers (80% of remaining) ✨ AUTO-DISTRIBUTED
               ├── "Setuju" stakers (if pool correct)
               └── OR "Tidak Setuju" stakers (if pool wrong)
+              └── Creator stake NOT included in this pool
 ```
+
+**Key Changes:**
+- Creator now gets **20%** instead of 70% (fairer for stakers)
+- Stakers now get **80%** instead of 30% (better incentive)
+- **Auto-distribute**: Rewards sent directly to wallets on resolution
+- **No double-dipping**: Creator excluded from winning staker pool calculations
 
 #### Example Scenario:
 
@@ -1009,11 +1081,18 @@ POOL 1 by Alice:
 └─ Resolution: ETH = $5,200 on Dec 31 ✅
 
 Outcome: Alice was CORRECT (said YES, outcome was YES)
-Distribution:
+Distribution (AUTO-DISTRIBUTED):
 ├─ Platform fee: $24 (2%)
-├─ Alice (pool creator): $823 (70% of remaining)
-└─ "Setuju" stakers: $353 (30% split proportionally among 9 users)
-    "Tidak Setuju" stakers get nothing (they were wrong)
+├─ Remaining pool: $1,176 (98%)
+│
+├─ Alice (pool creator): $235.20 (20% of $1,176) ✅ AUTO-SENT
+│   └─ Alice's stake is EXCLUDED from winning staker pool below
+│
+└─ "Setuju" stakers: $940.80 (80% of $1,176) ✅ AUTO-SENT
+    └─ Split proportionally among $900 staked (9 users)
+    └─ Each user gets: ~$104 per $100 staked
+
+    ❌ "Tidak Setuju" stakers get nothing (they were wrong)
 
 
 POOL 2 by Bob:
@@ -1028,29 +1107,37 @@ POOL 2 by Bob:
 └─ Resolution: ETH = $5,200 on Dec 31 ❌
 
 Outcome: Bob was WRONG (said NO, outcome was YES)
-Distribution:
+Distribution (AUTO-DISTRIBUTED):
 ├─ Platform fee: $27 (2%)
-├─ Bob gets nothing (was wrong)
-└─ "Tidak Setuju" stakers: $1,323 (98% split among 8 users who bet against Bob)
-    "Setuju" stakers get nothing (they backed wrong position)
+├─ Remaining pool: $1,323 (98%)
+│
+├─ Bob (pool creator): $0 (creator gets NOTHING when wrong) ❌
+│
+└─ "Tidak Setuju" stakers: $1,323 (100% of remaining) ✅ AUTO-SENT
+    └─ Split proportionally among $800 staked (8 users)
+    └─ Each user gets: ~$165 per $100 staked
+
+    ❌ "Setuju" stakers get nothing (they backed wrong position)
 ```
 
 #### Understanding Pool Staking
 
-| Stake Type               | Meaning                  | Win Condition         | Reward Share                    |
-| ------------------------ | ------------------------ | --------------------- | ------------------------------- |
-| **Pool Creator Stake**   | Creator's conviction     | Pool position correct | 70% of pool                     |
-| **"Setuju" Stake**       | Back the pool's position | Pool position correct | Split 30% proportionally        |
-| **"Tidak Setuju" Stake** | Bet against the pool     | Pool position wrong   | Take 98% (all stakes minus fee) |
+| Stake Type               | Meaning                  | Win Condition         | Reward Share (Updated 2025)                 |
+| ------------------------ | ------------------------ | --------------------- | ------------------------------------------- |
+| **Pool Creator Stake**   | Creator's conviction     | Pool position correct | **20%** of remaining pool (auto-distributed) |
+| **"Setuju" Stake**       | Back the pool's position | Pool position correct | Split **80%** proportionally (auto-distributed) |
+| **"Tidak Setuju" Stake** | Bet against the pool     | Pool position wrong   | Take 98% (all stakes minus fee, auto-distributed) |
 
 **Key Points:**
 
 - Each pool is **fully independent**
-- Pool creator gets 70% **only if their position is correct**
-- "Setuju" stakers = backing the pool's position + reasoning
+- Pool creator gets **20%** only if their position is correct (changed from 70%)
+- Creator stake is **EXCLUDED** from winning staker pool calculations (no double-dipping)
+- "Setuju" stakers = backing the pool's position + reasoning (get 80% share)
 - "Tidak Setuju" stakers = betting the pool will be wrong
 - All pools under same NEWS resolve at same time with same outcome data
-- But each pool's rewards are calculated separately
+- But each pool's rewards are calculated **and distributed** separately
+- **Auto-distribute**: All rewards sent directly to wallets on resolution (no claim needed)
 
 ### Anti-Gaming Mechanisms
 

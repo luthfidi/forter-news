@@ -357,6 +357,231 @@ export async function stakeOnPoolContract(
 }
 
 /**
+ * ADDITIONAL CONTRACT WRITE FUNCTIONS
+ */
+
+// Resolve news (Admin/Owner only)
+export async function resolveNewsContract(
+  newsId: string,
+  outcome: 0 | 1 | 2, // 0 = None, 1 = YES, 2 = NO
+  resolutionSource: string,
+  resolutionNotes: string
+): Promise<TransactionResult> {
+  try {
+    const hash = await writeContract(wagmiConfig, {
+      address: contracts.forter.address,
+      abi: contracts.forter.abi,
+      functionName: 'resolveNews',
+      args: [
+        BigInt(newsId),
+        outcome,
+        resolutionSource,
+        resolutionNotes
+      ],
+    }) as Hash;
+
+    await waitForTransactionReceipt(wagmiConfig, { hash });
+
+    return { hash, success: true };
+  } catch (error: unknown) {
+    console.error('[Contract] resolveNews failed:', error);
+    return {
+      hash: '0x' as Hash,
+      success: false,
+      error: error instanceof Error ? error.message : 'Transaction failed'
+    };
+  }
+}
+
+// Withdraw stake and claim rewards (User)
+export async function withdrawStakeContract(
+  newsId: string,
+  poolId: string
+): Promise<TransactionResult> {
+  try {
+    const hash = await writeContract(wagmiConfig, {
+      address: contracts.stakingPool.address,
+      abi: contracts.stakingPool.abi,
+      functionName: 'withdraw',
+      args: [BigInt(newsId), BigInt(poolId)],
+    }) as Hash;
+
+    await waitForTransactionReceipt(wagmiConfig, { hash });
+
+    return { hash, success: true };
+  } catch (error: unknown) {
+    console.error('[Contract] withdraw failed:', error);
+    return {
+      hash: '0x' as Hash,
+      success: false,
+      error: error instanceof Error ? error.message : 'Transaction failed'
+    };
+  }
+}
+
+// Emergency withdraw before resolution
+export async function emergencyWithdrawContract(
+  newsId: string,
+  poolId: string
+): Promise<TransactionResult> {
+  try {
+    const hash = await writeContract(wagmiConfig, {
+      address: contracts.stakingPool.address,
+      abi: contracts.stakingPool.abi,
+      functionName: 'emergencyWithdraw',
+      args: [BigInt(newsId), BigInt(poolId)],
+    }) as Hash;
+
+    await waitForTransactionReceipt(wagmiConfig, { hash });
+
+    return { hash, success: true };
+  } catch (error: unknown) {
+    console.error('[Contract] emergencyWithdraw failed:', error);
+    return {
+      hash: '0x' as Hash,
+      success: false,
+      error: error instanceof Error ? error.message : 'Transaction failed'
+    };
+  }
+}
+
+/**
+ * ADDITIONAL CONTRACT READ FUNCTIONS
+ */
+
+// Get user's stake details for a pool
+export async function getUserStakeContract(
+  newsId: string,
+  poolId: string,
+  userAddress: Address
+): Promise<{
+  amount: number;
+  position: boolean;
+  timestamp: Date;
+  isWithdrawn: boolean;
+} | null> {
+  try {
+    const data = await readContract(wagmiConfig, {
+      address: contracts.forter.address,
+      abi: contracts.forter.abi,
+      functionName: 'getUserStake',
+      args: [BigInt(newsId), BigInt(poolId), userAddress],
+    }) as { amount: bigint; position: boolean; timestamp: bigint; isWithdrawn: boolean };
+
+    return {
+      amount: Number(formatUSDC(data.amount)),
+      position: data.position,
+      timestamp: timestampToDate(data.timestamp),
+      isWithdrawn: data.isWithdrawn
+    };
+  } catch (error) {
+    console.error('[Contract] getUserStake failed:', error);
+    return null;
+  }
+}
+
+// Get pool stake statistics
+export async function getPoolStakeStatsContract(
+  newsId: string,
+  poolId: string
+): Promise<{
+  totalStaked: number;
+  agreeStakes: number;
+  disagreeStakes: number;
+  stakerCount: number;
+} | null> {
+  try {
+    const data = await readContract(wagmiConfig, {
+      address: contracts.stakingPool.address,
+      abi: contracts.stakingPool.abi,
+      functionName: 'getPoolStakeStats',
+      args: [BigInt(newsId), BigInt(poolId)],
+    }) as { total: bigint; agree: bigint; disagree: bigint; stakerCount: bigint };
+
+    return {
+      totalStaked: Number(formatUSDC(data.total)),
+      agreeStakes: Number(formatUSDC(data.agree)),
+      disagreeStakes: Number(formatUSDC(data.disagree)),
+      stakerCount: Number(data.stakerCount)
+    };
+  } catch (error) {
+    console.error('[Contract] getPoolStakeStats failed:', error);
+    return null;
+  }
+}
+
+// Get news resolution information
+export async function getNewsResolutionInfoContract(
+  newsId: string
+): Promise<{
+  resolvedAt: Date;
+  resolvedBy: Address;
+  resolutionSource: string;
+  resolutionNotes: string;
+} | null> {
+  try {
+    const data = await readContract(wagmiConfig, {
+      address: contracts.forter.address,
+      abi: contracts.forter.abi,
+      functionName: 'getNewsResolutionInfo',
+      args: [BigInt(newsId)],
+    }) as {
+      resolvedAt: bigint;
+      resolvedBy: Address;
+      resolutionSource: string;
+      resolutionNotes: string
+    };
+
+    return {
+      resolvedAt: timestampToDate(data.resolvedAt),
+      resolvedBy: data.resolvedBy,
+      resolutionSource: data.resolutionSource,
+      resolutionNotes: data.resolutionNotes
+    };
+  } catch (error) {
+    console.error('[Contract] getNewsResolutionInfo failed:', error);
+    return null;
+  }
+}
+
+// Get USDC balance
+export async function getUSDCBalance(address: Address): Promise<number> {
+  try {
+    const balance = await readContract(wagmiConfig, {
+      address: contracts.token.address,
+      abi: contracts.token.abi,
+      functionName: 'balanceOf',
+      args: [address],
+    }) as bigint;
+
+    return Number(formatUSDC(balance));
+  } catch (error) {
+    console.error('[Contract] getUSDCBalance failed:', error);
+    return 0;
+  }
+}
+
+// Get USDC allowance
+export async function getUSDCAllowance(
+  ownerAddress: Address,
+  spenderAddress: Address
+): Promise<number> {
+  try {
+    const allowance = await readContract(wagmiConfig, {
+      address: contracts.token.address,
+      abi: contracts.token.abi,
+      functionName: 'allowance',
+      args: [ownerAddress, spenderAddress],
+    }) as bigint;
+
+    return Number(formatUSDC(allowance));
+  } catch (error) {
+    console.error('[Contract] getUSDCAllowance failed:', error);
+    return 0;
+  }
+}
+
+/**
  * ERROR HANDLING
  */
 export function handleContractError(error: unknown): string {

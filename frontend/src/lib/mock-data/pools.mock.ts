@@ -1,10 +1,13 @@
 import { Pool } from '@/types';
 
 /**
- * MOCK POOLS DATA
+ * MOCK POOLS DATA - UPDATED FOR 20/80 SPLIT
  *
- * This file contains mock data for POOL entities (analysis with independent stake pools).
- * When integrating with smart contracts, replace this with contract calls.
+ * This file contains mock data for POOL entities with NEW 20/80 reward split logic:
+ * - Creator gets 20% of remaining pool (after 2% fee)
+ * - Winning stakers get 80% of remaining pool
+ * - Creator excluded from staker pool calculations
+ * - Rewards auto-distributed on resolution
  *
  * Contract Integration Point:
  * - Replace with: await readContract({ address: poolFactory, functionName: 'getPoolsByNews', args: [newsId] })
@@ -217,7 +220,13 @@ export const MOCK_POOLS: Pool[] = [
     totalStaked: 1750,
     status: 'resolved',
     outcome: 'creator_correct',
-    createdAt: new Date('2024-09-16')
+    resolvedAt: new Date('2024-09-20'),
+    createdAt: new Date('2024-09-16'),
+    // NEW: Auto-distribute info for UI display
+    autoDistributed: true,
+    rewardTxHash: '0xabc123...789xyz', // Mock transaction hash
+    creatorReward: 343, // 20% of remaining pool (1750 - 35 fee = 1715, ×20% = 343)
+    stakerRewardsDistributed: 1372 // 80% of remaining pool
   },
   {
     id: 'pool-11',
@@ -234,7 +243,13 @@ export const MOCK_POOLS: Pool[] = [
     totalStaked: 1800,
     status: 'resolved',
     outcome: 'creator_wrong',
-    createdAt: new Date('2024-09-17')
+    resolvedAt: new Date('2024-09-22'),
+    createdAt: new Date('2024-09-17'),
+    // NEW: Auto-distribute info for UI display
+    autoDistributed: true,
+    rewardTxHash: '0xdef456...123abc', // Mock transaction hash
+    creatorReward: 0, // Creator gets nothing when wrong
+    stakerRewardsDistributed: 1764 // 98% of pool (1800 - 36 fee = 1764) goes to disagree stakers
   },
   {
     id: 'pool-12',

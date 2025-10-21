@@ -23,15 +23,21 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
   const [stakeAmount, setStakeAmount] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Calculate percentages (including creator stake based on pool position)
-  const creatorAgreeStakes = pool.position === 'YES' ? pool.agreeStakes + pool.creatorStake : pool.agreeStakes;
-  const creatorDisagreeStakes = pool.position === 'NO' ? pool.disagreeStakes + pool.creatorStake : pool.disagreeStakes;
-  
+  // NEW: Image modal state
+  const [showImageModal, setShowImageModal] = useState(false);
+
+  // NEW: Calculate percentages WITHOUT including creator stake (20/80 split logic)
+  // Creator is separate from staker pools now
+
   const agreePercentage = pool.totalStaked > 0
-    ? Math.round((creatorAgreeStakes / pool.totalStaked) * 100)
+    ? Math.round((pool.agreeStakes / pool.totalStaked) * 100)
     : 0;
   const disagreePercentage = pool.totalStaked > 0
-    ? Math.round((creatorDisagreeStakes / pool.totalStaked) * 100)
+    ? Math.round((pool.disagreeStakes / pool.totalStaked) * 100)
+    : 0;
+
+  const creatorStakePercentage = pool.totalStaked > 0
+    ? Math.round((pool.creatorStake / pool.totalStaked) * 100)
     : 0;
 
   // Mock reputation data
@@ -91,6 +97,14 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
     setShowStakeInput(false);
     setSelectedPosition(null);
     setStakeAmount('');
+  };
+
+  // NEW: Image click handler
+  const handleImageClick = () => {
+    if (pool.imageUrl) {
+      // Open in new tab for better viewing
+      window.open(pool.imageUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
@@ -158,23 +172,43 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
           </div>
         </div>
 
-        {/* Image if exists */}
+        {/* Image if exists - OPTIMIZED DISPLAY */}
         {pool.imageUrl && (
-          <div className="mb-4 rounded-lg overflow-hidden border border-border/30">
-            <div className="relative w-full h-48">
+          <div className="mb-4 rounded-lg overflow-hidden border border-border/30 bg-card">
+            {/* Better Image Display - object-contain to avoid cropping important content */}
+            <div
+              className="relative w-full min-h-[200px] max-h-[400px] cursor-pointer group"
+              onClick={handleImageClick}
+            >
               <Image
                 src={pool.imageUrl}
                 alt={pool.imageCaption || 'Pool analysis chart'}
                 fill
-                className="object-cover"
+                className="object-contain transition-transform duration-200 group-hover:scale-105"
                 unoptimized
+                style={{ maxHeight: '400px' }}
               />
-            </div>
-            {pool.imageCaption && (
-              <div className="p-2 bg-card/50 text-xs text-muted-foreground text-center">
-                📊 {pool.imageCaption}
+
+              {/* Click to expand hint */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                <div className="text-white text-xs bg-black/70 px-2 py-1 rounded flex items-center gap-1">
+                  <span>🔍</span>
+                  <span>Click to view full size</span>
+                </div>
               </div>
-            )}
+            </div>
+
+            {/* Image Caption with link */}
+            <div className="p-3 bg-card/80 border-t border-border/30">
+              {pool.imageCaption && (
+                <div className="text-sm text-muted-foreground text-center mb-2">
+                  📊 {pool.imageCaption}
+                </div>
+              )}
+              <div className="text-xs text-muted-foreground text-center">
+                <span className="text-primary">Click image</span> • View in new tab • No cropping applied • Full resolution preserved
+              </div>
+            </div>
           </div>
         )}
 
@@ -215,54 +249,127 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
           </div>
         )}
 
-        {/* Stakes Visualization */}
+        {/* Stakes Visualization - UPDATED FOR 20/80 SPLIT */}
         <div className="mb-4 p-4 rounded-lg bg-card/50 border border-border/30">
-          <div className="flex justify-between text-sm mb-2">
-            <span className="font-medium">Pool Stakes</span>
+          <div className="flex justify-between text-sm mb-3">
+            <span className="font-medium">Pool Distribution</span>
             <span className="text-muted-foreground">${pool.totalStaked.toLocaleString()}</span>
           </div>
 
-          {/* Progress bar legend */}
-          <div className="flex justify-between text-xs mb-2">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded bg-gradient-to-r from-emerald-400 to-emerald-500"></div>
-              <span className="text-emerald-600">Agree</span>
-              <span className="font-medium">${creatorAgreeStakes.toLocaleString()} ({agreePercentage}%)</span>
+          {/* Creator Stake - SEPARATE */}
+          <div className="mb-3 pb-3 border-b border-border/30">
+            <div className="flex items-center justify-between text-xs mb-1">
+              <span className="text-muted-foreground">Creator Stake ({pool.position})</span>
+              <span className="font-medium">${pool.creatorStake.toLocaleString()} ({creatorStakePercentage}%)</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="font-medium">${creatorDisagreeStakes.toLocaleString()} ({disagreePercentage}%)</span>
-              <span className="text-rose-600">Disagree</span>
-              <div className="w-3 h-3 rounded bg-gradient-to-r from-rose-400 to-rose-500"></div>
+            <div className="h-2 bg-muted rounded-full overflow-hidden">
+              <div
+                className={`h-full transition-all duration-500 ${
+                  pool.position === 'YES'
+                    ? 'bg-gradient-to-r from-emerald-400 to-emerald-500'
+                    : 'bg-gradient-to-r from-rose-400 to-rose-500'
+                }`}
+                style={{ width: `${creatorStakePercentage}%` }}
+              />
             </div>
           </div>
 
-          {/* Single combined progress bar */}
-          <div className="h-4 bg-muted rounded-full overflow-hidden flex">
-            <div
-              className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
-              style={{ width: `${agreePercentage}%` }}
-            />
-            <div
-              className="h-full bg-gradient-to-r from-rose-400 to-rose-500 transition-all duration-500"
-              style={{ width: `${disagreePercentage}%` }}
-            />
+          {/* Staker Pools */}
+          <div className="space-y-2">
+            <div className="text-xs font-medium text-muted-foreground">Staker Pools</div>
+
+            {/* Staker Progress bar legend */}
+            <div className="flex justify-between text-xs mb-1">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded bg-gradient-to-r from-emerald-400 to-emerald-500"></div>
+                <span className="text-emerald-600">Support Stakers</span>
+                <span className="font-medium">${pool.agreeStakes.toLocaleString()} ({agreePercentage}%)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-medium">${pool.disagreeStakes.toLocaleString()} ({disagreePercentage}%)</span>
+                <span className="text-rose-600">Oppose Stakers</span>
+                <div className="w-3 h-3 rounded bg-gradient-to-r from-rose-400 to-rose-500"></div>
+              </div>
+            </div>
+
+            {/* Staker combined progress bar */}
+            <div className="h-4 bg-muted rounded-full overflow-hidden flex">
+              <div
+                className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
+                style={{ width: `${agreePercentage}%` }}
+              />
+              <div
+                className="h-full bg-gradient-to-r from-rose-400 to-rose-500 transition-all duration-500"
+                style={{ width: `${disagreePercentage}%` }}
+              />
+            </div>
           </div>
 
-          {/* Creator position indicator */}
-          {/* <div className="mt-2 text-xs text-muted-foreground text-center">
-            Creator staked ${pool.creatorStake.toLocaleString()} on <span className={pool.position === 'YES' ? 'text-emerald-600' : 'text-rose-600'}>
-              {pool.position === 'YES' ? 'Agree' : 'Disagree'}
-            </span>
-          </div> */}
+          {/* Reward Distribution Info */}
+          <div className="mt-3 pt-3 border-t border-border/30 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1 mb-1">
+              <span>💰</span>
+              <span>Reward Distribution:</span>
+            </div>
+            <div className="pl-4 space-y-1">
+              <div>• Creator gets <span className="font-medium text-primary">20%</span> if correct</div>
+              <div>• Winning stakers get <span className="font-medium text-primary">80%</span> of remaining pool</div>
+              <div>• Platform fee: <span className="font-medium">2%</span></div>
+            </div>
+          </div>
 
         </div>
 
         {/* Action Buttons */}
         {pool.status === 'resolved' ? (
-          <div className="p-3 bg-accent/10 rounded-lg text-center">
-            <p className="text-sm text-muted-foreground">
-              🔒 Pool Settled - Staking Closed
-            </p>
+          <div className="space-y-3">
+            {/* Auto-Distributed Rewards Display */}
+            {pool.autoDistributed && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center justify-center mb-2">
+                  <span className="text-lg">✅</span>
+                  <span className="text-sm font-medium text-green-700 ml-2">
+                    Rewards Auto-Distributed
+                  </span>
+                </div>
+                {pool.outcome === 'creator_correct' ? (
+                  <div className="text-xs text-green-600 text-center">
+                    <div className="mb-1">Creator (20%): +${pool.creatorReward?.toLocaleString() || '0'}</div>
+                    <div>Stakers (80%): +${pool.stakerRewardsDistributed?.toLocaleString() || '0'}</div>
+                    {pool.rewardTxHash && (
+                      <a
+                        href={`https://sepolia.basescan.org/tx/${pool.rewardTxHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs underline block mt-1 hover:text-green-700"
+                      >
+                        View Transaction →
+                      </a>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-xs text-red-600 text-center">
+                    Creator was wrong - All staker rewards distributed to Oppose side
+                    {pool.rewardTxHash && (
+                      <a
+                        href={`https://sepolia.basescan.org/tx/${pool.rewardTxHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs underline block mt-1 hover:text-red-700"
+                      >
+                        View Transaction →
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="p-3 bg-accent/10 rounded-lg text-center">
+              <p className="text-sm text-muted-foreground">
+                🔒 Pool Settled - Staking Closed
+              </p>
+            </div>
           </div>
         ) : !showStakeInput ? (
           <div className="flex gap-2">

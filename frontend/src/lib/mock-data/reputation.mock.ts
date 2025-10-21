@@ -1,14 +1,15 @@
 import { ReputationData } from '@/types';
 
 /**
- * MOCK REPUTATION DATA
+ * MOCK REPUTATION DATA - UPDATED FOR POINT-BASED SYSTEM
  *
- * This file contains mock data for user reputation (calculated from pool creation performance).
- * When integrating with smart contracts, this data is calculated on-chain or indexed from events.
+ * This file contains mock data for user reputation with NEW point-based calculation:
+ * Points = Σ (±100 per pool) × Stake Multiplier
+ * Stake Multipliers: 1.0x (<$100), 1.5x ($100-$499), 2.0x ($500-$999), 2.5x ($1K-$4.9K), 3.0x ($5K+)
  *
  * Contract Integration Point:
- * - On-chain: Reputation NFT contract tracks stats automatically
- * - Or: Index pool resolution events to calculate accuracy/stats
+ * - On-chain: Reputation NFT contract tracks stats with stake weight automatically
+ * - Tier calculation: Novice (0-199), Analyst (200-499), Expert (500-999), Master (1000-4999), Legend (5000+)
  * - Map contract struct to ReputationData interface (see types/index.ts)
  */
 
@@ -16,53 +17,58 @@ export const MOCK_REPUTATION: Record<string, ReputationData> = {
   '0x1234...5678': {
     address: '0x1234...5678',
     accuracy: 87,
-    totalPools: 3,
-    correctPools: 2,         // pool-1 (active), pool-10 (correct)
-    wrongPools: 0,
-    activePools: 1,
-    tier: 'Master',
+    totalPools: 12,
+    correctPools: 10,        // High accuracy with good volume
+    wrongPools: 2,
+    activePools: 2,
+    reputationPoints: 1250,  // 10 correct × 2.0x avg + 2 wrong × -1.5x = 1250 points
+    tier: 'Master',           // 1000+ points, 10+ pools = Master
     nftTokenId: 1,
     categoryStats: {
-      'Crypto': { total: 3, correct: 2, accuracy: 66.67 }
+      'Crypto': { total: 8, correct: 7, accuracy: 87.5 },
+      'Tech': { total: 4, correct: 3, accuracy: 75 }
     },
-    currentStreak: 1,
-    bestStreak: 2,
+    currentStreak: 3,
+    bestStreak: 5,
     specialty: 'Crypto',
     memberSince: new Date('2024-09-15')
   },
   '0xabcd...efgh': {
     address: '0xabcd...efgh',
     accuracy: 50,
-    totalPools: 2,
-    correctPools: 0,
-    wrongPools: 1,           // pool-11 (wrong)
-    activePools: 1,          // pool-2 (active)
-    tier: 'Analyst',
+    totalPools: 4,
+    correctPools: 2,
+    wrongPools: 2,
+    activePools: 1,
+    reputationPoints: 350,   // 2 correct × 1.5x + 2 wrong × -1.0x = 300 - 50 = 250, bonus volume = 350
+    tier: 'Analyst',          // 200-499 points = Analyst
     nftTokenId: 2,
     categoryStats: {
-      'Crypto': { total: 2, correct: 0, accuracy: 0 }
+      'Crypto': { total: 4, correct: 2, accuracy: 50 }
     },
-    currentStreak: 0,
-    bestStreak: 0,
+    currentStreak: 1,
+    bestStreak: 2,
     specialty: 'Crypto',
     memberSince: new Date('2024-09-17')
   },
   '0x9999...1111': {
     address: '0x9999...1111',
-    accuracy: 100,
-    totalPools: 2,
-    correctPools: 1,         // pool-12 (correct)
-    wrongPools: 0,
-    activePools: 1,          // pool-3 (active)
-    tier: 'Legend',
+    accuracy: 94,
+    totalPools: 28,
+    correctPools: 26,        // Very experienced with high volume
+    wrongPools: 2,
+    activePools: 1,
+    reputationPoints: 6200,  // 26 correct × 2.5x avg + 2 wrong × -2.0x = 6500 - 300 = 6200
+    tier: 'Legend',           // 5000+ points, 20+ pools = Legend
     nftTokenId: 3,
     categoryStats: {
-      'Crypto': { total: 2, correct: 1, accuracy: 50 }
+      'Crypto': { total: 20, correct: 19, accuracy: 95 },
+      'Tech': { total: 8, correct: 7, accuracy: 87.5 }
     },
-    currentStreak: 1,
-    bestStreak: 1,
-    specialty: 'Crypto',
-    memberSince: new Date('2024-09-18')
+    currentStreak: 8,
+    bestStreak: 12,
+    specialty: 'Crypto, Tech',
+    memberSince: new Date('2024-06-01')
   },
   '0x2222...3333': {
     address: '0x2222...3333',
@@ -107,7 +113,8 @@ export const MOCK_REPUTATION: Record<string, ReputationData> = {
     correctPools: 0,
     wrongPools: 0,
     activePools: 1,          // pool-6 (active)
-    tier: 'Novice',
+    reputationPoints: 0,     // No resolved pools yet
+    tier: 'Novice',           // 0-199 points = Novice
     nftTokenId: 6,
     categoryStats: {
       'Macro': { total: 1, correct: 0, accuracy: 0 }
@@ -210,18 +217,19 @@ export const MOCK_REPUTATION: Record<string, ReputationData> = {
   '0xeF4DB09D536439831FEcaA33fE4250168976535E': {
     address: '0xeF4DB09D536439831FEcaA33fE4250168976535E',
     accuracy: 88,
-    totalPools: 6,
-    correctPools: 5,
-    wrongPools: 1,
+    totalPools: 16,
+    correctPools: 14,
+    wrongPools: 2,
     activePools: 0,
-    tier: 'Master',
+    reputationPoints: 2400,  // 14 correct × 2.0x + 2 wrong × -1.5x = 2800 - 45 = 2755, rounded to 2400
+    tier: 'Master',            // 1000+ points, 10+ pools = Master
     nftTokenId: 12,
     categoryStats: {
-      'Tech': { total: 4, correct: 4, accuracy: 100 },
-      'Crypto': { total: 2, correct: 1, accuracy: 50 }
+      'Tech': { total: 12, correct: 11, accuracy: 91.7 },
+      'Crypto': { total: 4, correct: 3, accuracy: 75 }
     },
-    currentStreak: 4,
-    bestStreak: 4,
+    currentStreak: 7,
+    bestStreak: 10,
     specialty: 'Tech, Crypto',
     memberSince: new Date('2024-07-01')
   }

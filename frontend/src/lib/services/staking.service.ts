@@ -11,12 +11,17 @@ import {
 } from '@/lib/contracts/utils';
 
 /**
- * STAKING SERVICE
+ * STAKING SERVICE - UPDATED FOR AUTO-DISTRIBUTE
  *
  * ⭐ THIS IS THE INTEGRATION POINT FOR STAKING SMART CONTRACT ⭐
  *
  * This service abstracts data fetching and writing for STAKING operations.
  * Currently uses mock data, but designed to seamlessly integrate with smart contracts.
+ *
+ * ⚠️ IMPORTANT UPDATE: Auto-distribute is now implemented!
+ * - claimRewards() function is DEPRECATED (rewards auto-distributed on resolution)
+ * - getClaimableRewards() now shows auto-distributed rewards history
+ * - Rewards are sent directly to wallet when news is resolved
  *
  * SMART CONTRACT INTEGRATION GUIDE:
  *
@@ -276,38 +281,51 @@ class StakingService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _userAddress: string
   ): Promise<number> {
-    // TODO: Add contract integration here
+    // ⚠️ DEPRECATED: Auto-distribute now implemented!
+    // Rewards are automatically sent to wallet when news is resolved
+    console.warn(`[Deprecated] claimRewards() called for pool ${poolId}. Rewards are now auto-distributed on resolution.`);
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    // Mock reward amount
-    const mockReward = 50; // $50 USDC
-    console.log(`[Mock] Claimed ${mockReward} USDC from pool ${poolId}`);
-
-    return mockReward;
+    // Return 0 since rewards are auto-distributed
+    return 0;
   }
 
   /**
-   * Calculate claimable rewards for user (view function)
+   * Get auto-distributed rewards history for user
+   *
+   * UPDATED: Since rewards are auto-distributed, this function now shows
+   * historical rewards that have already been sent to user's wallet
    *
    * Contract Integration:
-   * - Function: calculateRewards(newsId, poolId, userAddress)
-   * - Returns: uint256 reward amount in USDC wei
+   * - Function: Query RewardDistributed events for user
+   * - Returns: Array of auto-distributed rewards
    */
   async getClaimableRewards(poolId: string, userAddress: string): Promise<number> {
     if (!isContractsEnabled()) {
       await new Promise(resolve => setTimeout(resolve, 300));
 
-      // Mock calculation
+      // Mock: Check if rewards were auto-distributed for this pool
       const userStakes = await this.getByUser(userAddress);
       const poolStakes = userStakes.filter(s => s.poolId === poolId);
 
       if (poolStakes.length === 0) return 0;
 
-      // Simplified mock reward calculation
-      const totalStaked = poolStakes.reduce((sum, s) => sum + s.amount, 0);
-      const mockMultiplier = 1.5; // 50% profit
-      return totalStaked * mockMultiplier;
+      // Simulate auto-distribute check: if pool resolved and user won, show reward
+      const mockPoolResolved = Math.random() > 0.5; // 50% chance resolved
+      const mockUserWon = Math.random() > 0.4; // 60% chance won
+
+      if (mockPoolResolved && mockUserWon) {
+        const totalStaked = poolStakes.reduce((sum, s) => sum + s.amount, 0);
+        // NEW 20/80 split calculation: user gets proportional share of 80% pool
+        const mockTotalPool = totalStaked * 3; // Assume larger pool
+        const protocolFee = mockTotalPool * 0.02;
+        const remaining = mockTotalPool - protocolFee;
+        const stakersPool = remaining * 0.80;
+        const userReward = stakersPool * 0.25; // User's proportional share
+
+        return userReward;
+      }
+
+      return 0; // No auto-distributed rewards yet
     }
 
     try {

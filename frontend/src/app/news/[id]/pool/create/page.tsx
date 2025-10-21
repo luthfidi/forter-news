@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getNewsById } from '@/lib/mock-data';
 import { News } from '@/types';
@@ -29,6 +29,13 @@ export default function CreatePoolPage() {
   const [showPreview, setShowPreview] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // NEW: Image upload state
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     const newsData = getNewsById(newsId);
     setNews(newsData || null);
@@ -56,6 +63,64 @@ export default function CreatePoolPage() {
     }
   };
 
+  // NEW: Image upload handlers
+  const handleFileSelect = (file: File) => {
+    if (file && file.type.startsWith('image/')) {
+      setSelectedFile(file);
+      setIsUploading(true);
+
+      // Create preview immediately
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+        setIsUploading(false);
+
+        // Simulate upload to Imgur or similar service
+        setTimeout(() => {
+          const mockImageUrl = `https://i.imgur.com/${Math.random().toString(36).substring(7)}.png`;
+          setFormData({ ...formData, imageUrl: mockImageUrl });
+        }, 1000);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleFileSelect(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileSelect(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedFile(null);
+    setImagePreview('');
+    setFormData({ ...formData, imageUrl: '', imageCaption: '' });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
 
@@ -79,6 +144,11 @@ export default function CreatePoolPage() {
       formData.creatorStake &&
       parseFloat(formData.creatorStake) >= 20
     );
+  };
+
+  // NEW: Enhanced validation with image requirement
+  const isFormFullyValid = () => {
+    return isFormValid() && (formData.imageUrl || imagePreview);
   };
 
   if (!news) {
@@ -192,48 +262,113 @@ export default function CreatePoolPage() {
                   </div>
                 </div>
 
-                {/* Image URL (NEW!) */}
+                {/* Image Upload (IMPROVED!) */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium mb-2">
-                    Chart/Image URL (Optional) 📊
+                    Upload Chart/Image * <span className="text-muted-foreground font-normal">(Required for quality pools)</span> 📊
                   </label>
-                  <Input
-                    placeholder="https://i.imgur.com/your-chart.png"
-                    value={formData.imageUrl}
-                    onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                    className="bg-background border-border mb-2"
-                  />
-                  {formData.imageUrl && (
-                    <>
-                      <Input
-                        placeholder="Image caption (optional)"
-                        value={formData.imageCaption}
-                        onChange={(e) => setFormData({ ...formData, imageCaption: e.target.value })}
-                        className="bg-background border-border mb-3"
-                        maxLength={100}
-                      />
-                      {/* Image Preview */}
-                      <div className="rounded-lg overflow-hidden border border-border/30">
-                        <div className="relative w-full h-48">
+
+                  {!imagePreview ? (
+                    // Upload Area
+                    <div
+                      className={`border-2 border-dashed rounded-lg p-8 text-center transition-all ${
+                        isDragging
+                          ? 'border-primary bg-primary/5'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                    >
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                          <div className="text-2xl">📸</div>
+                        </div>
+                        <div className="text-sm font-medium mb-2">
+                          {isDragging ? 'Drop your image here' : 'Drag & drop your chart/image here'}
+                        </div>
+                        <div className="text-xs text-muted-foreground mb-4">
+                          PNG, JPG, GIF up to 10MB
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          Choose File
+                        </Button>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileInputChange}
+                          className="hidden"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    // Preview with Remove Option
+                    <div className="space-y-3">
+                      <div className="relative rounded-lg overflow-hidden border border-border/30 bg-card">
+                        {/* Image Preview with better display */}
+                        <div className="relative w-full min-h-[300px] max-h-[500px]">
                           <Image
-                            src={formData.imageUrl}
-                            alt="Preview"
+                            src={imagePreview}
+                            alt="Chart preview"
                             fill
-                            className="object-cover"
+                            className="object-contain" // Changed from object-cover to object-contain to avoid cropping
                             unoptimized
+                            style={{ maxHeight: '500px' }}
                           />
                         </div>
-                        {formData.imageCaption && (
-                          <div className="p-2 bg-card/50 text-xs text-muted-foreground text-center">
-                            📊 {formData.imageCaption}
+
+                        {/* Remove Button */}
+                        <button
+                          onClick={removeImage}
+                          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500/80 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                        >
+                          ×
+                        </button>
+
+                        {/* Upload Status */}
+                        {isUploading && (
+                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                            <div className="text-white text-sm">Uploading...</div>
                           </div>
                         )}
                       </div>
-                    </>
+
+                      {/* Image Caption */}
+                      <Input
+                        placeholder="Describe your chart/image (optional)"
+                        value={formData.imageCaption}
+                        onChange={(e) => setFormData({ ...formData, imageCaption: e.target.value })}
+                        className="bg-background border-border"
+                        maxLength={100}
+                      />
+
+                      <div className="text-xs text-muted-foreground">
+                        {!formData.imageUrl
+                          ? 'Uploading your image... 📤'
+                          : '✅ Image uploaded successfully! Visual evidence boosts credibility 3-5x'}
+                      </div>
+                    </div>
                   )}
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Paste an image URL from Imgur, Twitter, or any public source. Visual evidence boosts credibility!
-                  </div>
+
+                  {/* Manual URL Fallback */}
+                  {!imagePreview && (
+                    <div className="mt-4">
+                      <div className="text-xs text-muted-foreground mb-2">
+                        Or paste image URL from Imgur, Twitter, etc.:
+                      </div>
+                      <Input
+                        placeholder="https://i.imgur.com/your-chart.png"
+                        value={formData.imageUrl}
+                        onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                        className="bg-background border-border text-sm"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Evidence Links */}
@@ -306,6 +441,16 @@ export default function CreatePoolPage() {
                     {isSubmitting ? 'Creating...' : 'Create Pool & Post to FC'}
                   </Button>
                 </div>
+
+                {/* Enhanced Validation Message */}
+                {!isFormFullyValid() && isFormValid() && (
+                  <div className="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                    <div className="flex items-center gap-2 text-sm text-amber-700">
+                      <span>💡</span>
+                      <span>Add a chart/image to increase your pool's credibility and earnings potential!</span>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -331,20 +476,24 @@ export default function CreatePoolPage() {
                     </Badge>
                   </div>
 
-                  {formData.imageUrl && (
-                    <div className="mb-4 rounded-lg overflow-hidden border border-border/30">
-                      <div className="relative w-full h-48">
+                  {(imagePreview || formData.imageUrl) && (
+                    <div className="mb-4 rounded-lg overflow-hidden border border-border/30 bg-card">
+                      {/* Better Image Display - object-contain to avoid cropping */}
+                      <div className="relative w-full min-h-[200px] max-h-[400px]">
                         <Image
-                          src={formData.imageUrl}
-                          alt="Preview"
+                          src={imagePreview || formData.imageUrl}
+                          alt="Chart preview"
                           fill
-                          className="object-cover"
+                          className="object-contain" // Use object-contain instead of object-cover
                           unoptimized
+                          style={{ maxHeight: '400px' }}
                         />
                       </div>
                       {formData.imageCaption && (
-                        <div className="p-2 bg-card/50 text-xs text-muted-foreground text-center">
-                          📊 {formData.imageCaption}
+                        <div className="p-3 bg-card/80 border-t border-border/30">
+                          <div className="text-sm text-muted-foreground text-center">
+                            📊 {formData.imageCaption}
+                          </div>
                         </div>
                       )}
                     </div>

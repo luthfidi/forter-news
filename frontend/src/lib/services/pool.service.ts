@@ -394,6 +394,64 @@ class PoolService {
         return pools;
     }
   }
+
+  /**
+   * Get detailed pool stake statistics
+   *
+   * Contract Integration:
+   * - Function: getPoolStakeStats(newsId, poolId)
+   * - Returns: Aggregated statistics (total, agree, disagree, stakerCount)
+   */
+  async getPoolStakeStats(newsId: string, poolId: string): Promise<{
+    totalStaked: number;
+    agreeStakes: number;
+    disagreeStakes: number;
+    stakerCount: number;
+  } | null> {
+    if (!isContractsEnabled()) {
+      // Mock implementation - calculate from existing pool data
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      const pool = await this.getById(poolId, newsId);
+      if (!pool) return null;
+
+      return {
+        totalStaked: pool.totalStaked,
+        agreeStakes: pool.agreeStakes,
+        disagreeStakes: pool.disagreeStakes,
+        stakerCount: 10 // Mock staker count
+      };
+    }
+
+    try {
+      console.log('[PoolService] Fetching pool stake stats from contract:', { newsId, poolId });
+
+      // Import getPoolStakeStatsContract
+      const { getPoolStakeStatsContract } = await import('@/lib/contracts/utils');
+
+      const stats = await getPoolStakeStatsContract(newsId, poolId);
+
+      if (stats) {
+        console.log('[PoolService] Pool stake stats fetched:', stats);
+      }
+
+      return stats;
+
+    } catch (error) {
+      console.error('[PoolService] Get pool stake stats failed:', error);
+
+      // Fallback to pool data
+      const pool = await this.getById(poolId, newsId);
+      if (!pool) return null;
+
+      return {
+        totalStaked: pool.totalStaked,
+        agreeStakes: pool.agreeStakes,
+        disagreeStakes: pool.disagreeStakes,
+        stakerCount: 0
+      };
+    }
+  }
 }
 
 // Export singleton instance

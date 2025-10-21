@@ -236,32 +236,101 @@ class StakingService {
   }
 
   /**
-   * Withdraw stake (before pool resolution)
+   * Withdraw stake and claim rewards (after pool resolution)
    *
    * Contract Integration:
-   * ```typescript
-   * const hash = await writeContract({
-   *   address: contracts.stakingManager,
-   *   abi: StakingManagerABI,
-   *   functionName: 'withdrawStake',
-   *   args: [BigInt(stakeId)],
-   * });
-   *
-   * await waitForTransaction({ hash });
-   * ```
-   *
-   * Note: Contract should enforce withdrawal rules:
-   * - Only allow before pool resolution
-   * - Apply withdrawal penalty (e.g., 2%)
-   * - Update pool's agreeStakes/disagreeStakes
+   * - Function: withdraw(newsId, poolId)
+   * - Transfers rewards to user wallet
+   * - Only works after news is resolved
    */
-  async withdraw(stakeId: string): Promise<void> {
-    // TODO: Add contract integration here
+  async withdraw(newsId: string, poolId: string): Promise<{
+    success: boolean;
+    txHash?: string;
+    error?: string;
+  }> {
+    if (!isContractsEnabled()) {
+      // Mock implementation
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log(`[Mock] Withdrew rewards for pool ${poolId}`);
+      return { success: true, txHash: '0xmock...hash' };
+    }
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      console.log('[StakingService] Withdrawing stake and claiming rewards...', { newsId, poolId });
 
-    // Mock: Remove stake from array
-    console.log(`[Mock] Withdrew stake ${stakeId}`);
+      // Import withdrawStakeContract
+      const { withdrawStakeContract } = await import('@/lib/contracts/utils');
+
+      // Call smart contract to withdraw
+      const result = await withdrawStakeContract(newsId, poolId);
+
+      if (!result.success) {
+        throw new Error(result.error || 'Withdrawal transaction failed');
+      }
+
+      console.log('[StakingService] Withdrawal successful:', result.hash);
+
+      return {
+        success: true,
+        txHash: result.hash
+      };
+
+    } catch (error) {
+      console.error('[StakingService] Withdraw failed:', error);
+      return {
+        success: false,
+        error: handleContractError(error)
+      };
+    }
+  }
+
+  /**
+   * Emergency withdraw (before pool resolution)
+   *
+   * Contract Integration:
+   * - Function: emergencyWithdraw(newsId, poolId)
+   * - Allows withdrawal before resolution (may have penalty)
+   * - Only works if news not yet resolved
+   */
+  async emergencyWithdraw(newsId: string, poolId: string): Promise<{
+    success: boolean;
+    txHash?: string;
+    error?: string;
+  }> {
+    if (!isContractsEnabled()) {
+      // Mock implementation
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log(`[Mock] Emergency withdrew from pool ${poolId}`);
+      return { success: true, txHash: '0xmock...hash' };
+    }
+
+    try {
+      console.log('[StakingService] Emergency withdrawing stake...', { newsId, poolId });
+
+      // Import emergencyWithdrawContract
+      const { emergencyWithdrawContract } = await import('@/lib/contracts/utils');
+
+      // Call smart contract to emergency withdraw
+      const result = await emergencyWithdrawContract(newsId, poolId);
+
+      if (!result.success) {
+        throw new Error(result.error || 'Emergency withdrawal failed');
+      }
+
+      console.log('[StakingService] Emergency withdrawal successful:', result.hash);
+
+      return {
+        success: true,
+        txHash: result.hash
+      };
+
+    } catch (error) {
+      console.error('[StakingService] Emergency withdraw failed:', error);
+      return {
+        success: false,
+        error: handleContractError(error)
+      };
+    }
   }
 
   /**
@@ -396,6 +465,72 @@ class StakingService {
       disagreeAmount: disagreeStakes.reduce((sum, s) => sum + s.amount, 0),
       uniqueStakers: new Set(stakes.map(s => s.userAddress)).size,
     };
+  }
+
+  /**
+   * Get user's stake details for a specific pool
+   *
+   * Contract Integration:
+   * - Function: getUserStake(newsId, poolId, userAddress)
+   * - Returns: Detailed stake information
+   */
+  async getUserStakeDetails(
+    newsId: string,
+    poolId: string,
+    userAddress: string
+  ): Promise<{
+    amount: number;
+    position: 'agree' | 'disagree';
+    timestamp: Date;
+    isWithdrawn: boolean;
+  } | null> {
+    if (!isContractsEnabled()) {
+      // Mock implementation
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      const userStakes = await this.getByUser(userAddress);
+      const poolStake = userStakes.find(s => s.poolId === poolId);
+
+      if (!poolStake) return null;
+
+      return {
+        amount: poolStake.amount,
+        position: poolStake.position,
+        timestamp: poolStake.createdAt,
+        isWithdrawn: false
+      };
+    }
+
+    try {
+      console.log('[StakingService] Fetching user stake details from contract...', {
+        newsId,
+        poolId,
+        userAddress
+      });
+
+      // Import getUserStakeContract
+      const { getUserStakeContract } = await import('@/lib/contracts/utils');
+
+      const stake = await getUserStakeContract(newsId, poolId, userAddress as `0x${string}`);
+
+      if (!stake) {
+        console.log('[StakingService] No stake found for user');
+        return null;
+      }
+
+      console.log('[StakingService] User stake details fetched:', stake);
+
+      return {
+        amount: stake.amount,
+        position: stake.position ? 'agree' : 'disagree',
+        timestamp: stake.timestamp,
+        isWithdrawn: stake.isWithdrawn
+      };
+
+    } catch (error) {
+      console.error('[StakingService] Get user stake details failed:', error);
+      return null;
+    }
   }
 
   /**

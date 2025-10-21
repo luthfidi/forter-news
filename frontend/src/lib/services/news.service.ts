@@ -277,6 +277,117 @@ class NewsService {
       totalPools: activeNews.reduce((sum, n) => sum + n.totalPools, 0),
     };
   }
+
+  /**
+   * Resolve news (Admin/Owner only)
+   *
+   * Contract Integration:
+   * - Function: resolveNews(newsId, outcome, resolutionSource, resolutionNotes)
+   * - Emits: Resolved event with auto-distribute
+   * - Requires: Owner role
+   */
+  async resolve(
+    newsId: string,
+    outcome: 'YES' | 'NO',
+    resolutionSource: string,
+    resolutionNotes: string
+  ): Promise<{ success: boolean; txHash?: string; error?: string }> {
+    if (!isContractsEnabled()) {
+      // Mock implementation for development
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log(`[Mock] Resolved news ${newsId} with outcome ${outcome}`);
+      return { success: true, txHash: '0xmock...hash' };
+    }
+
+    try {
+      console.log('[NewsService] Resolving news via smart contract...', {
+        newsId,
+        outcome,
+        resolutionSource,
+        resolutionNotes
+      });
+
+      // Import resolveNewsContract
+      const { resolveNewsContract } = await import('@/lib/contracts/utils');
+
+      // Convert outcome to contract enum: 1 = YES, 2 = NO
+      const outcomeNum = outcome === 'YES' ? 1 : 2;
+
+      // Call smart contract to resolve news
+      const result = await resolveNewsContract(
+        newsId,
+        outcomeNum as 0 | 1 | 2,
+        resolutionSource,
+        resolutionNotes
+      );
+
+      if (!result.success) {
+        throw new Error(result.error || 'Resolution transaction failed');
+      }
+
+      console.log('[NewsService] News resolution successful:', result.hash);
+      console.log('[NewsService] Auto-distribute rewards triggered by contract');
+
+      return {
+        success: true,
+        txHash: result.hash
+      };
+
+    } catch (error) {
+      console.error('[NewsService] Resolve news failed:', error);
+      return {
+        success: false,
+        error: handleContractError(error)
+      };
+    }
+  }
+
+  /**
+   * Get resolution information for a resolved news
+   *
+   * Contract Integration:
+   * - Function: getNewsResolutionInfo(newsId)
+   * - Returns: Resolution metadata (resolvedBy, resolvedAt, source, notes)
+   */
+  async getResolutionInfo(newsId: string): Promise<{
+    resolvedAt: Date;
+    resolvedBy: string;
+    resolutionSource: string;
+    resolutionNotes: string;
+  } | null> {
+    if (!isContractsEnabled()) {
+      // Mock implementation
+      await new Promise(resolve => setTimeout(resolve, 300));
+      return {
+        resolvedAt: new Date(),
+        resolvedBy: '0xAdmin...mock',
+        resolutionSource: 'https://coinmarketcap.com',
+        resolutionNotes: 'Verified on official source'
+      };
+    }
+
+    try {
+      console.log('[NewsService] Fetching resolution info from contract:', newsId);
+
+      // Import getNewsResolutionInfoContract
+      const { getNewsResolutionInfoContract } = await import('@/lib/contracts/utils');
+
+      const info = await getNewsResolutionInfoContract(newsId);
+
+      if (info) {
+        console.log('[NewsService] Resolution info fetched:', {
+          resolvedAt: info.resolvedAt,
+          resolvedBy: info.resolvedBy
+        });
+      }
+
+      return info;
+
+    } catch (error) {
+      console.error('[NewsService] Get resolution info failed:', error);
+      return null;
+    }
+  }
 }
 
 // Export singleton instance

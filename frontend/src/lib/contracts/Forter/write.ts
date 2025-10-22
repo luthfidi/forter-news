@@ -9,7 +9,7 @@ import { config as wagmiConfig } from '@/lib/wagmi';
 import { contracts } from '@/config/contracts';
 import type { Hash } from '@/types/contracts';
 import type { TransactionResult } from '../types';
-import { parseUSDC, dateToTimestamp, stringToPosition } from '../utils';
+import { parseUSDC, dateToTimestamp, stringToPosition, convertToBigInt } from '../utils';
 
 /**
  * Create news
@@ -61,15 +61,52 @@ export async function createPool(
   creatorStake: number
 ): Promise<TransactionResult> {
   try {
-    // First approve USDC spending
-    const approveHash = await writeContract(wagmiConfig, {
+    // Convert string ID to BigInt safely
+    const newsIdBigInt = convertToBigInt(newsId);
+
+    // Reset any existing approval to prevent conflicts
+    console.log('[Forter/write] Resetting existing USDC approvals...');
+    try {
+      const resetHash = await writeContract(wagmiConfig, {
+        address: contracts.token.address,
+        abi: contracts.token.abi,
+        functionName: 'approve',
+        args: [contracts.forter.address, BigInt(0)], // Reset old approval
+      }) as Hash;
+
+      console.log('[Forter/write] Reset approval transaction:', resetHash);
+      await waitForTransactionReceipt(wagmiConfig, { hash: resetHash });
+      console.log('[Forter/write] Reset approval confirmed');
+    } catch (error) {
+      console.warn('[Forter/write] Failed to reset old approval:', error);
+    }
+
+    // Approve USDC to both addresses to handle any contract requirements
+    console.log('[Forter/write] Approving USDC to both forter and stakingPool addresses...');
+
+    // First approve to forter contract (in case contract logic requires it)
+    const forterApproveHash = await writeContract(wagmiConfig, {
       address: contracts.token.address,
       abi: contracts.token.abi,
       functionName: 'approve',
       args: [contracts.forter.address, parseUSDC(creatorStake)],
     }) as Hash;
 
-    await waitForTransactionReceipt(wagmiConfig, { hash: approveHash });
+    await waitForTransactionReceipt(wagmiConfig, { hash: forterApproveHash });
+    console.log('[Forter/write] Forter approval confirmed:', forterApproveHash);
+
+    // Then approve to stakingPool contract
+    const stakingPoolApproveHash = await writeContract(wagmiConfig, {
+      address: contracts.token.address,
+      abi: contracts.token.abi,
+      functionName: 'approve',
+      args: [contracts.stakingPool.address, parseUSDC(creatorStake)],
+    }) as Hash;
+
+    await waitForTransactionReceipt(wagmiConfig, { hash: stakingPoolApproveHash });
+    console.log('[Forter/write] StakingPool approval confirmed:', stakingPoolApproveHash);
+
+    const approveHash = stakingPoolApproveHash; // Use the stakingPool hash for tracking
 
     // Then create pool
     const hash = await writeContract(wagmiConfig, {
@@ -77,7 +114,7 @@ export async function createPool(
       abi: contracts.forter.abi,
       functionName: 'createPool',
       args: [
-        BigInt(newsId),
+        newsIdBigInt,
         reasoning,
         evidenceLinks,
         imageUrl,
@@ -110,22 +147,58 @@ export async function stakeOnPool(
   userPosition: boolean // true = agree, false = disagree
 ): Promise<TransactionResult> {
   try {
-    // First approve USDC spending
-    const approveHash = await writeContract(wagmiConfig, {
+    // Convert string IDs to BigInt safely
+    const newsIdBigInt = convertToBigInt(newsId);
+    const poolIdBigInt = convertToBigInt(poolId);
+
+    console.log('[Forter/write] staking with IDs:', { newsId, poolId, newsIdBigInt, poolIdBigInt });
+
+    // Reset any existing approval to prevent conflicts
+    console.log('[Forter/write] Resetting existing USDC approvals for staking...');
+    try {
+      await writeContract(wagmiConfig, {
+        address: contracts.token.address,
+        abi: contracts.token.abi,
+        functionName: 'approve',
+        args: [contracts.forter.address, BigInt(0)], // Reset old approval
+      }) as Hash;
+    } catch (error) {
+      console.warn('[Forter/write] Failed to reset old approval:', error);
+    }
+
+    // Approve USDC to both addresses to handle any contract requirements
+    console.log('[Forter/write] Approving USDC to both forter and stakingPool addresses for staking...');
+
+    // First approve to forter contract (in case contract logic requires it)
+    const forterApproveHash = await writeContract(wagmiConfig, {
       address: contracts.token.address,
       abi: contracts.token.abi,
       functionName: 'approve',
       args: [contracts.forter.address, parseUSDC(amount)],
     }) as Hash;
 
-    await waitForTransactionReceipt(wagmiConfig, { hash: approveHash });
+    await waitForTransactionReceipt(wagmiConfig, { hash: forterApproveHash });
+    console.log('[Forter/write] Forter staking approval confirmed:', forterApproveHash);
+
+    // Then approve to stakingPool contract
+    const stakingPoolApproveHash = await writeContract(wagmiConfig, {
+      address: contracts.token.address,
+      abi: contracts.token.abi,
+      functionName: 'approve',
+      args: [contracts.stakingPool.address, parseUSDC(amount)],
+    }) as Hash;
+
+    await waitForTransactionReceipt(wagmiConfig, { hash: stakingPoolApproveHash });
+    console.log('[Forter/write] StakingPool staking approval confirmed:', stakingPoolApproveHash);
+
+    const approveHash = stakingPoolApproveHash; // Use the stakingPool hash for tracking
 
     // Then stake
     const hash = await writeContract(wagmiConfig, {
       address: contracts.forter.address,
       abi: contracts.forter.abi,
       functionName: 'stake',
-      args: [BigInt(newsId), BigInt(poolId), parseUSDC(amount), userPosition],
+      args: [newsIdBigInt, poolIdBigInt, parseUSDC(amount), userPosition],
     }) as Hash;
 
     await waitForTransactionReceipt(wagmiConfig, { hash });
@@ -151,11 +224,14 @@ export async function resolveNews(
   resolutionNotes: string
 ): Promise<TransactionResult> {
   try {
+    // Convert string ID to BigInt safely
+    const newsIdBigInt = convertToBigInt(newsId);
+
     const hash = await writeContract(wagmiConfig, {
       address: contracts.forter.address,
       abi: contracts.forter.abi,
       functionName: 'resolveNews',
-      args: [BigInt(newsId), outcome, resolutionSource, resolutionNotes],
+      args: [newsIdBigInt, outcome, resolutionSource, resolutionNotes],
     }) as Hash;
 
     await waitForTransactionReceipt(wagmiConfig, { hash });

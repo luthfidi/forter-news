@@ -53,7 +53,7 @@ export default function CreateNewsPage() {
           return {
             success: true,
             data: result,
-            hash: result.id // In contract mode, this would be tx hash
+            hash: result.hash // Use actual transaction hash from contract
           };
         },
         'Creating NEWS on blockchain...',

@@ -10,22 +10,57 @@ import { formatUSDC, timestampToDate, positionToString } from '../utils';
 
 /**
  * Map contract news data to frontend News interface
+ * Contract returns: [creator, title, description, category, resolutionCriteria, createdAt, endDate, status, outcome, totalPools, totalStaked]
  */
-export function mapContractToNews(contractData: NewsContractData, newsId: string): News {
-  return {
-    id: newsId,
-    title: contractData.title || '',
-    description: contractData.description || '',
-    category: contractData.category || '',
-    endDate: timestampToDate(contractData.resolveTime),
-    resolutionCriteria: contractData.resolutionCriteria || '',
-    creatorAddress: contractData.creator || '0x0',
-    createdAt: timestampToDate(contractData.createdAt),
-    status: contractData.isResolved ? 'resolved' : 'active',
-    totalPools: Number(contractData.totalPools || 0n),
-    totalStaked: Number(formatUSDC(contractData.totalStaked)),
-    outcome: contractData.isResolved ? positionToString(contractData.outcome) : undefined,
-  };
+export function mapContractToNews(contractData: NewsContractData | any[], newsId: string): News {
+  // Handle both array and object formats for compatibility
+  if (Array.isArray(contractData)) {
+    // Contract returns array format
+    const [
+      creator,
+      title,
+      description,
+      category,
+      resolutionCriteria,
+      createdAt,
+      endDate,
+      status,
+      outcome,
+      totalPools,
+      totalStaked
+    ] = contractData;
+
+    return {
+      id: newsId,
+      title: title || '',
+      description: description || '',
+      category: category || '',
+      endDate: timestampToDate(endDate),
+      resolutionCriteria: resolutionCriteria || '',
+      creatorAddress: creator || '0x0',
+      createdAt: timestampToDate(createdAt),
+      status: status === 0 ? 'active' : 'resolved', // 0 = active, 1+ = resolved
+      totalPools: Number(totalPools || 0n),
+      totalStaked: Number(formatUSDC(totalStaked)),
+      outcome: status !== 0 ? positionToString(outcome) : undefined,
+    };
+  } else {
+    // Object format (for future compatibility)
+    return {
+      id: newsId,
+      title: contractData.title || '',
+      description: contractData.description || '',
+      category: contractData.category || '',
+      endDate: timestampToDate(contractData.resolveTime),
+      resolutionCriteria: contractData.resolutionCriteria || '',
+      creatorAddress: contractData.creator || '0x0',
+      createdAt: timestampToDate(contractData.createdAt),
+      status: contractData.isResolved ? 'resolved' : 'active',
+      totalPools: Number(contractData.totalPools || 0n),
+      totalStaked: Number(formatUSDC(contractData.totalStaked)),
+      outcome: contractData.isResolved ? positionToString(contractData.outcome) : undefined,
+    };
+  }
 }
 
 /**

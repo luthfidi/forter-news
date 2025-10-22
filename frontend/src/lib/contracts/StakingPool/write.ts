@@ -9,6 +9,7 @@ import { config as wagmiConfig } from '@/lib/wagmi';
 import { contracts } from '@/config/contracts';
 import type { Hash } from '@/types/contracts';
 import type { TransactionResult } from '../types';
+import { convertToBigInt } from '../utils';
 
 /**
  * Withdraw stake and claim rewards (after pool resolution)
@@ -18,11 +19,15 @@ export async function withdrawStake(
   poolId: string
 ): Promise<TransactionResult> {
   try {
+    // Convert string IDs to BigInt safely
+    const newsIdBigInt = convertToBigInt(newsId);
+    const poolIdBigInt = convertToBigInt(poolId);
+
     const hash = await writeContract(wagmiConfig, {
       address: contracts.stakingPool.address,
       abi: contracts.stakingPool.abi,
       functionName: 'withdraw',
-      args: [BigInt(newsId), BigInt(poolId)],
+      args: [newsIdBigInt, poolIdBigInt],
     }) as Hash;
 
     await waitForTransactionReceipt(wagmiConfig, { hash });
@@ -46,11 +51,15 @@ export async function emergencyWithdraw(
   poolId: string
 ): Promise<TransactionResult> {
   try {
+    // Convert string IDs to BigInt safely
+    const newsIdBigInt = convertToBigInt(newsId);
+    const poolIdBigInt = convertToBigInt(poolId);
+
     const hash = await writeContract(wagmiConfig, {
       address: contracts.stakingPool.address,
       abi: contracts.stakingPool.abi,
       functionName: 'emergencyWithdraw',
-      args: [BigInt(newsId), BigInt(poolId)],
+      args: [newsIdBigInt, poolIdBigInt],
     }) as Hash;
 
     await waitForTransactionReceipt(wagmiConfig, { hash });

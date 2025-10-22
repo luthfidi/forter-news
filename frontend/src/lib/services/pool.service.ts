@@ -294,16 +294,41 @@ class PoolService {
 
       console.log('[PoolService] Pool creation transaction successful:', result.hash);
 
-      // Get the updated pools list to find the new pool
-      // Note: We'll get the latest pool by fetching all pools for this news
-      const pools = await this.getByNewsId(input.newsId);
-      const newPool = pools[pools.length - 1]; // Assume newest pool is last
-      
-      if (!newPool) {
-        throw new Error('Failed to fetch created pool from contract');
+      // Wait for blockchain state to update (race condition fix)
+      console.log('[PoolService] Waiting for blockchain state to update...');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Retry fetching pools with fallback mechanism
+      let pools = [];
+      let retries = 3;
+      let newPool = null;
+
+      while (retries > 0 && !newPool) {
+        try {
+          console.log(`[PoolService] Fetching pools attempt ${4 - retries}...`);
+          pools = await this.getByNewsId(input.newsId);
+
+          if (pools.length > 0) {
+            newPool = pools[pools.length - 1]; // Assume newest pool is last
+            console.log('[PoolService] Successfully fetched new pool:', newPool.reasoning?.substring(0, 50) + '...');
+            break;
+          }
+        } catch (error) {
+          console.warn(`[PoolService] Fetch attempt ${4 - retries} failed:`, error);
+        }
+
+        retries--;
+        if (retries > 0) {
+          console.log(`[PoolService] Retrying in 1 second... (${retries} attempts left)`);
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
       }
 
-      console.log('[PoolService] Successfully created and fetched new pool:', newPool.reasoning.substring(0, 50) + '...');
+      if (!newPool) {
+        console.error('[PoolService] Failed to fetch created pool after retries');
+        throw new Error('Pool was created but could not be fetched. Please refresh the page.');
+      }
+
       return newPool;
 
     } catch (error) {

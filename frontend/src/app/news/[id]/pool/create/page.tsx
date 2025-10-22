@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
-import { getNewsById } from '@/lib/mock-data';
+import { newsService } from '@/lib/services';
 import { News } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -42,8 +42,17 @@ export default function CreatePoolPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const newsData = getNewsById(newsId);
-    setNews(newsData || null);
+    const loadNews = async () => {
+      try {
+        const newsData = await newsService.getById(newsId);
+        setNews(newsData || null);
+      } catch (error) {
+        console.error('[CreatePoolPage] Failed to load news:', error);
+        setNews(null);
+      }
+    };
+
+    loadNews();
   }, [newsId]);
 
   const handleAddEvidenceLink = () => {

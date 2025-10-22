@@ -202,16 +202,69 @@ class StakingService {
         console.log('[StakingService] Resolved newsId from pool:', resolvedNewsId);
       }
 
+      // Convert string poolId to numeric format for contract
+      const poolIdNumeric = input.poolId.replace(/\D/g, ''); // Remove any non-numeric characters
+      console.log('[StakingService] Using poolId numeric:', poolIdNumeric);
+
+      // Pre-staking validation
+      console.log('[StakingService] Performing pre-staking validation...');
+
+      // Validate pool exists and is active
+      const { poolService } = await import('./pool.service');
+      const pool = await poolService.getById(input.poolId, resolvedNewsId);
+
+      if (!pool) {
+        throw new Error(`Pool ${input.poolId} not found for news ${resolvedNewsId}`);
+      }
+
+      if (pool.status !== 'active') {
+        throw new Error(`Pool ${input.poolId} is not active for staking`);
+      }
+
+      // Validate news is still active (not resolved)
+      const { newsService } = await import('./news.service');
+      const news = await newsService.getById(resolvedNewsId);
+
+      if (!news) {
+        throw new Error(`News ${resolvedNewsId} not found`);
+      }
+
+      if (news.status !== 'active') {
+        throw new Error(`News ${resolvedNewsId} is already resolved`);
+      }
+
+      // Check if user already has a stake with different position
+      // Note: User already staked on this pool with different position
+      // The contract will handle this validation with "Cannot change position" error
+      console.log('[StakingService] Position change validation will be handled by contract');
+
+      console.log('[StakingService] Validation passed - proceeding with stake creation');
+
       // Call smart contract to create stake
       const result = await stakeOnPool(
         resolvedNewsId,
-        input.poolId,
+        poolIdNumeric,
         input.amount,
         input.position === 'agree' // true = agree, false = disagree
       );
 
       if (!result.success) {
-        throw new Error(result.error || 'Staking transaction failed');
+        let errorMessage = result.error || 'Staking transaction failed';
+
+        // Handle common revert reasons with user-friendly messages
+        if (result.error?.includes('Cannot change position')) {
+          errorMessage = 'You already staked on this pool with a different position. You can only add more to the same position.';
+        } else if (result.error?.includes('Stake below minimum')) {
+          errorMessage = 'Stake amount is below the minimum required. Please check the minimum stake amount.';
+        } else if (result.error?.includes('Transfer failed')) {
+          errorMessage = 'Token approval failed. Please make sure you have enough USDC and try again.';
+        } else if (result.error?.includes('Invalid pool ID')) {
+          errorMessage = 'Invalid pool selected. Please refresh and try again.';
+        } else if (result.error?.includes('News already resolved')) {
+          errorMessage = 'This news has already been resolved. Staking is no longer available.';
+        }
+
+        throw new Error(errorMessage);
       }
 
       console.log('[StakingService] Stake transaction successful:', result.hash);

@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { News } from '@/types';
 import { MOCK_NEWS, MOCK_POOLS, MOCK_REPUTATION } from '@/lib/mock-data';
+import { newsService } from '@/lib/services';
 import NewsCard from '@/components/news/NewsCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -24,14 +25,24 @@ export default function NewsPage() {
   const [qualityFilter, setQualityFilter] = useState<QualityFilter>('all');
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>('any');
 
-  // Load mock data on component mount
+  // Load news data on component mount
   useEffect(() => {
-    setLoading('news', true);
-    // Simulate API call
-    setTimeout(() => {
-      setNewsList(MOCK_NEWS);
-      setLoading('news', false);
-    }, 1000);
+    const loadNews = async () => {
+      setLoading('news', true);
+      try {
+        const newsData = await newsService.getAll();
+        setNewsList(newsData);
+        console.log('[NewsPage] Loaded', newsData.length, 'news items from contract');
+      } catch (error) {
+        console.error('[NewsPage] Failed to load news:', error);
+        // Fallback to mock data if contract fails
+        setNewsList(MOCK_NEWS);
+      } finally {
+        setLoading('news', false);
+      }
+    };
+
+    loadNews();
   }, [setNewsList, setLoading]);
 
   // Calculate quality scores for all news

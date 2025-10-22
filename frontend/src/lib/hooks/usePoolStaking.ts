@@ -17,9 +17,20 @@ export function usePoolStaking() {
       setLoading('stakes', true);
       setError(null);
 
-      // Validate amount
-      if (amount < 1) {
-        throw new Error('Minimum stake is $1 USDC');
+      // Validate amount with governance minimum
+      try {
+        const { getGovernanceParameters } = await import('@/lib/contracts');
+        const governanceParams = await getGovernanceParameters();
+        const minStake = Number(governanceParams.minStakeAmount) / 1e6; // Convert from 6 decimals to USDC
+
+        if (amount < minStake) {
+          throw new Error(`Minimum stake is $${minStake} USDC`);
+        }
+      } catch (error) {
+        console.warn('[usePoolStaking] Could not fetch governance parameters, using default $1 minimum');
+        if (amount < 1) {
+          throw new Error('Minimum stake is $1 USDC');
+        }
       }
 
       // Use stakingService which handles both contract and mock data
@@ -30,21 +41,35 @@ export function usePoolStaking() {
       }, newsId);
 
       // Update pool stakes in local state
-      const pool = pools.find(p => p.id === poolId);
-      if (pool) {
+      const poolIndex = pools.findIndex(p => p.id === poolId);
+      if (poolIndex !== -1) {
         const updatedPool = {
-          ...pool,
+          ...pools[poolIndex],
           agreeStakes: position === 'agree'
-            ? pool.agreeStakes + amount
-            : pool.agreeStakes,
+            ? pools[poolIndex].agreeStakes + amount
+            : pools[poolIndex].agreeStakes,
           disagreeStakes: position === 'disagree'
-            ? pool.disagreeStakes + amount
-            : pool.disagreeStakes,
-          totalStaked: pool.totalStaked + amount
+            ? pools[poolIndex].disagreeStakes + amount
+            : pools[poolIndex].disagreeStakes,
+          totalStaked: pools[poolIndex].totalStaked + amount
         };
 
-        // Update pools list
-        setPools(pools.map(p => p.id === poolId ? updatedPool : p));
+        console.log('[usePoolStaking] Updating pool:', {
+          poolId,
+          position,
+          amount,
+          oldAgree: pools[poolIndex].agreeStakes,
+          oldDisagree: pools[poolIndex].disagreeStakes,
+          newAgree: updatedPool.agreeStakes,
+          newDisagree: updatedPool.disagreeStakes
+        });
+
+        // Update pools list with new array reference to force re-render
+        const newPools = [...pools];
+        newPools[poolIndex] = updatedPool;
+        setPools(newPools);
+      } else {
+        console.warn('[usePoolStaking] Pool not found for ID:', poolId);
       }
 
       // Add to user stakes

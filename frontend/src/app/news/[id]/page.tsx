@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useGlobalStore } from '@/store/useGlobalStore';
-import { getNewsById, getPoolsByNewsId, getNewsStats } from '@/lib/mock-data';
+import { newsService, poolService } from '@/lib/services';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,23 +23,33 @@ export default function NewsDetailPage() {
 
   const isUserAdmin = isAdmin(address);
 
-  // Load news and pools
+  // Load news and pools from contract
   useEffect(() => {
-    setLoading('news', true);
-    setLoading('pools', true);
+    const loadData = async () => {
+      setLoading('news', true);
+      setLoading('pools', true);
 
-    // Simulate API calls
-    setTimeout(() => {
-      const news = getNewsById(newsId);
-      setCurrentNews(news || null);
-      setLoading('news', false);
-    }, 500);
+      try {
+        // Load news
+        const news = await newsService.getById(newsId);
+        setCurrentNews(news);
+        console.log('[NewsDetail] Loaded news:', news?.title);
 
-    setTimeout(() => {
-      const newsPools = getPoolsByNewsId(newsId);
-      setPools(newsPools);
-      setLoading('pools', false);
-    }, 800);
+        // Load pools
+        const newsPools = await poolService.getByNewsId(newsId);
+        setPools(newsPools);
+        console.log('[NewsDetail] Loaded', newsPools.length, 'pools');
+      } catch (error) {
+        console.error('[NewsDetail] Failed to load data:', error);
+        setCurrentNews(null);
+        setPools([]);
+      } finally {
+        setLoading('news', false);
+        setLoading('pools', false);
+      }
+    };
+
+    loadData();
   }, [newsId, setCurrentNews, setPools, setLoading]);
 
   if (loading.news || !currentNews) {
@@ -62,15 +72,24 @@ export default function NewsDetailPage() {
     ? pools
     : pools.filter(pool => pool.position === activeFilter);
 
-  const stats = getNewsStats(newsId);
+  // Calculate stats from current pools data
+  const stats = {
+    totalPools: pools.length,
+    yesPools: pools.filter(p => p.position === 'YES').length,
+    noPools: pools.filter(p => p.position === 'NO').length,
+    totalStaked: pools.reduce((sum, p) => sum + p.totalStaked, 0)
+  };
 
-  const refetchPools = () => {
+  const refetchPools = async () => {
     setLoading('pools', true);
-    setTimeout(() => {
-      const newsPools = getPoolsByNewsId(newsId);
+    try {
+      const newsPools = await poolService.getByNewsId(newsId);
       setPools(newsPools);
+    } catch (error) {
+      console.error('[NewsDetail] Failed to refetch pools:', error);
+    } finally {
       setLoading('pools', false);
-    }, 500);
+    }
   };
 
   const handleResolveNews = (outcome: 'YES' | 'NO', resolutionSource: string, resolutionNotes?: string) => {
@@ -84,10 +103,14 @@ export default function NewsDetailPage() {
     setShowResolveModal(false);
 
     // Refresh news data
-    setTimeout(() => {
-      const updatedNews = getNewsById(newsId);
-      setCurrentNews(updatedNews || null);
-      refetchPools();
+    setTimeout(async () => {
+      try {
+        const updatedNews = await newsService.getById(newsId);
+        setCurrentNews(updatedNews || null);
+        await refetchPools();
+      } catch (error) {
+        console.error('[NewsDetail] Failed to refresh news data:', error);
+      }
     }, 500);
   };
 

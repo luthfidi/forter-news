@@ -16,7 +16,7 @@ import type {
   NewsResolutionContractData,
 } from '../types';
 import { mapContractToNews, mapContractToPool } from './mappers';
-import { formatUSDC, timestampToDate } from '../utils';
+import { formatUSDC, timestampToDate, convertToBigInt } from '../utils';
 
 /**
  * Get total news count
@@ -36,11 +36,12 @@ export async function getNewsCount(): Promise<number> {
 export async function getNewsById(newsId: string): Promise<News | null> {
   try {
     console.log('[Forter/read] Fetching news with ID:', newsId);
+    const newsIdBigInt = convertToBigInt(newsId);
     const data = await readContract(wagmiConfig, {
       address: contracts.forter.address,
       abi: contracts.forter.abi,
       functionName: 'getNewsInfo',
-      args: [BigInt(newsId)],
+      args: [newsIdBigInt],
     }) as NewsContractData;
 
     console.log('[Forter/read] Raw contract data:', data);
@@ -64,22 +65,59 @@ export async function getNewsById(newsId: string): Promise<News | null> {
  */
 export async function getPoolsByNewsId(newsId: string): Promise<Pool[]> {
   try {
+    // Convert string ID to BigInt safely
+    const newsIdBigInt = convertToBigInt(newsId);
+
     // Get pool IDs for this news
     const result = await readContract(wagmiConfig, {
       address: contracts.forter.address,
       abi: contracts.forter.abi,
       functionName: 'getPoolsByNewsId',
-      args: [BigInt(newsId), BigInt(0), BigInt(100)], // offset=0, limit=100
-    }) as { poolIds: bigint[]; total: bigint };
+      args: [newsIdBigInt, BigInt(0), BigInt(100)], // offset=0, limit=100
+    }) as [bigint[], bigint]; // [poolIds, total]
+
+    // Extract poolIds from the returned array
+    const poolIds = result[0];
 
     // Fetch each pool's data
-    const poolPromises = result.poolIds.map(async (poolId) => {
-      const poolData = await readContract(wagmiConfig, {
+    const poolPromises = poolIds.map(async (poolId) => {
+      const result = await readContract(wagmiConfig, {
         address: contracts.forter.address,
         abi: contracts.forter.abi,
         functionName: 'getPoolInfo',
         args: [BigInt(newsId), poolId],
-      }) as PoolContractData;
+      }) as [
+        Address,        // creator
+        string,         // reasoning
+        string[],       // evidenceLinks
+        string,         // imageUrl
+        string,         // imageCaption
+        boolean,        // position (true = YES, false = NO)
+        bigint,         // creatorStake
+        bigint,         // totalStaked
+        bigint,         // agreeStakes
+        bigint,         // disagreeStakes
+        bigint,         // createdAt
+        boolean,        // isResolved
+        boolean         // isCorrect
+      ];
+
+      // Convert array to PoolContractData object
+      const poolData: PoolContractData = {
+        creator: result[0],
+        reasoning: result[1],
+        evidenceLinks: result[2],
+        imageUrl: result[3],
+        imageCaption: result[4],
+        position: result[5],
+        creatorStake: result[6],
+        totalStaked: result[7],
+        agreeStakes: result[8],
+        disagreeStakes: result[9],
+        createdAt: result[10],
+        isResolved: result[11],
+        isCorrect: result[12]
+      };
 
       return mapContractToPool(poolData, poolId.toString(), newsId);
     });
@@ -96,12 +134,47 @@ export async function getPoolsByNewsId(newsId: string): Promise<Pool[]> {
  */
 export async function getPoolById(newsId: string, poolId: string): Promise<Pool | null> {
   try {
-    const data = await readContract(wagmiConfig, {
+    // Convert string IDs to BigInt safely
+    const newsIdBigInt = convertToBigInt(newsId);
+    const poolIdBigInt = convertToBigInt(poolId);
+
+    const result = await readContract(wagmiConfig, {
       address: contracts.forter.address,
       abi: contracts.forter.abi,
       functionName: 'getPoolInfo',
-      args: [BigInt(newsId), BigInt(poolId)],
-    }) as PoolContractData;
+      args: [newsIdBigInt, poolIdBigInt],
+    }) as [
+      Address,        // creator
+      string,         // reasoning
+      string[],       // evidenceLinks
+      string,         // imageUrl
+      string,         // imageCaption
+      boolean,        // position (true = YES, false = NO)
+      bigint,         // creatorStake
+      bigint,         // totalStaked
+      bigint,         // agreeStakes
+      bigint,         // disagreeStakes
+      bigint,         // createdAt
+      boolean,        // isResolved
+      boolean         // isCorrect
+    ];
+
+    // Convert array to PoolContractData object
+    const data: PoolContractData = {
+      creator: result[0],
+      reasoning: result[1],
+      evidenceLinks: result[2],
+      imageUrl: result[3],
+      imageCaption: result[4],
+      position: result[5],
+      creatorStake: result[6],
+      totalStaked: result[7],
+      agreeStakes: result[8],
+      disagreeStakes: result[9],
+      createdAt: result[10],
+      isResolved: result[11],
+      isCorrect: result[12]
+    };
 
     return mapContractToPool(data, poolId, newsId);
   } catch (error) {
@@ -146,11 +219,15 @@ export async function getUserStake(
   isWithdrawn: boolean;
 } | null> {
   try {
+    // Convert string IDs to BigInt safely
+    const newsIdBigInt = convertToBigInt(newsId);
+    const poolIdBigInt = convertToBigInt(poolId);
+
     const data = await readContract(wagmiConfig, {
       address: contracts.forter.address,
       abi: contracts.forter.abi,
       functionName: 'getUserStake',
-      args: [BigInt(newsId), BigInt(poolId), userAddress],
+      args: [newsIdBigInt, poolIdBigInt, userAddress],
     }) as StakeContractData;
 
     return {
@@ -177,11 +254,14 @@ export async function getNewsResolutionInfo(
   resolutionNotes: string;
 } | null> {
   try {
+    // Convert string ID to BigInt safely
+    const newsIdBigInt = convertToBigInt(newsId);
+
     const data = await readContract(wagmiConfig, {
       address: contracts.forter.address,
       abi: contracts.forter.abi,
       functionName: 'getNewsResolutionInfo',
-      args: [BigInt(newsId)],
+      args: [newsIdBigInt],
     }) as NewsResolutionContractData;
 
     return {

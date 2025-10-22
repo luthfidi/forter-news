@@ -17,7 +17,7 @@ contract DeployScript is Script {
     Forter public forter;
     
     // Deployment parameters
-    uint256 public constant MIN_STAKE = 100 * 10**18;
+    uint256 public constant MIN_STAKE = 10 * 10**6; // 10 USDC minimum stake (6 decimals)
     uint256 public constant MAX_NEWS_DURATION = 30 days;
     uint256 public constant MIN_NEWS_DURATION = 1 days;
     uint256 public constant PROTOCOL_FEE = 50; // 0.5%

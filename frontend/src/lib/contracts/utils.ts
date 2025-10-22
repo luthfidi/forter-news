@@ -47,6 +47,20 @@ export function stringToPosition(position: 'YES' | 'NO'): boolean {
   return position === 'YES';
 }
 
+// Convert string/number ID to BigInt (safe conversion)
+export function convertToBigInt(id: string | number): bigint {
+  if (typeof id === 'number') return BigInt(id);
+
+  // Extract numeric part from string IDs like 'pool-1', 'news-2', etc.
+  const numericPart = id.toString().replace(/\D/g, '');
+
+  if (!numericPart) {
+    throw new Error(`Cannot extract numeric ID from: ${id}`);
+  }
+
+  return BigInt(numericPart);
+}
+
 /**
  * ERROR HANDLING
  */

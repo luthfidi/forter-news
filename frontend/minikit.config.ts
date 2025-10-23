@@ -34,7 +34,7 @@ export const minikitConfig = {
     homeUrl: ROOT_URL,
     webhookUrl: `${ROOT_URL}/api/webhook`,
     primaryCategory: "entertainment",
-    tags: [`example`, `news`, `finance`, `predictions`],
+    tags: ["prediction", "staking", "defi", "analytics", "trading"],
     heroImageUrl: `${ROOT_URL}/forter.webp`,
     tagline: "Transform credibility into yield",
     ogTitle: "Forter - Forecast Porter",

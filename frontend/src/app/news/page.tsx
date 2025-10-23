@@ -135,13 +135,12 @@ export default function NewsPage() {
   const totalPools = activeNews.reduce((sum, news) => sum + news.totalPools, 0);
 
   return (
-    <div className="min-h-screen pt-20 pb-16">
+    <div className="min-h-screen pt-28 pb-16">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <Image src="/forter.webp" alt="FORTER" width={40} height={40} className="w-10 h-10 rounded-lg" />
               <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
                 News Explorer
               </h1>

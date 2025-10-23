@@ -214,7 +214,7 @@ export default function CreatePoolPage() {
 
   if (!news) {
     return (
-      <div className="min-h-screen pt-20 pb-16">
+      <div className="min-h-screen pt-28 pb-16">
         <div className="max-w-4xl mx-auto px-4 md:px-6">
           <Card className="border border-border bg-card">
             <CardContent className="p-12 text-center">
@@ -234,7 +234,7 @@ export default function CreatePoolPage() {
   }
 
   return (
-    <div className="min-h-screen pt-20 pb-16">
+    <div className="min-h-screen pt-28 pb-16">
       {/* Floating Indicator */}
       <FloatingIndicator {...feedback} />
 

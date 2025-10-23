@@ -91,7 +91,7 @@ export default function CreateNewsPage() {
   };
 
   return (
-    <div className="min-h-screen pt-20 pb-16">
+    <div className="min-h-screen pt-28 pb-16">
       {/* Floating Indicator */}
       <FloatingIndicator {...feedback} />
 

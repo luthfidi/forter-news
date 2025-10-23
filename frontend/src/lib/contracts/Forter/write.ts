@@ -193,6 +193,15 @@ export async function stakeOnPool(
 
     const approveHash = stakingPoolApproveHash; // Use the stakingPool hash for tracking
 
+    // Log what we're sending to contract
+    console.log('[Forter/write] 📤 Sending to contract stake():', {
+      newsId: newsIdBigInt,
+      poolId: poolIdBigInt,
+      amount: parseUSDC(amount),
+      userPosition,
+      userPositionType: typeof userPosition
+    });
+
     // Then stake
     const hash = await writeContract(wagmiConfig, {
       address: contracts.forter.address,
@@ -201,7 +210,69 @@ export async function stakeOnPool(
       args: [newsIdBigInt, poolIdBigInt, parseUSDC(amount), userPosition],
     }) as Hash;
 
-    await waitForTransactionReceipt(wagmiConfig, { hash });
+    const receipt = await waitForTransactionReceipt(wagmiConfig, { hash });
+
+    // Debug: Parse Staked event from receipt
+    console.log('[Forter/write] 📋 Transaction receipt:', {
+      status: receipt.status,
+      logs: receipt.logs.length,
+      blockNumber: receipt.blockNumber
+    });
+
+    // Try to find and parse Staked event
+    if (receipt.logs && receipt.logs.length > 0) {
+      try {
+        // Log all events for debugging
+        console.log('[Forter/write] 📄 All events:', receipt.logs.map((log: any) => ({
+          address: log.address,
+          topics: log.topics,
+          data: log.data
+        })));
+
+        // Staked event signature: Staked(uint256 indexed newsId, uint256 indexed poolId, address indexed user, uint256 amount, bool position)
+        // Event signature hash: keccak256("Staked(uint256,uint256,address,uint256,bool)")
+        const stakedEventTopic = '0x9e71bc8eea02a63969f509818f2dafb9254532904319f9dbda79b67bd34a5f3d';
+
+        const stakedLog = receipt.logs.find((log: any) =>
+          log.topics && log.topics[0] === stakedEventTopic
+        );
+
+        if (stakedLog) {
+          console.log('[Forter/write] 🎯 Found Staked event:', {
+            topics: stakedLog.topics,
+            data: stakedLog.data,
+            dataLength: stakedLog.data.length
+          });
+
+          // Decode event data
+          // topics[0] = event signature
+          // topics[1] = newsId (indexed)
+          // topics[2] = poolId (indexed)
+          // topics[3] = user address (indexed)
+          // data = abi.encode(amount, position) - non-indexed parameters
+
+          if (stakedLog.data && stakedLog.data.length > 2) {
+            // Remove '0x' prefix and split into 64-char chunks (32 bytes each)
+            const dataWithoutPrefix = stakedLog.data.slice(2);
+            const amount = BigInt('0x' + dataWithoutPrefix.slice(0, 64));
+            const position = BigInt('0x' + dataWithoutPrefix.slice(64, 128)) !== BigInt(0);
+
+            console.log('[Forter/write] 🔍 Decoded Staked event:', {
+              newsId: stakedLog.topics[1],
+              poolId: stakedLog.topics[2],
+              user: stakedLog.topics[3],
+              amount: amount.toString(),
+              position: position,
+              positionValue: position ? 'TRUE (YES)' : 'FALSE (NO)'
+            });
+          }
+        } else {
+          console.warn('[Forter/write] ⚠️ Staked event not found in logs');
+        }
+      } catch (err) {
+        console.warn('[Forter/write] Could not parse event:', err);
+      }
+    }
 
     return { hash, success: true };
   } catch (error: unknown) {

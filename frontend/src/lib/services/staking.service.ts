@@ -182,14 +182,10 @@ class StakingService {
     }
 
     try {
-      console.log('[StakingService] Creating stake via smart contract...', input);
-
       // Get newsId - either from parameter or fetch pool to get it
       let resolvedNewsId = newsId;
 
       if (!resolvedNewsId) {
-        console.log('[StakingService] newsId not provided, fetching pool to get newsId...');
-        // Import poolService to get pool data
         const { poolService } = await import('./pool.service');
         const allPools = await poolService.getAll();
         const pool = allPools.find(p => p.id === input.poolId);
@@ -199,15 +195,10 @@ class StakingService {
         }
 
         resolvedNewsId = pool.newsId;
-        console.log('[StakingService] Resolved newsId from pool:', resolvedNewsId);
       }
 
       // Convert string poolId to numeric format for contract
-      const poolIdNumeric = input.poolId.replace(/\D/g, ''); // Remove any non-numeric characters
-      console.log('[StakingService] Using poolId numeric:', poolIdNumeric);
-
-      // Pre-staking validation
-      console.log('[StakingService] Performing pre-staking validation...');
+      const poolIdNumeric = input.poolId.replace(/\D/g, '');
 
       // Validate pool exists and is active
       const { poolService } = await import('./pool.service');
@@ -233,19 +224,30 @@ class StakingService {
         throw new Error(`News ${resolvedNewsId} is already resolved`);
       }
 
-      // Check if user already has a stake with different position
-      // Note: User already staked on this pool with different position
-      // The contract will handle this validation with "Cannot change position" error
-      console.log('[StakingService] Position change validation will be handled by contract');
 
-      console.log('[StakingService] Validation passed - proceeding with stake creation');
+      const poolPositionBool = pool.position === 'YES';
+      const userPositionAbsolute = input.position === 'agree'
+        ? poolPositionBool      // Agree: same position as pool
+        : !poolPositionBool;    // Disagree: opposite position from pool
 
-      // Call smart contract to create stake
+      // Log for debugging
+      console.log('[StakingService] 🎯 Stake Mapping:', {
+        poolPosition: pool.position,
+        poolPositionBool: poolPositionBool,
+        userChoice: input.position,
+        userPositionAbsolute: userPositionAbsolute,
+        userPositionType: typeof userPositionAbsolute,
+        expectedUpdate: input.position === 'agree' ? 'agreeStakes' : 'disagreeStakes',
+        amount: input.amount,
+        calculation: `${input.position} → ${poolPositionBool} (pool) → ${userPositionAbsolute} (sent)`
+      });
+
+      // Call smart contract
       const result = await stakeOnPool(
         resolvedNewsId,
         poolIdNumeric,
         input.amount,
-        input.position === 'agree' // true = agree, false = disagree
+        userPositionAbsolute
       );
 
       if (!result.success) {
@@ -256,18 +258,44 @@ class StakingService {
           errorMessage = 'You already staked on this pool with a different position. You can only add more to the same position.';
         } else if (result.error?.includes('Stake below minimum')) {
           errorMessage = 'Stake amount is below the minimum required. Please check the minimum stake amount.';
-        } else if (result.error?.includes('Transfer failed')) {
+        } else if (result.error?.includes('Transfer failed') || result.error?.includes('insufficient allowance')) {
           errorMessage = 'Token approval failed. Please make sure you have enough USDC and try again.';
         } else if (result.error?.includes('Invalid pool ID')) {
           errorMessage = 'Invalid pool selected. Please refresh and try again.';
         } else if (result.error?.includes('News already resolved')) {
           errorMessage = 'This news has already been resolved. Staking is no longer available.';
+        } else if (result.error?.includes('User rejected') || result.error?.includes('User denied')) {
+          errorMessage = 'Transaction cancelled by user';
         }
 
+        console.error('[StakingService] ❌ Stake failed:', errorMessage);
         throw new Error(errorMessage);
       }
 
-      console.log('[StakingService] Stake transaction successful:', result.hash);
+      console.log('[StakingService] ✅ Success! Tx:', result.hash);
+
+      // Verify stake went to correct pool
+      try {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        const { poolService } = await import('./pool.service');
+        const updatedPool = await poolService.getById(input.poolId, resolvedNewsId);
+
+        if (updatedPool) {
+          const agreeIncrease = updatedPool.agreeStakes - pool.agreeStakes;
+          const disagreeIncrease = updatedPool.disagreeStakes - pool.disagreeStakes;
+
+          console.log('[StakingService] 📊 Verification:', {
+            expected: input.position === 'agree' ? 'agreeStakes' : 'disagreeStakes',
+            agreeChange: agreeIncrease > 0 ? `+$${agreeIncrease}` : '$0',
+            disagreeChange: disagreeIncrease > 0 ? `+$${disagreeIncrease}` : '$0',
+            status: (input.position === 'agree' && agreeIncrease === input.amount) ||
+                    (input.position === 'disagree' && disagreeIncrease === input.amount)
+                    ? '✅ CORRECT' : '❌ WRONG POOL!'
+          });
+        }
+      } catch (fetchError) {
+        console.warn('[StakingService] Could not verify pool update:', fetchError);
+      }
 
       // Create the stake object based on the successful transaction
       const newStake: PoolStake = {
@@ -279,7 +307,6 @@ class StakingService {
         createdAt: new Date(),
       };
 
-      console.log('[StakingService] Successfully created stake:', newStake);
       return newStake;
 
     } catch (error) {

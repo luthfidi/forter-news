@@ -15,6 +15,7 @@ export async function GET() {
       subtitle: minikitConfig.miniapp.subtitle,
       description: minikitConfig.miniapp.description,
       primaryCategory: minikitConfig.miniapp.primaryCategory,
+      tags: minikitConfig.miniapp.tags,
     },
     accountAssociation: minikitConfig.accountAssociation,
     baseBuilder: minikitConfig.baseBuilder,

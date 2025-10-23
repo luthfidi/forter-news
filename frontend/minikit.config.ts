@@ -19,7 +19,7 @@ export const minikitConfig = {
   },
   miniapp: {
     version: "1",
-    name: "Forter - Forecast Porter",
+    name: "Forter",
     subtitle: "Stake on Credibility, Not Luck",
     description:
       "Permissionless information finance protocol. Create predictions, analyze with reasoning, and build on-chain reputation through verifiable insights.",
@@ -34,7 +34,7 @@ export const minikitConfig = {
     homeUrl: ROOT_URL,
     webhookUrl: `${ROOT_URL}/api/webhook`,
     primaryCategory: "entertainment",
-    tags: ["prediction", "staking", "defi", "analytics", "trading"],
+    tags: ["staking"],
     heroImageUrl: `${ROOT_URL}/forter.webp`,
     tagline: "Transform credibility into yield",
     ogTitle: "Forter - Forecast Porter",

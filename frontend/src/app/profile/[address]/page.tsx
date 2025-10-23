@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useAccount } from 'wagmi';
-import { getReputationData, getPoolsByCreator, getStakesByUser, MOCK_NEWS, MOCK_POOLS, getTierIcon } from '@/lib/mock-data';
+import { getTierIcon } from '@/lib/mock-data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { poolService, stakingService, newsService, reputationService } from '@/lib/services';
+import type { Pool, PoolStake, News, ReputationData } from '@/types';
 
 export default function ProfilePage() {
   const params = useParams();
@@ -16,32 +18,138 @@ export default function ProfilePage() {
   const { address: connectedAddress, isConnected } = useAccount();
   const [activeTab, setActiveTab] = useState<'pools' | 'stakes' | 'news' | 'activity'>('pools');
 
+  // State for contract data
+  const [pools, setPools] = useState<Pool[]>([]);
+  const [stakes, setStakes] = useState<PoolStake[]>([]);
+  const [newsCreated, setNewsCreated] = useState<News[]>([]);
+  const [reputation, setReputation] = useState<ReputationData | null>(null);
+  const [loading, setLoading] = useState(true);
+
   // Check if viewing own profile
   const isOwnProfile = isConnected && connectedAddress?.toLowerCase() === profileAddress.toLowerCase();
 
-  // Load profile data
-  const reputation = getReputationData(profileAddress);
-  const pools = getPoolsByCreator(profileAddress);
-  const stakes = getStakesByUser(profileAddress);
-  const newsCreated = MOCK_NEWS.filter(n => n.creatorAddress === profileAddress);
+  // Load profile data from contract
+  useEffect(() => {
+    const loadProfileData = async () => {
+      try {
+        setLoading(true);
+        console.log('[ProfilePage] Loading data for:', profileAddress);
 
-  // Compute stake statistics
+        // Load all data in parallel
+        const [poolsData, stakesData, allNews, reputationData] = await Promise.all([
+          poolService.getByCreator(profileAddress),
+          stakingService.getByUser(profileAddress),
+          newsService.getAll(),
+          reputationService.getByAddress(profileAddress)
+        ]);
+
+        // Filter news created by this user
+        const userNews = allNews.filter(n =>
+          n.creatorAddress.toLowerCase() === profileAddress.toLowerCase()
+        );
+
+        setPools(poolsData);
+        setStakes(stakesData);
+        setNewsCreated(userNews);
+        setReputation(reputationData || null);
+
+        console.log('[ProfilePage] Loaded:', {
+          pools: poolsData.length,
+          poolsData: poolsData,
+          stakes: stakesData.length,
+          stakesData: stakesData,
+          news: userNews.length,
+          newsData: userNews,
+          reputation: reputationData,
+          address: profileAddress
+        });
+      } catch (error) {
+        console.error('[ProfilePage] Error loading profile data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (profileAddress) {
+      loadProfileData();
+    }
+  }, [profileAddress]);
+
+  // Compute stake statistics with pool outcome correlation
   const poolsCreated = pools;
   const stakesHistory = stakes;
+
+  // Create a map of poolId to Pool for quick lookup
+  const poolMap = new Map<string, Pool>();
+  pools.forEach(pool => {
+    poolMap.set(pool.id, pool);
+  });
+
+  // Calculate resolved stakes and won stakes with proper pool correlation
   const resolvedStakes = stakes.filter(stake => {
-    const pool = MOCK_POOLS.find(p => p.id === stake.poolId);
+    const pool = poolMap.get(stake.poolId);
     return pool?.status === 'resolved';
   });
+
   const wonStakes = resolvedStakes.filter(stake => {
-    const pool = MOCK_POOLS.find(p => p.id === stake.poolId);
-    return (
-      (stake.position === 'agree' && pool?.outcome === 'creator_correct') ||
-      (stake.position === 'disagree' && pool?.outcome === 'creator_wrong')
+    const pool = poolMap.get(stake.poolId);
+    if (!pool || pool.status !== 'resolved' || !pool.outcome) return false;
+
+    // User wins if:
+    // - User agreed AND pool creator was correct
+    // - User disagreed AND pool creator was wrong
+    const userWon = (
+      (stake.position === 'agree' && pool.outcome === 'creator_correct') ||
+      (stake.position === 'disagree' && pool.outcome === 'creator_wrong')
     );
+
+    return userWon;
   });
+
+  // Calculate accurate staking win rate from actual outcomes
   const stakingWinRate = resolvedStakes.length > 0
     ? Math.round((wonStakes.length / resolvedStakes.length) * 100)
     : 0;
+
+  // Calculate Member Since date from first pool or stake
+  const memberSince = (() => {
+    const dates: Date[] = [];
+
+    // Add pool creation dates
+    pools.forEach(pool => {
+      if (pool.createdAt) dates.push(new Date(pool.createdAt));
+    });
+
+    // Add stake dates
+    stakes.forEach(stake => {
+      if (stake.createdAt) dates.push(new Date(stake.createdAt));
+    });
+
+    // Add news creation dates
+    newsCreated.forEach(news => {
+      if (news.createdAt) dates.push(new Date(news.createdAt));
+    });
+
+    // Find earliest date
+    if (dates.length === 0) return null;
+    return new Date(Math.min(...dates.map(d => d.getTime())));
+  })();
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-20 pb-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+              <p className="text-muted-foreground">Loading profile...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-20 pb-16">
@@ -82,11 +190,11 @@ export default function ProfilePage() {
                       <span className="text-muted-foreground">
                         <span className="font-semibold text-foreground">{reputation.accuracy}%</span> Accuracy
                       </span>
-                      {reputation.memberSince && (
+                      {memberSince && (
                         <>
                           <span className="text-muted-foreground">•</span>
                           <span className="text-muted-foreground">
-                            Member since {reputation.memberSince.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                            Member since {memberSince.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                           </span>
                         </>
                       )}
@@ -223,7 +331,7 @@ export default function ProfilePage() {
               {poolsCreated.length > 0 ? (
                 <div className="space-y-4">
                   {poolsCreated.map(pool => {
-                    const news = MOCK_NEWS.find(n => n.id === pool.newsId);
+                    const news = newsCreated.find(n => n.id === pool.newsId);
                     return (
                       <Card key={pool.id} className="border border-border/50 bg-background/80 backdrop-blur-sm">
                         <CardContent className="p-6">
@@ -289,13 +397,15 @@ export default function ProfilePage() {
               {stakesHistory.length > 0 ? (
                 <div className="space-y-4">
                   {stakesHistory.map(stake => {
-                    const pool = MOCK_POOLS.find(p => p.id === stake.poolId);
-                    const news = MOCK_NEWS.find(n => n.id === pool?.newsId);
-                    const isWon = pool?.status === 'resolved' && (
+                    const pool = poolMap.get(stake.poolId);
+                    const news = newsCreated.find(n => n.id === pool?.newsId);
+
+                    // Calculate if this stake won/lost based on pool outcome
+                    const isResolved = pool?.status === 'resolved';
+                    const isWon = isResolved && pool?.outcome ? (
                       (stake.position === 'agree' && pool.outcome === 'creator_correct') ||
                       (stake.position === 'disagree' && pool.outcome === 'creator_wrong')
-                    );
-                    const isResolved = pool?.status === 'resolved';
+                    ) : false;
 
                     return (
                       <Card key={stake.id} className="border border-border/50 bg-background/80 backdrop-blur-sm">

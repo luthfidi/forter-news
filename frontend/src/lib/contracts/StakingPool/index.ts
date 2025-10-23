@@ -5,7 +5,7 @@
  */
 
 // Read operations
-export { getPoolStakeStats } from './read';
+export { getPoolStakeStats, getUserStakeHistory } from './read';
 
 // Write operations
 export { withdrawStake, emergencyWithdraw } from './write';

@@ -133,25 +133,33 @@ class StakingService {
 
     try {
       console.log('[StakingService] Fetching stakes for user from contract:', userAddress);
-      
-      // Since contract doesn't have a direct getUserStakes function,
-      // we'd need to iterate through all news/pools or use events
-      // For now, fall back to mock data for user stakes
-      // In production, this would be implemented with event indexing or The Graph
-      
-      console.log('[StakingService] User stakes require event indexing, falling back to mock');
-      await new Promise(resolve => setTimeout(resolve, 400));
-      return mockGetStakesByUser(userAddress);
+
+      // Use StakingPool's getUserStakeHistory function
+      const { getUserStakeHistory } = await import('@/lib/contracts/StakingPool');
+      const stakeHistory = await getUserStakeHistory(userAddress as `0x${string}`);
+
+      // Convert to PoolStake format
+      const poolStakes: PoolStake[] = stakeHistory.map((record, index) => ({
+        id: `stake-${userAddress}-${record.newsId}-${record.poolId}-${index}`,
+        poolId: `${record.newsId}-${record.poolId}`, // Composite ID
+        userAddress: userAddress,
+        position: record.position ? 'agree' : 'disagree', // true = agree, false = disagree
+        amount: record.amount,
+        createdAt: record.timestamp
+      }));
+
+      console.log('[StakingService] Found', poolStakes.length, 'stakes for user from contract');
+      return poolStakes;
 
     } catch (error) {
       console.error('[StakingService] Contract getByUser failed, falling back to mock:', error);
-      
+
       // Fallback to mock data on error
       if (process.env.NODE_ENV === 'development') {
         await new Promise(resolve => setTimeout(resolve, 400));
         return mockGetStakesByUser(userAddress);
       }
-      
+
       throw new Error(handleContractError(error));
     }
   }

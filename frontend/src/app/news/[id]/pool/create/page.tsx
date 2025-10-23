@@ -479,6 +479,7 @@ export default function CreatePoolPage() {
                     placeholder="20"
                     value={formData.creatorStake}
                     onChange={(e) => setFormData({ ...formData, creatorStake: e.target.value })}
+                    onWheel={(e) => e.currentTarget.blur()}
                     className="bg-background border-border"
                     min="20"
                   />

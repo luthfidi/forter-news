@@ -154,6 +154,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
               placeholder="10"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
+              onWheel={(e) => e.currentTarget.blur()}
               min="1"
               className="bg-background border-border text-lg"
             />

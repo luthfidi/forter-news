@@ -466,6 +466,7 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
                 value={stakeAmount}
                 onChange={(e) => setStakeAmount(e.target.value)}
                 min="1"
+                onWheel={(e) => e.currentTarget.blur()}
                 className="bg-background border-border"
               />
             </div>

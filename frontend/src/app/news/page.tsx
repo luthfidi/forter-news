@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
-import Image from 'next/image';
 import { calculateNewsQualityScore, QualityFilter, ActivityFilter } from '@/lib/quality-scoring';
 
 const CATEGORIES = ['All', 'Crypto', 'Macro', 'Tech', 'Sports', 'Politics'];

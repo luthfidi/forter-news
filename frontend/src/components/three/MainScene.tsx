@@ -137,7 +137,7 @@ function FloatingParticles() {
     setParticles(newParticles)
   }, [])
 
-  useFrame(({ clock }) => {
+  useFrame(() => {
     if (particlesRef.current) {
       particlesRef.current.children.forEach((particle, i) => {
         const data = particles[i]

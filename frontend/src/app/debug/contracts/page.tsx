@@ -8,8 +8,26 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 export default function ContractsDebugPage() {
-  const [contractStatus, setContractStatus] = useState<any>(null);
-  const [newsData, setNewsData] = useState<any>(null);
+  const [contractStatus, setContractStatus] = useState<{
+    enabled: boolean;
+    validation: { isValid: boolean; missing: string[] };
+    envVars?: {
+      USE_CONTRACTS?: string;
+      FORTER_ADDRESS?: string;
+      TOKEN_ADDRESS?: string;
+      REPUTATION_NFT?: string;
+      STAKING_POOL?: string;
+      GOVERNANCE?: string;
+    };
+    error?: string;
+  } | null>(null);
+  const [newsData, setNewsData] = useState<{
+    count?: number;
+    source?: string;
+    firstNews?: string;
+    timestamp?: string;
+    error?: string;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -174,14 +192,14 @@ export default function ContractsDebugPage() {
                 ))}
               </div>
 
-              {contractStatus?.validation?.missing?.length > 0 && (
+              {(contractStatus?.validation?.missing?.length ?? 0) > 0 && (
                 <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 bg-destructive rounded-full"></div>
                     <span className="text-sm font-medium text-destructive">Missing Environment Variables</span>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    {contractStatus.validation.missing.join(', ')}
+                    {contractStatus?.validation?.missing?.join(', ')}
                   </div>
                 </div>
               )}

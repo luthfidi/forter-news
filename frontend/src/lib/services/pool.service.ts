@@ -5,9 +5,7 @@ import {
   getPoolById as mockGetPoolById,
   getPoolsByCreator as mockGetPoolsByCreator
 } from '@/lib/mock-data';
-import { isContractsEnabled, contracts } from '@/config/contracts';
-import { readContract } from 'wagmi/actions';
-import { config as wagmiConfig } from '@/lib/wagmi';
+import { isContractsEnabled } from '@/config/contracts';
 import type { Address } from '@/types/contracts';
 import {
   getPoolsByNewsId,

@@ -52,8 +52,7 @@ export default function CreateNewsPage() {
 
           return {
             success: true,
-            data: result,
-            hash: result.hash // Use actual transaction hash from contract
+            data: result
           };
         },
         'Creating NEWS on blockchain...',

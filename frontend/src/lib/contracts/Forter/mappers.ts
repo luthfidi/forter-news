@@ -12,7 +12,7 @@ import { formatUSDC, timestampToDate, positionToString } from '../utils';
  * Map contract news data to frontend News interface
  * Contract returns: [creator, title, description, category, resolutionCriteria, createdAt, endDate, status, outcome, totalPools, totalStaked]
  */
-export function mapContractToNews(contractData: NewsContractData | any[], newsId: string): News {
+export function mapContractToNews(contractData: NewsContractData | unknown[], newsId: string): News {
   // Handle both array and object formats for compatibility
   if (Array.isArray(contractData)) {
     // Contract returns array format
@@ -28,7 +28,7 @@ export function mapContractToNews(contractData: NewsContractData | any[], newsId
       outcome,
       totalPools,
       totalStaked
-    ] = contractData;
+    ] = contractData as [string, string, string, string, string, bigint, bigint, number, boolean, bigint, bigint];
 
     return {
       id: newsId,
@@ -40,7 +40,7 @@ export function mapContractToNews(contractData: NewsContractData | any[], newsId
       creatorAddress: creator || '0x0',
       createdAt: timestampToDate(createdAt),
       status: status === 0 ? 'active' : 'resolved', // 0 = active, 1+ = resolved
-      totalPools: Number(totalPools || 0n),
+      totalPools: Number(totalPools || BigInt(0)),
       totalStaked: Number(formatUSDC(totalStaked)),
       outcome: status !== 0 ? positionToString(outcome) : undefined,
     };
@@ -56,7 +56,7 @@ export function mapContractToNews(contractData: NewsContractData | any[], newsId
       creatorAddress: contractData.creator || '0x0',
       createdAt: timestampToDate(contractData.createdAt),
       status: contractData.isResolved ? 'resolved' : 'active',
-      totalPools: Number(contractData.totalPools || 0n),
+      totalPools: Number(contractData.totalPools || BigInt(0)),
       totalStaked: Number(formatUSDC(contractData.totalStaked)),
       outcome: contractData.isResolved ? positionToString(contractData.outcome) : undefined,
     };

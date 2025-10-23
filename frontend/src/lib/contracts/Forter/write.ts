@@ -106,7 +106,7 @@ export async function createPool(
     await waitForTransactionReceipt(wagmiConfig, { hash: stakingPoolApproveHash });
     console.log('[Forter/write] StakingPool approval confirmed:', stakingPoolApproveHash);
 
-    const approveHash = stakingPoolApproveHash; // Use the stakingPool hash for tracking
+    // Use the stakingPool hash for tracking
 
     // Then create pool
     const hash = await writeContract(wagmiConfig, {
@@ -191,7 +191,7 @@ export async function stakeOnPool(
     await waitForTransactionReceipt(wagmiConfig, { hash: stakingPoolApproveHash });
     console.log('[Forter/write] StakingPool staking approval confirmed:', stakingPoolApproveHash);
 
-    const approveHash = stakingPoolApproveHash; // Use the stakingPool hash for tracking
+    // Use the stakingPool hash for tracking
 
     // Log what we're sending to contract
     console.log('[Forter/write] 📤 Sending to contract stake():', {
@@ -223,19 +223,23 @@ export async function stakeOnPool(
     if (receipt.logs && receipt.logs.length > 0) {
       try {
         // Log all events for debugging
-        console.log('[Forter/write] 📄 All events:', receipt.logs.map((log: any) => ({
-          address: log.address,
-          topics: log.topics,
-          data: log.data
-        })));
+        console.log('[Forter/write] 📄 All events:', receipt.logs.map((log: unknown) => {
+          const logEvent = log as { address?: string; topics?: string[]; data?: string };
+          return {
+            address: logEvent.address,
+            topics: logEvent.topics,
+            data: logEvent.data
+          };
+        }));
 
         // Staked event signature: Staked(uint256 indexed newsId, uint256 indexed poolId, address indexed user, uint256 amount, bool position)
         // Event signature hash: keccak256("Staked(uint256,uint256,address,uint256,bool)")
         const stakedEventTopic = '0x9e71bc8eea02a63969f509818f2dafb9254532904319f9dbda79b67bd34a5f3d';
 
-        const stakedLog = receipt.logs.find((log: any) =>
-          log.topics && log.topics[0] === stakedEventTopic
-        );
+        const stakedLog = receipt.logs.find((log: unknown) => {
+          const logEvent = log as { topics?: string[] };
+          return logEvent.topics && logEvent.topics[0] === stakedEventTopic;
+        });
 
         if (stakedLog) {
           console.log('[Forter/write] 🎯 Found Staked event:', {

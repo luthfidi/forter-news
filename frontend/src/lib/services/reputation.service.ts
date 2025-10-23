@@ -160,7 +160,7 @@ class ReputationService {
         let reputationData = null;
         try {
           reputationData = await getUserReputation(address as Address);
-        } catch (err) {
+        } catch {
           // No reputation NFT yet, use calculated data
         }
 

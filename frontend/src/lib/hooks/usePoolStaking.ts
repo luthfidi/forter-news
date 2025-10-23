@@ -1,11 +1,9 @@
-import { useState } from 'react';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { PoolStake, Pool } from '@/types';
 import { stakingService } from '@/lib/services';
 
 export function usePoolStaking() {
   const { poolStakes, setPoolStakes, pools, setPools, loading, setLoading } = useGlobalStore();
-  const [error, setError] = useState<string | null>(null);
 
   const stakeOnPool = async (
     poolId: string,
@@ -15,22 +13,10 @@ export function usePoolStaking() {
   ): Promise<PoolStake | null> => {
     try {
       setLoading('stakes', true);
-      setError(null);
 
-      // Validate amount with governance minimum
-      try {
-        const { getGovernanceParameters } = await import('@/lib/contracts');
-        const governanceParams = await getGovernanceParameters();
-        const minStake = Number(governanceParams.minStakeAmount) / 1e6; // Convert from 6 decimals to USDC
-
-        if (amount < minStake) {
-          throw new Error(`Minimum stake is $${minStake} USDC`);
-        }
-      } catch (error) {
-        console.warn('[usePoolStaking] Could not fetch governance parameters, using default $1 minimum');
-        if (amount < 1) {
-          throw new Error('Minimum stake is $1 USDC');
-        }
+      // Validate amount with minimum stake
+      if (amount < 1) {
+        throw new Error('Minimum stake is $1 USDC');
       }
 
       // Use stakingService which handles both contract and mock data
@@ -78,7 +64,7 @@ export function usePoolStaking() {
       console.log('Stake successful:', newStake);
       return newStake;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to stake');
+      console.error('Failed to stake:', err instanceof Error ? err.message : 'Failed to stake');
       console.error('Error staking:', err);
       return null;
     } finally {
@@ -184,7 +170,6 @@ export function usePoolStaking() {
   return {
     poolStakes,
     loading: loading.stakes,
-    error,
     stakeOnPool,
     getUserStakes,
     getUserTotalStaked,

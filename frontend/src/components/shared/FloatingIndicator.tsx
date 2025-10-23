@@ -42,7 +42,6 @@ const FloatingIndicator = ({
   type,
   message,
   variant = 'default',
-  position = 'top',
   txHash
 }: FloatingIndicatorProps) => {
   if (!show) return null;

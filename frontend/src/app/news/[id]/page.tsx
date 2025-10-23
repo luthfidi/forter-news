@@ -32,7 +32,7 @@ export default function NewsDetailPage() {
       try {
         // Load news
         const news = await newsService.getById(newsId);
-        setCurrentNews(news);
+        setCurrentNews(news || null);
         console.log('[NewsDetail] Loaded news:', news?.title);
 
         // Load pools

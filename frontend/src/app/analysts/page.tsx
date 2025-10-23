@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useAnalysts, useFilteredAnalysts } from '@/lib/hooks/useAnalysts';
 import AnalystCard from '@/components/analysts/AnalystCard';
 import { Card, CardContent } from '@/components/ui/card';

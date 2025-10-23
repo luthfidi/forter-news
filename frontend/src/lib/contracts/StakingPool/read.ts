@@ -7,7 +7,8 @@
 import { readContract } from 'wagmi/actions';
 import { config as wagmiConfig } from '@/lib/wagmi';
 import { contracts } from '@/config/contracts';
-import type { PoolStakeStatsContractData, Address } from '../types';
+import type { PoolStakeStatsContractData } from '../types';
+import type { Address } from '@/types/contracts';
 import { formatUSDC } from '../utils';
 
 /**

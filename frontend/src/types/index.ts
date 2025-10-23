@@ -98,6 +98,7 @@ export interface ReputationData {
   bestStreak?: number;          // Best streak ever
   specialty?: string;           // Best category
   memberSince?: Date;           // First pool creation date
+  lastActive?: Date;            // Last reputation update (from contract)
 }
 
 // Legacy StakePosition type removed - using PoolStake only

@@ -1,40 +1,34 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { getAllAnalysts, sortAnalysts, getAnalystsByCategory } from '@/lib/mock-data';
+import { useAnalysts, useFilteredAnalysts } from '@/lib/hooks/useAnalysts';
 import AnalystCard from '@/components/analysts/AnalystCard';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function AnalystsPage() {
-  const [categoryFilter, setCategoryFilter] = useState<string>('All');
-  const [sortBy, setSortBy] = useState<'accuracy' | 'totalPools' | 'recent'>('accuracy');
+  const categories = ['All', 'Crypto', 'Macro', 'Tech', 'DeFi'];
 
-  // Get and filter analysts
-  const filteredAnalysts = useMemo(() => {
-    let analysts = getAllAnalysts();
+  // Fetch all analysts from contract or mock
+  const { analysts, loading, error } = useAnalysts();
 
-    // Apply category filter
-    if (categoryFilter !== 'All') {
-      analysts = getAnalystsByCategory(categoryFilter);
-    }
+  // Filter and sort analysts
+  const {
+    filteredAnalysts,
+    categoryFilter,
+    setCategoryFilter,
+    sortBy,
+    setSortBy,
+    stats: filterStats
+  } = useFilteredAnalysts(analysts);
 
-    // Apply sorting
-    analysts = sortAnalysts(analysts, sortBy);
-
-    return analysts;
-  }, [categoryFilter, sortBy]);
-
-  // Calculate stats
+  // Calculate global stats
   const stats = useMemo(() => {
-    const allAnalysts = getAllAnalysts();
-    const totalAnalysts = allAnalysts.length;
-    const avgAccuracy = totalAnalysts > 0
-      ? Math.round(allAnalysts.reduce((sum, a) => sum + a.accuracy, 0) / totalAnalysts)
-      : 0;
+    const totalAnalysts = analysts.length;
+    const avgAccuracy = filterStats.avgAccuracy;
 
     // Count by category
     const categoryCount: Record<string, number> = {};
-    allAnalysts.forEach(analyst => {
+    analysts.forEach(analyst => {
       if (analyst.specialty) {
         analyst.specialty.split(',').forEach(cat => {
           const trimmed = cat.trim();
@@ -51,9 +45,40 @@ export default function AnalystsPage() {
       mostActiveCategory: mostActiveCategory ? mostActiveCategory[0] : 'N/A',
       mostActiveCategoryCount: mostActiveCategory ? mostActiveCategory[1] : 0
     };
-  }, []);
+  }, [analysts, filterStats]);
 
-  const categories = ['All', 'Crypto', 'Macro', 'Tech', 'DeFi'];
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-20 pb-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+              <p className="text-muted-foreground">Loading analysts...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen pt-20 pb-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <Card className="border border-destructive/50 bg-destructive/5">
+            <CardContent className="p-8 text-center">
+              <div className="text-4xl mb-4">⚠️</div>
+              <h3 className="text-xl font-semibold mb-2">Failed to load analysts</h3>
+              <p className="text-muted-foreground mb-4">{error}</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-20 pb-16">

@@ -51,10 +51,13 @@ export interface PoolContractData {
 }
 
 export interface ReputationContractData {
-  score: bigint;
+  reputationPoints: bigint;
+  lastUpdated: bigint;
   totalPredictions: bigint;
   correctPredictions: bigint;
   tier: bigint;
+  tierName: string;
+  accuracy: bigint;
 }
 
 export interface StakeContractData {

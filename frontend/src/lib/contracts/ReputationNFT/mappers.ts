@@ -24,7 +24,9 @@ export function mapContractToReputation(
 ): ReputationData {
   const totalPools = Number(contractData.totalPredictions);
   const correctPools = Number(contractData.correctPredictions);
-  const accuracy = totalPools > 0 ? Math.round((correctPools / totalPools) * 100) : 0;
+  const accuracy = Number(contractData.accuracy);
+  const reputationPoints = Number(contractData.reputationPoints);
+  const lastUpdated = Number(contractData.lastUpdated);
 
   return {
     address,
@@ -32,10 +34,11 @@ export function mapContractToReputation(
     totalPools,
     correctPools,
     wrongPools: totalPools - correctPools,
-    activePools: 0, // Need to calculate separately
+    activePools: 0,
     tier: mapTierNumberToString(Number(contractData.tier)),
-    nftTokenId: undefined, // Need to get separately if needed
-    categoryStats: {}, // Need to implement category tracking
-    reputationPoints: Number(contractData.score) || 0, // Add reputation points from contract
+    nftTokenId: undefined,
+    categoryStats: {},
+    reputationPoints,
+    lastActive: lastUpdated > 0 ? new Date(lastUpdated * 1000) : undefined,
   };
 }

@@ -56,6 +56,9 @@ export {
 export {
   // Read
   getUserReputation,
+  getAllAnalystsFromContract,
+  getTotalAnalysts,
+  getUserByTokenId,
   // Write
   mintReputationNFT,
   updateReputation,

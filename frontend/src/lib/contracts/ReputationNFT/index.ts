@@ -5,7 +5,12 @@
  */
 
 // Read operations
-export { getUserReputation } from './read';
+export {
+  getUserReputation,
+  getAllAnalystsFromContract,
+  getTotalAnalysts,
+  getUserByTokenId
+} from './read';
 
 // Write operations
 export { mintReputationNFT, updateReputation } from './write';

@@ -29,22 +29,22 @@ Forter adalah **Information Finance Protocol** - platform Web3 yang mengubah inf
 ### Environment Variables (Frontend)
 ```bash
 # Copy these to your .env.local or .env file
-NEXT_PUBLIC_TOKEN_ADDRESS=0xEb32CBB8ff13c5878D13A1476b0a0CF384c20681
-NEXT_PUBLIC_REPUTATION_NFT_ADDRESS=0xd2236A80deC74A867a972141450FD451a49E8405
-NEXT_PUBLIC_GOVERNANCE_ADDRESS=0xD154a97e2D4B229e9f3aa162dC4e840B4e0Ef786
-NEXT_PUBLIC_FORTER_ADDRESS=0x8973eA30b89d8937c9DD77FAD7e669f9caD4085b
-NEXT_PUBLIC_STAKINGPOOL_ADDRESS=0xF40aB91f40D70E0DFb4f63fe3F3Bd5ec1B62101a
+NEXT_PUBLIC_TOKEN_ADDRESS=0x6Cf43885F95F269F51b1122657F3FBF18eC7F43A
+NEXT_PUBLIC_REPUTATION_NFT_ADDRESS=0x4bA16F71dAb1229B53e1f564d92D3C6b8A8f986A
+NEXT_PUBLIC_GOVERNANCE_ADDRESS=0x3581C4a29eA317A5eeE5d7015eBBDE457E3d9D5B
+NEXT_PUBLIC_FORTER_ADDRESS=0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb
+NEXT_PUBLIC_STAKINGPOOL_ADDRESS=0x71A3fe1BbE61cb6d79927008560127fe4c656e77
 ```
 
 ### Contract Details
 
 | Contract | Address | Purpose |
 |----------|---------|---------|
-| **Token (USDC)** | `0xEb32CBB8ff13c5878D13A1476b0a0CF384c20681` | Staking token (6 decimals) |
-| **ReputationNFT** | `0xd2236A80deC74A867a972141450FD451a49E8405` | Soulbound NFT for reputation |
-| **Governance** | `0xD154a97e2D4B229e9f3aa162dC4e840B4e0Ef786` | DAO governance contract |
-| **Forter (Main)** | `0x8973eA30b89d8937c9DD77FAD7e669f9caD4085b` | Core protocol contract |
-| **StakingPool** | `0xF40aB91f40D70E0DFb4f63fe3F3Bd5ec1B62101a` | Pool staking & rewards |
+| **Token (USDC)** | `0x6Cf43885F95F269F51b1122657F3FBF18eC7F43A` | Staking token (6 decimals) |
+| **ReputationNFT** | `0x4bA16F71dAb1229B53e1f564d92D3C6b8A8f986A` | Soulbound NFT for reputation |
+| **Governance** | `0x3581C4a29eA317A5eeE5d7015eBBDE457E3d9D5B` | DAO governance contract |
+| **Forter (Main)** | `0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb` | Core protocol contract |
+| **StakingPool** | `0x71A3fe1BbE61cb6d79927008560127fe4c656e77` | Pool staking & rewards |
 
 ### Quick Setup
 

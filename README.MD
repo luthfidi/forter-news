@@ -384,7 +384,7 @@ cast call 0xEb32CBB8ff13c5878D13A1476b0a0CF384c20681 "decimals()"
 
 ## License
 
-MIT License - see LICENSE file for detail
+MIT License - see LICENSE file for details
 
 ---
 

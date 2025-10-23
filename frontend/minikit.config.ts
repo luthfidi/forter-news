@@ -15,7 +15,7 @@ export const minikitConfig = {
     signature: "",
   },
   baseBuilder: {
-    allowedAddresses: [""],
+    allowedAddresses: ["0x4030986A078f97fbdC74d43dAFeb646D6caBb8A9"],
   },
   miniapp: {
     version: "1",
@@ -28,12 +28,12 @@ export const minikitConfig = {
       `${ROOT_URL}/screenshots/pool-creation.png`,
       `${ROOT_URL}/screenshots/staking-interface.png`,
     ],
-    iconUrl: `${ROOT_URL}/icon-192.png`,
-    splashImageUrl: `${ROOT_URL}/splash.png`,
+    iconUrl: "/forter.webp",
+    splashImageUrl: "/forter.webp",
     splashBackgroundColor: "#0f0f0f",
     homeUrl: ROOT_URL,
     webhookUrl: `${ROOT_URL}/api/webhook`,
-    primaryCategory: "defi",
+    primaryCategory: "entertainment",
     tags: [
       "information",
       "finance",
@@ -42,7 +42,7 @@ export const minikitConfig = {
       "farcaster",
       "base",
     ],
-    heroImageUrl: `${ROOT_URL}/hero-image.png`,
+    heroImageUrl: "/forter.webp",
     tagline: "Transform credibility into yield",
     ogTitle: "Forter - Forecast Porter",
     ogDescription:

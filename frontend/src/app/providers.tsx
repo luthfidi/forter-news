@@ -3,13 +3,11 @@
 import * as React from 'react';
 import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { WagmiProvider } from 'wagmi';
-import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { OnchainKitProvider } from '@coinbase/onchainkit';
+import { PrivyProvider } from '@privy-io/react-auth';
+import { WagmiProvider } from '@privy-io/wagmi';
 import { baseSepolia } from 'viem/chains';
 
 import { config } from '@/lib/wagmi';
-import '@rainbow-me/rainbowkit/styles.css';
 import '@coinbase/onchainkit/styles.css';
 
 const queryClient = new QueryClient();
@@ -43,27 +41,25 @@ function MiniAppProvider({ children }: { children: React.ReactNode }) {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <WagmiProvider config={config}>
+    <PrivyProvider
+      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!}
+      config={{
+        loginMethods: ['email', 'wallet', 'sms'],
+        appearance: {
+          theme: 'dark',
+          accentColor: '#676FFF',
+        },
+        defaultChain: baseSepolia,
+        supportedChains: [baseSepolia],
+      }}
+    >
       <QueryClientProvider client={queryClient}>
-        <OnchainKitProvider
-          apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
-          chain={baseSepolia}
-          config={{
-            appearance: {
-              mode: 'auto',
-            },
-            wallet: {
-              display: 'modal',
-            },
-          }}
-        >
-          <RainbowKitProvider>
-            <MiniAppProvider>
-              {children}
-            </MiniAppProvider>
-          </RainbowKitProvider>
-        </OnchainKitProvider>
+        <WagmiProvider config={config}>
+          <MiniAppProvider>
+            {children}
+          </MiniAppProvider>
+        </WagmiProvider>
       </QueryClientProvider>
-    </WagmiProvider>
+    </PrivyProvider>
   );
 }

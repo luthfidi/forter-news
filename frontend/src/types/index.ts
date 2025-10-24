@@ -2,6 +2,8 @@
 // MODEL B: News + Pool Architecture (NEW)
 // ============================================
 
+import type { Address } from './contracts';
+
 // NEWS = User-created prediction/statement
 export interface News {
   id: string;
@@ -168,9 +170,11 @@ export interface CreatePoolInput {
 }
 
 export interface StakeInput {
+  newsId: string;
   poolId: string;
   position: 'agree' | 'disagree';
   amount: number;
+  userAddress: Address;
 }
 
 // Resolution Input (for admin)

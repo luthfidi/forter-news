@@ -328,7 +328,7 @@ class PoolService {
       }
 
       // Attach transaction hash to pool for BaseScan link
-      (newPool as any).creationTxHash = result.hash;
+      (newPool as Pool & { creationTxHash?: string }).creationTxHash = result.hash;
       return newPool;
 
     } catch (error) {

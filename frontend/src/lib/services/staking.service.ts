@@ -7,6 +7,7 @@ import {
 import { isContractsEnabled } from '@/config/contracts';
 import {
   stakeOnPool,
+  getUserStake,
   handleContractError
 } from '@/lib/contracts';
 
@@ -239,7 +240,6 @@ class StakingService {
         const existingPosition = existingStake.position;
 
         if (userChoicePosition !== existingPosition) {
-          const userChoiceText = input.position === 'agree' ? 'agree' : 'disagree';
           const existingText = existingPosition ? 'agree' : 'disagree';
           throw new Error(`Cannot change position. You already staked "${existingText}" on this pool. You can only add more stakes to the same position.`);
         }
@@ -653,6 +653,28 @@ class StakingService {
     const userStakes = await this.getByUser(userAddress);
     const poolStake = userStakes.find(s => s.poolId === poolId);
     return poolStake?.position || null;
+  }
+
+  /**
+   * Get user's stake details for position validation
+   */
+  async getUserStake(
+    newsId: string,
+    poolId: string,
+    userAddress: string
+  ): Promise<{
+    amount: number;
+    position: boolean;
+    timestamp: Date;
+    isWithdrawn: boolean;
+  } | null> {
+    try {
+      const data = await getUserStake(newsId, poolId, userAddress as `0x${string}`);
+      return data;
+    } catch (error) {
+      console.error('[StakingService] getUserStake failed:', error);
+      return null;
+    }
   }
 }
 

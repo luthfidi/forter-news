@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
 import { newsService } from '@/lib/services';
-import { News } from '@/types';
+import { News, Pool } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -171,7 +171,7 @@ export default function CreatePoolPage() {
           return {
             success: true,
             data: result,
-            hash: (result as any).creationTxHash // Transaction hash attached to pool data
+            hash: (result as Pool & { creationTxHash?: string }).creationTxHash // Transaction hash attached to pool data
           };
         },
         'Creating pool on blockchain...',

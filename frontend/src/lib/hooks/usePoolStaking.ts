@@ -1,9 +1,11 @@
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { PoolStake, Pool } from '@/types';
 import { stakingService } from '@/lib/services';
+import { useAccount } from 'wagmi';
 
 export function usePoolStaking() {
   const { poolStakes, setPoolStakes, pools, setPools, loading, setLoading } = useGlobalStore();
+  const { address } = useAccount();
 
   const stakeOnPool = async (
     poolId: string,
@@ -19,11 +21,17 @@ export function usePoolStaking() {
         throw new Error('Minimum stake is $10 USDC');
       }
 
+      if (!address) {
+        throw new Error('Please connect your wallet first');
+      }
+
       // Use stakingService which handles both contract and mock data
       const newStake = await stakingService.stake({
+        newsId: newsId || '',
         poolId,
         position,
-        amount
+        amount,
+        userAddress: address as `0x${string}`
       }, newsId);
 
       // Update pool stakes in local state

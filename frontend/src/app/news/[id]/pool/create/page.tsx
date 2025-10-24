@@ -17,6 +17,17 @@ import { useTransactionFeedback } from '@/lib/hooks/useTransactionFeedback';
 import { poolService, tokenService } from '@/lib/services';
 import { useFarcasterNavigation } from '@/lib/hooks/useFarcasterNavigation';
 import { useFarcaster } from '@/contexts/FarcasterProvider';
+import {
+  ClipboardCheck,
+  DollarSign,
+  Target,
+  Check,
+  Upload,
+  X,
+  Link as LinkIcon,
+  Plus,
+  Search
+} from 'lucide-react';
 
 export default function CreatePoolPage() {
   const params = useParams();
@@ -218,13 +229,13 @@ export default function CreatePoolPage() {
 
   if (!news) {
     return (
-      <div className="min-h-screen pt-28 pb-16">
+      <div className="min-h-screen pt-20 md:pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-4 md:px-6">
           <Card className="border border-border bg-card">
-            <CardContent className="p-12 text-center">
-              <div className="text-4xl mb-4">🔍</div>
-              <h3 className="text-xl font-semibold mb-2">NEWS not found</h3>
-              <p className="text-muted-foreground mb-6">
+            <CardContent className="p-8 md:p-12 text-center">
+              <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg md:text-xl font-semibold mb-2">NEWS not found</h3>
+              <p className="text-sm md:text-base text-muted-foreground mb-6">
                 The NEWS you&apos;re looking for doesn&apos;t exist or has been removed.
               </p>
               <Link href="/news">
@@ -238,39 +249,39 @@ export default function CreatePoolPage() {
   }
 
   return (
-    <div className="min-h-screen pt-28 pb-16">
+    <div className="min-h-screen pt-20 md:pt-24 pb-24 md:pb-16">
       {/* Floating Indicator */}
       <FloatingIndicator {...feedback} />
 
-      <div className="max-w-4xl mx-auto px-4 md:px-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+        <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">
           <Link href="/news" className="hover:text-foreground transition-colors">
             News
           </Link>
           <span>/</span>
-          <Link href={`/news/${newsId}`} className="hover:text-foreground transition-colors">
-            NEWS Details
+          <Link href={`/news/${newsId}`} className="hover:text-foreground transition-colors truncate max-w-[100px] md:max-w-none">
+            Details
           </Link>
           <span>/</span>
           <span className="text-foreground">Create Pool</span>
         </div>
 
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">Create Pool</h1>
-          <p className="text-muted-foreground text-lg mb-4">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3">Create Pool</h1>
+          <p className="text-muted-foreground text-sm md:text-base lg:text-lg mb-4">
             Submit your analysis with reasoning and stake to prove conviction.
           </p>
 
           {/* NEWS Context */}
-          <Card className="border border-accent/50 bg-accent/5">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <Badge variant="secondary">{news.category}</Badge>
-                <div className="flex-1">
-                  <div className="font-medium mb-1">{news.title}</div>
-                  <div className="text-sm text-muted-foreground">
+          <Card className="border-2 border-accent/50 bg-accent/5">
+            <CardContent className="p-3 md:p-4">
+              <div className="flex items-start gap-2 md:gap-3">
+                <Badge className="bg-primary/10 text-primary text-xs shrink-0">{news.category}</Badge>
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium mb-1 text-sm md:text-base line-clamp-2">{news.title}</div>
+                  <div className="text-xs md:text-sm text-muted-foreground">
                     Resolves: {new Date(news.endDate).toLocaleDateString()}
                   </div>
                 </div>
@@ -279,67 +290,74 @@ export default function CreatePoolPage() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Form */}
           <div className="lg:col-span-2">
-            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300">
-              <CardContent className="p-6">
+            <Card className="border border-border bg-card">
+              <CardContent className="p-4 md:p-6 space-y-5 md:space-y-6">
                 {/* Position Selection */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium mb-3">Your Position *</label>
-                  <div className="flex gap-3">
+                <div>
+                  <label className="block text-sm font-medium mb-2.5">
+                    Your Position <span className="text-destructive">*</span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={() => setFormData({ ...formData, position: 'YES' })}
-                      className={`flex-1 p-4 rounded-lg border-2 transition-all ${
+                      className={`p-3 md:p-4 rounded-lg border-2 transition-all ${
                         formData.position === 'YES'
                           ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600'
-                          : 'border-border hover:border-emerald-500/50'
+                          : 'border-border hover:border-emerald-500/50 hover:bg-emerald-500/5'
                       }`}
                     >
-                      <div className="text-lg font-bold">YES</div>
-                      <div className="text-sm opacity-75">I believe this will happen</div>
+                      <div className="text-base md:text-lg font-bold">YES</div>
+                      <div className="text-xs md:text-sm opacity-75 mt-1">Will happen</div>
                     </button>
                     <button
                       onClick={() => setFormData({ ...formData, position: 'NO' })}
-                      className={`flex-1 p-4 rounded-lg border-2 transition-all ${
+                      className={`p-3 md:p-4 rounded-lg border-2 transition-all ${
                         formData.position === 'NO'
                           ? 'border-rose-500 bg-rose-500/10 text-rose-600'
-                          : 'border-border hover:border-rose-500/50'
+                          : 'border-border hover:border-rose-500/50 hover:bg-rose-500/5'
                       }`}
                     >
-                      <div className="text-lg font-bold">NO</div>
-                      <div className="text-sm opacity-75">I don&apos;t think this will happen</div>
+                      <div className="text-base md:text-lg font-bold">NO</div>
+                      <div className="text-xs md:text-sm opacity-75 mt-1">Won&apos;t happen</div>
                     </button>
                   </div>
                 </div>
 
                 {/* Reasoning */}
-                <div className="mb-6">
+                <div>
                   <label className="block text-sm font-medium mb-2">
-                    Detailed Analysis & Reasoning * <span className="text-muted-foreground font-normal">(min 100 characters)</span>
+                    Detailed Analysis <span className="text-destructive">*</span>
                   </label>
                   <Textarea
                     placeholder="Provide detailed reasoning for your position. Include data, trends, and logical arguments to support your analysis..."
                     value={formData.reasoning}
                     onChange={(e) => setFormData({ ...formData, reasoning: e.target.value })}
-                    className="min-h-[150px] bg-background border-border"
+                    className="min-h-[120px] md:min-h-[150px] text-base resize-none"
                     maxLength={1000}
                   />
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {formData.reasoning.length}/1000 characters • Quality analysis improves your reputation
+                  <div className="flex items-center justify-between mt-1.5">
+                    <div className="text-xs text-muted-foreground">
+                      Minimum 100 characters
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {formData.reasoning.length}/1000
+                    </div>
                   </div>
                 </div>
 
                 {/* Image Upload (IMPROVED!) */}
-                <div className="mb-6">
+                <div>
                   <label className="block text-sm font-medium mb-2">
-                    Upload Chart/Image * <span className="text-muted-foreground font-normal">(Required for quality pools)</span> 📊
+                    Upload Chart/Image <span className="text-destructive">*</span>
                   </label>
 
                   {!imagePreview ? (
                     // Upload Area
                     <div
-                      className={`border-2 border-dashed rounded-lg p-8 text-center transition-all ${
+                      className={`border-2 border-dashed rounded-lg p-6 md:p-8 text-center transition-all ${
                         isDragging
                           ? 'border-primary bg-primary/5'
                           : 'border-border hover:border-primary/50'
@@ -349,13 +367,13 @@ export default function CreatePoolPage() {
                       onDragLeave={handleDragLeave}
                     >
                       <div className="flex flex-col items-center">
-                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                          <div className="text-2xl">📸</div>
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 md:mb-4">
+                          <Upload className="h-5 w-5 md:h-6 md:w-6 text-primary" />
                         </div>
-                        <div className="text-sm font-medium mb-2">
+                        <div className="text-sm font-medium mb-1.5 md:mb-2">
                           {isDragging ? 'Drop your image here' : 'Drag & drop your chart/image here'}
                         </div>
-                        <div className="text-xs text-muted-foreground mb-4">
+                        <div className="text-xs text-muted-foreground mb-3 md:mb-4">
                           PNG, JPG, GIF up to 10MB
                         </div>
                         <Button
@@ -376,15 +394,15 @@ export default function CreatePoolPage() {
                     </div>
                   ) : (
                     // Preview with Remove Option
-                    <div className="space-y-3">
-                      <div className="relative rounded-lg overflow-hidden border border-border/30 bg-card">
+                    <div className="space-y-2.5 md:space-y-3">
+                      <div className="relative rounded-lg overflow-hidden border border-border bg-card">
                         {/* Image Preview with better display */}
-                        <div className="relative w-full min-h-[300px] max-h-[500px]">
+                        <div className="relative w-full min-h-[250px] md:min-h-[300px] max-h-[400px] md:max-h-[500px]">
                           <Image
                             src={imagePreview}
                             alt="Chart preview"
                             fill
-                            className="object-contain" // Changed from object-cover to object-contain to avoid cropping
+                            className="object-contain"
                             unoptimized
                             style={{ maxHeight: '500px' }}
                           />
@@ -393,9 +411,10 @@ export default function CreatePoolPage() {
                         {/* Remove Button */}
                         <button
                           onClick={removeImage}
-                          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500/80 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                          className="absolute top-2 right-2 w-7 h-7 md:w-8 md:h-8 rounded-full bg-red-500/90 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                          aria-label="Remove image"
                         >
-                          ×
+                          <X className="h-4 w-4" />
                         </button>
 
                         {/* Upload Status */}
@@ -411,36 +430,41 @@ export default function CreatePoolPage() {
                         placeholder="Describe your chart/image (optional)"
                         value={formData.imageCaption}
                         onChange={(e) => setFormData({ ...formData, imageCaption: e.target.value })}
-                        className="bg-background border-border"
+                        className="text-sm"
                         maxLength={100}
                       />
 
-                      <div className="text-xs text-muted-foreground">
-                        {!formData.imageUrl
-                          ? 'Uploading your image... 📤'
-                          : '✅ Image uploaded successfully! Visual evidence boosts credibility 3-5x'}
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        {!formData.imageUrl ? (
+                          <span>Uploading your image...</span>
+                        ) : (
+                          <>
+                            <Check className="h-3 w-3 text-green-500" />
+                            <span>Image uploaded successfully!</span>
+                          </>
+                        )}
                       </div>
                     </div>
                   )}
 
                   {/* Manual URL Fallback */}
                   {!imagePreview && (
-                    <div className="mt-4">
+                    <div className="mt-3 md:mt-4">
                       <div className="text-xs text-muted-foreground mb-2">
-                        Or paste image URL from Imgur, Twitter, etc.:
+                        Or paste image URL:
                       </div>
                       <Input
                         placeholder="https://i.imgur.com/your-chart.png"
                         value={formData.imageUrl}
                         onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                        className="bg-background border-border text-sm"
+                        className="text-sm"
                       />
                     </div>
                   )}
                 </div>
 
                 {/* Evidence Links */}
-                <div className="mb-6">
+                <div>
                   <label className="block text-sm font-medium mb-2">
                     Supporting Evidence (Optional)
                   </label>
@@ -450,15 +474,16 @@ export default function CreatePoolPage() {
                         placeholder="https://example.com/supporting-data"
                         value={link}
                         onChange={(e) => handleEvidenceLinkChange(index, e.target.value)}
-                        className="bg-background border-border"
+                        className="text-sm"
                       />
                       {formData.evidenceLinks.length > 1 && (
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handleRemoveEvidenceLink(index)}
+                          className="shrink-0"
                         >
-                          Remove
+                          <X className="h-4 w-4" />
                         </Button>
                       )}
                     </div>
@@ -469,14 +494,15 @@ export default function CreatePoolPage() {
                     onClick={handleAddEvidenceLink}
                     className="mt-2"
                   >
-                    + Add Evidence Link
+                    <Plus className="h-4 w-4 mr-1.5" />
+                    Add Link
                   </Button>
                 </div>
 
                 {/* Creator Stake */}
-                <div className="mb-6">
+                <div>
                   <label className="block text-sm font-medium mb-2">
-                    Your Initial Stake (USDC) *
+                    Your Initial Stake (USDC) <span className="text-destructive">*</span>
                   </label>
                   <Input
                     type="number"
@@ -484,43 +510,43 @@ export default function CreatePoolPage() {
                     value={formData.creatorStake}
                     onChange={(e) => setFormData({ ...formData, creatorStake: e.target.value })}
                     onWheel={(e) => e.currentTarget.blur()}
-                    className="bg-background border-border"
+                    className="text-base"
                     min="20"
                   />
-                  <div className="text-xs text-muted-foreground mt-1">
-                    Minimum $20 USDC. You earn 20% of pool rewards if your position is correct.
+                  <div className="text-xs text-muted-foreground mt-1.5">
+                    Minimum $20 USDC. Earn 20% of rewards if correct.
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3 pt-2">
                   <Button
                     onClick={() => setShowPreview(!showPreview)}
                     variant="outline"
                     disabled={!isFormValid()}
-                    className="flex-1"
+                    className="w-full sm:flex-1 order-2 sm:order-1"
                   >
                     {showPreview ? 'Hide Preview' : 'Preview'}
                   </Button>
                   <Button
                     onClick={handleSubmit}
                     disabled={!isFormValid() || isSubmitting || !isConnected}
-                    className="flex-1 bg-gradient-to-r from-primary to-primary/90"
+                    className="w-full sm:flex-1 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 order-1 sm:order-2"
                   >
                     {!isConnected
-                      ? 'Connect Wallet First'
+                      ? 'Connect Wallet'
                       : isSubmitting
                       ? 'Creating...'
-                      : 'Create Pool & Post to FC'}
+                      : 'Create Pool'}
                   </Button>
                 </div>
 
                 {/* Enhanced Validation Message */}
                 {!isFormFullyValid() && isFormValid() && (
-                  <div className="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200">
-                    <div className="flex items-center gap-2 text-sm text-amber-700">
-                      <span>💡</span>
-                      <span>Add a chart/image to increase your pool&apos;s credibility and earnings potential!</span>
+                  <div className="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+                    <div className="flex items-center gap-2 text-sm text-amber-700 dark:text-amber-400">
+                      <Check className="h-4 w-4 shrink-0" />
+                      <span>Add a chart/image to boost credibility!</span>
                     </div>
                   </div>
                 )}
@@ -529,20 +555,20 @@ export default function CreatePoolPage() {
 
             {/* Preview */}
             {showPreview && isFormValid() && (
-              <Card className="border border-accent/50 bg-accent/5 mt-6">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
+              <Card className="border-2 border-accent bg-accent/5 mt-6">
+                <CardContent className="p-4 md:p-6">
+                  <div className="flex items-center gap-2 mb-3 md:mb-4">
+                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm">
                       YO
                     </div>
-                    <div>
-                      <div className="font-semibold text-sm">Your Address</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-sm truncate">Your Address</div>
                       <div className="text-xs text-muted-foreground">Preview</div>
                     </div>
                     <Badge
                       className={formData.position === 'YES'
-                        ? 'bg-emerald-100 text-emerald-700 border-emerald-200 ml-auto'
-                        : 'bg-rose-100 text-rose-700 border-rose-200 ml-auto'
+                        ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30'
+                        : 'bg-rose-500/10 text-rose-600 border-rose-500/30'
                       }
                     >
                       {formData.position}
@@ -550,35 +576,34 @@ export default function CreatePoolPage() {
                   </div>
 
                   {(imagePreview || formData.imageUrl) && (
-                    <div className="mb-4 rounded-lg overflow-hidden border border-border/30 bg-card">
-                      {/* Better Image Display - object-contain to avoid cropping */}
-                      <div className="relative w-full min-h-[200px] max-h-[400px]">
+                    <div className="mb-3 md:mb-4 rounded-lg overflow-hidden border border-border bg-card">
+                      <div className="relative w-full min-h-[200px] max-h-[350px] md:max-h-[400px]">
                         <Image
                           src={imagePreview || formData.imageUrl}
                           alt="Chart preview"
                           fill
-                          className="object-contain" // Use object-contain instead of object-cover
+                          className="object-contain"
                           unoptimized
                           style={{ maxHeight: '400px' }}
                         />
                       </div>
                       {formData.imageCaption && (
-                        <div className="p-3 bg-card/80 border-t border-border/30">
-                          <div className="text-sm text-muted-foreground text-center">
-                            📊 {formData.imageCaption}
+                        <div className="p-2.5 md:p-3 bg-card border-t border-border">
+                          <div className="text-xs md:text-sm text-muted-foreground text-center">
+                            {formData.imageCaption}
                           </div>
                         </div>
                       )}
                     </div>
                   )}
 
-                  <p className="text-sm text-foreground leading-relaxed mb-4">
+                  <p className="text-sm md:text-base text-foreground leading-relaxed mb-3 md:mb-4">
                     {formData.reasoning}
                   </p>
 
-                  <div className="p-3 rounded-lg bg-card/50 border border-border/30">
-                    <div className="text-xs font-medium mb-2">Creator&apos;s Stake</div>
-                    <div className="text-sm font-semibold">${parseFloat(formData.creatorStake || '0').toLocaleString()}</div>
+                  <div className="p-3 rounded-lg bg-background border border-border">
+                    <div className="text-xs font-medium text-muted-foreground mb-1.5">Creator&apos;s Stake</div>
+                    <div className="text-base font-semibold">${parseFloat(formData.creatorStake || '0').toLocaleString()}</div>
                   </div>
                 </CardContent>
               </Card>
@@ -586,75 +611,88 @@ export default function CreatePoolPage() {
           </div>
 
           {/* Sidebar - Guidelines */}
-          <div className="space-y-6">
-            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300">
-              <CardContent className="p-6">
-                <h3 className="font-bold mb-4">📋 Pool Guidelines</h3>
-                <div className="space-y-3 text-sm text-muted-foreground">
-                  <div className="flex gap-2">
-                    <span>✓</span>
-                    <span>Write detailed, logical reasoning</span>
+          <div className="space-y-4 md:space-y-6">
+            <Card className="border border-border bg-card">
+              <CardContent className="p-4 md:p-6">
+                <h3 className="font-bold mb-3 md:mb-4 flex items-center gap-2">
+                  <ClipboardCheck className="h-5 w-5 text-primary" />
+                  <span>Pool Guidelines</span>
+                </h3>
+                <div className="space-y-2.5 md:space-y-3 text-sm text-muted-foreground">
+                  <div className="flex gap-2.5">
+                    <Check className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Write detailed reasoning</span>
                   </div>
-                  <div className="flex gap-2">
-                    <span>✓</span>
-                    <span>Include data and evidence</span>
+                  <div className="flex gap-2.5">
+                    <Check className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Include data & evidence</span>
                   </div>
-                  <div className="flex gap-2">
-                    <span>✓</span>
-                    <span>Upload charts for visual proof</span>
+                  <div className="flex gap-2.5">
+                    <Check className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Upload charts for proof</span>
                   </div>
-                  <div className="flex gap-2">
-                    <span>✓</span>
-                    <span>Stake enough to show conviction</span>
+                  <div className="flex gap-2.5">
+                    <Check className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                    <span>Stake shows conviction</span>
                   </div>
-                  <div className="flex gap-2">
-                    <span>✓</span>
+                  <div className="flex gap-2.5">
+                    <Check className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
                     <span>Be objective, avoid hype</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300">
-              <CardContent className="p-6">
-                <h3 className="font-bold mb-4">💰 Earning Potential</h3>
-                <div className="space-y-3 text-sm text-muted-foreground">
+            <Card className="border border-border bg-card">
+              <CardContent className="p-4 md:p-6">
+                <h3 className="font-bold mb-3 md:mb-4 flex items-center gap-2">
+                  <DollarSign className="h-5 w-5 text-primary" />
+                  <span>Earning Potential</span>
+                </h3>
+                <div className="space-y-2.5 md:space-y-3 text-sm text-muted-foreground">
                   <div>
-                    <div className="font-medium text-foreground mb-1">If your position is CORRECT:</div>
-                    <div className="flex justify-between mb-2">
-                      <span>You (analyst) earn:</span>
+                    <div className="font-medium text-foreground mb-1.5">If CORRECT:</div>
+                    <div className="flex justify-between mb-1.5">
+                      <span>You (analyst):</span>
                       <span className="font-semibold text-primary">20%</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>&quot;Agree&quot; stakers earn:</span>
+                      <span>&quot;Agree&quot; stakers:</span>
                       <span className="font-semibold text-accent">80%</span>
                     </div>
                   </div>
                   <div className="h-px bg-border"></div>
                   <div>
-                    <div className="font-medium text-foreground mb-1">If your position is WRONG:</div>
-                    <div>You lose your stake</div>
-                    <div>&quot;Disagree&quot; stakers win</div>
+                    <div className="font-medium text-foreground mb-1.5">If WRONG:</div>
+                    <div className="text-xs">You lose your stake</div>
+                    <div className="text-xs">&quot;Disagree&quot; stakers win</div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300">
-              <CardContent className="p-6">
-                <h3 className="font-bold mb-4">🎯 Pro Tips</h3>
+            <Card className="border border-border bg-card">
+              <CardContent className="p-4 md:p-6">
+                <h3 className="font-bold mb-3 md:mb-4 flex items-center gap-2">
+                  <Target className="h-5 w-5 text-primary" />
+                  <span>Pro Tips</span>
+                </h3>
                 <div className="space-y-2 text-sm text-muted-foreground">
-                  <p>
-                    • Higher stakes attract more backers
+                  <p className="flex gap-2">
+                    <span className="text-primary">•</span>
+                    <span>Higher stakes attract backers</span>
                   </p>
-                  <p>
-                    • Quality reasoning builds reputation
+                  <p className="flex gap-2">
+                    <span className="text-primary">•</span>
+                    <span>Quality builds reputation</span>
                   </p>
-                  <p>
-                    • Charts increase credibility 3-5x
+                  <p className="flex gap-2">
+                    <span className="text-primary">•</span>
+                    <span>Charts boost credibility 3-5x</span>
                   </p>
-                  <p>
-                    • Link to credible sources
+                  <p className="flex gap-2">
+                    <span className="text-primary">•</span>
+                    <span>Link credible sources</span>
                   </p>
                 </div>
               </CardContent>

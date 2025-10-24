@@ -67,7 +67,7 @@ export default function ReputationTiers() {
           return (
             <Card
               key={tier.name}
-              className="group border border-border bg-card hover:border-blue-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden"
+              className="group border border-border bg-background hover:border-blue-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden"
             >
               <CardContent className="p-6 flex flex-col h-full">
                 {/* Icon */}
@@ -101,7 +101,7 @@ export default function ReputationTiers() {
 
       {/* Features Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border border-border bg-card/50 backdrop-blur-sm hover:bg-card transition-colors">
+        <Card className="border border-border bg-background/50 backdrop-blur-sm hover:bg-background transition-colors">
           <CardContent className="p-6">
             <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
               <Shield className="w-5 h-5 text-blue-600" />
@@ -113,7 +113,7 @@ export default function ReputationTiers() {
           </CardContent>
         </Card>
 
-        <Card className="border border-border bg-card/50 backdrop-blur-sm hover:bg-card transition-colors">
+        <Card className="border border-border bg-background/50 backdrop-blur-sm hover:bg-background transition-colors">
           <CardContent className="p-6">
             <div className="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-4">
               <Zap className="w-5 h-5 text-cyan-600" />
@@ -125,7 +125,7 @@ export default function ReputationTiers() {
           </CardContent>
         </Card>
 
-        <Card className="border border-border bg-card/50 backdrop-blur-sm hover:bg-card transition-colors">
+        <Card className="border border-border bg-background/50 backdrop-blur-sm hover:bg-background transition-colors">
           <CardContent className="p-6">
             <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
               <TrendingUp className="w-5 h-5 text-blue-600" />

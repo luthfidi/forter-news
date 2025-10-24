@@ -37,7 +37,7 @@ export default function FeaturePillars() {
         {PILLARS.map((p, idx) => (
           <Card
             key={p.title}
-            className="group border border-border bg-card hover:bg-secondary transition-all duration-300 hover:scale-105 hover:shadow-md"
+            className="group border border-border bg-background hover:bg-background/90 transition-all duration-300 hover:scale-105 hover:shadow-xl"
           >
             <CardContent className="p-6 md:p-8">
               <div className="flex items-start justify-between gap-4 mb-4">

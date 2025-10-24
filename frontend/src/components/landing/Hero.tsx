@@ -3,16 +3,13 @@ import AnimatedPaths from "./AnimatedPaths";
 export default function Hero() {
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated Paths Background */}
-      <div className="absolute inset-0 opacity-40 pointer-events-none">
+      {/* Fixed Animated Paths Background - stays in place */}
+      <div className="fixed inset-0 z-0 opacity-40 pointer-events-none">
         <AnimatedPaths />
       </div>
       
-      {/* Dark overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/20" />
-      
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto text-center px-4 md:px-6">
+      <div className="relative z-20 max-w-4xl mx-auto text-center px-4 md:px-6">
         <div className="inline-flex items-center gap-2 rounded-full border border-border/50 bg-background/80 backdrop-blur-md px-4 py-2 text-sm font-medium shadow-lg shadow-primary/10">
           <span className="h-2.5 w-2.5 rounded-full bg-primary animate-pulse" />
           <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">

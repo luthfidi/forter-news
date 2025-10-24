@@ -30,7 +30,7 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
-        <nav className="bg-background/20 backdrop-blur-xl border border-border/30 rounded-2xl px-4 py-2 shadow-lg">
+        <nav className="bg-background border border-border/30 rounded-2xl px-4 py-2 shadow-lg">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link

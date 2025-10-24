@@ -6,7 +6,7 @@
 
 import type { News, Pool } from '@/types';
 import type { NewsContractData, PoolContractData } from '../types';
-import { formatUSDC, timestampToDate, positionToString } from '../utils';
+import { formatUSDC, timestampToDate } from '../utils';
 
 /**
  * Map contract news data to frontend News interface

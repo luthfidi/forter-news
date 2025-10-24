@@ -1,4 +1,6 @@
 import AnimatedPaths from "./AnimatedPaths";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -7,10 +9,10 @@ export default function Hero() {
       <div className="fixed inset-0 z-0 opacity-40 pointer-events-none">
         <AnimatedPaths />
       </div>
-      
+
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 bg-black/20 z-10" />
-      
+
       {/* Content */}
       <div className="relative z-20 max-w-4xl mx-auto text-center px-4 md:px-6">
         <div className="inline-flex items-center gap-2 rounded-full border border-border/50 bg-background/80 backdrop-blur-md px-4 py-2 text-sm font-medium shadow-lg shadow-primary/10">
@@ -38,7 +40,20 @@ export default function Hero() {
           on-chain reputation with dynamic NFTs.
         </p>
 
-        <div className="mt-6 flex items-center justify-center gap-4 text-sm text-muted-foreground">
+        {/* Mobile: Show Explore News button */}
+        <div className="mt-8 md:hidden">
+          <Link href="/news">
+            <Button
+              size="lg"
+              className="min-w-[200px] bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
+            >
+              Explore News
+            </Button>
+          </Link>
+        </div>
+
+        {/* Desktop: Show feature indicators */}
+        <div className="mt-6 hidden md:flex items-center justify-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
             <span>Secure, verifiable outcomes</span>

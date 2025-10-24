@@ -4,8 +4,8 @@ import path from 'path'
 
 export async function GET() {
   try {
-    // Path to your logo image in the public folder
-    const imagePath = path.join(process.cwd(), 'public', 'forter.webp')
+    // Path to your logo image in the public folder (PNG for MiniKit compatibility)
+    const imagePath = path.join(process.cwd(), 'public', 'forter.png')
     
     // Check if file exists
     if (!fs.existsSync(imagePath)) {

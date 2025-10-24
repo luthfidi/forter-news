@@ -121,7 +121,7 @@ export default function PrivyConnectButton() {
               logout()
               setIsOpen(false)
             }}
-            className="w-full px-4 py-3 flex items-center gap-2 text-foreground hover:bg-background/50 transition-colors text-sm text-red-400 hover:text-red-300"
+            className="w-full px-4 py-3 flex items-center gap-2 hover:bg-background/50 transition-colors text-sm text-red-400 hover:text-red-300"
           >
             <LogOut className="w-4 h-4" />
             <span>Disconnect</span>

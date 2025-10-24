@@ -10,6 +10,19 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { poolService, stakingService, newsService, reputationService } from '@/lib/services';
 import type { Pool, PoolStake, News, ReputationData } from '@/types';
+import {
+  ExternalLink,
+  FileText,
+  Layers,
+  DollarSign,
+  TrendingUp,
+  Calendar,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Award,
+  Activity
+} from 'lucide-react';
 
 export default function ProfilePage() {
   const params = useParams();
@@ -138,12 +151,12 @@ export default function ProfilePage() {
   // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen pt-20 md:pt-28 pb-16">
+      <div className="min-h-screen pt-20 md:pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
-              <p className="text-muted-foreground">Loading profile...</p>
+              <p className="text-sm text-muted-foreground">Loading profile...</p>
             </div>
           </div>
         </div>
@@ -152,10 +165,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen pt-20 md:pt-28 pb-16">
+    <div className="min-h-screen pt-20 md:pt-24 pb-24 md:pb-16">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+        <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">
           <Link href="/news" className="hover:text-foreground transition-colors">
             News
           </Link>
@@ -164,36 +177,38 @@ export default function ProfilePage() {
         </div>
 
         {/* Profile Header */}
-        <Card className="border border-border/50 bg-gradient-to-br from-primary/5 to-accent/5 backdrop-blur-sm mb-8">
-          <CardContent className="p-8">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
+        <Card className="border border-border bg-gradient-to-br from-primary/5 to-accent/5 mb-6 md:mb-8">
+          <CardContent className="p-4 md:p-6 lg:p-8">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
+              <div className="flex items-start md:items-center gap-3 md:gap-4 w-full md:w-auto">
                 {/* Avatar */}
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-2xl font-bold">
+                <div className="w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-lg md:text-xl lg:text-2xl font-bold shrink-0">
                   {address.slice(2, 4).toUpperCase()}
                 </div>
 
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <h1 className="text-2xl md:text-3xl font-bold">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1.5 md:mb-2">
+                    <h1 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold truncate">
                       {address.slice(0, 6)}...{address.slice(-4)}
                     </h1>
                     {reputation && (
-                      <Badge variant="secondary" className="text-lg px-3 py-1">
+                      <Badge variant="secondary" className="text-xs md:text-sm lg:text-base px-2 md:px-3 py-0.5 md:py-1 w-fit">
                         {getTierIcon(reputation.tier)} {reputation.tier}
                       </Badge>
                     )}
                   </div>
 
                   {reputation && (
-                    <div className="flex items-center gap-4 text-sm">
-                      <span className="text-muted-foreground">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs md:text-sm">
+                      <span className="text-muted-foreground flex items-center gap-1">
+                        <Award className="h-3 w-3 md:h-4 md:w-4" />
                         <span className="font-semibold text-foreground">{reputation.accuracy}%</span> Accuracy
                       </span>
                       {memberSince && (
                         <>
-                          <span className="text-muted-foreground">•</span>
-                          <span className="text-muted-foreground">
+                          <span className="text-muted-foreground hidden sm:inline">•</span>
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Calendar className="h-3 w-3 md:h-4 md:w-4" />
                             Member since {memberSince.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                           </span>
                         </>
@@ -204,14 +219,16 @@ export default function ProfilePage() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3">
-                <Button variant="outline" size="sm" asChild>
+              <div className="w-full md:w-auto">
+                <Button variant="outline" size="sm" className="w-full md:w-auto text-xs md:text-sm" asChild>
                   <a
                     href={`https://basescan.org/address/${address}`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5"
                   >
-                    View on Explorer
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    <span>View on Explorer</span>
                   </a>
                 </Button>
               </div>
@@ -220,24 +237,26 @@ export default function ProfilePage() {
         </Card>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
           {/* News Created */}
-          <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
-            <CardContent className="p-6 text-center">
-              <div className="text-2xl font-bold text-foreground mb-1">
+          <Card className="border border-border bg-card">
+            <CardContent className="p-4 md:p-5 lg:p-6 text-center">
+              <FileText className="h-5 w-5 md:h-6 md:w-6 mx-auto mb-2 text-muted-foreground" />
+              <div className="text-xl md:text-2xl font-bold text-foreground mb-1">
                 {newsCreated.length}
               </div>
-              <div className="text-sm text-muted-foreground">News Created</div>
+              <div className="text-xs md:text-sm text-muted-foreground">News Created</div>
             </CardContent>
           </Card>
 
           {/* Pools Created */}
-          <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
-            <CardContent className="p-6 text-center">
-              <div className="text-2xl font-bold text-primary mb-1">
+          <Card className="border border-border bg-card">
+            <CardContent className="p-4 md:p-5 lg:p-6 text-center">
+              <Layers className="h-5 w-5 md:h-6 md:w-6 mx-auto mb-2 text-primary" />
+              <div className="text-xl md:text-2xl font-bold text-primary mb-1">
                 {poolsCreated.length}
               </div>
-              <div className="text-sm text-muted-foreground">Pools Created</div>
+              <div className="text-xs md:text-sm text-muted-foreground">Pools Created</div>
               {reputation && reputation.correctPools > 0 && (
                 <div className="text-xs text-green-600 mt-1">
                   {reputation.correctPools}W / {reputation.wrongPools}L
@@ -247,12 +266,13 @@ export default function ProfilePage() {
           </Card>
 
           {/* Stakes Made */}
-          <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
-            <CardContent className="p-6 text-center">
-              <div className="text-2xl font-bold text-accent mb-1">
+          <Card className="border border-border bg-card">
+            <CardContent className="p-4 md:p-5 lg:p-6 text-center">
+              <DollarSign className="h-5 w-5 md:h-6 md:w-6 mx-auto mb-2 text-accent" />
+              <div className="text-xl md:text-2xl font-bold text-accent mb-1">
                 {stakesHistory.length}
               </div>
-              <div className="text-sm text-muted-foreground">Stakes Made</div>
+              <div className="text-xs md:text-sm text-muted-foreground">Stakes Made</div>
               {resolvedStakes.length > 0 && (
                 <div className="text-xs text-blue-600 mt-1">
                   {wonStakes.length}W / {resolvedStakes.length - wonStakes.length}L
@@ -262,56 +282,57 @@ export default function ProfilePage() {
           </Card>
 
           {/* Win Rate (Staking) */}
-          <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
-            <CardContent className="p-6 text-center">
-              <div className="text-2xl font-bold text-foreground mb-1">
+          <Card className="border border-border bg-card">
+            <CardContent className="p-4 md:p-5 lg:p-6 text-center">
+              <TrendingUp className="h-5 w-5 md:h-6 md:w-6 mx-auto mb-2 text-green-500" />
+              <div className="text-xl md:text-2xl font-bold text-foreground mb-1">
                 {stakingWinRate}%
               </div>
-              <div className="text-sm text-muted-foreground">Stake Win Rate</div>
-              <div className="text-xs text-muted-foreground mt-1">
-                (Transparency)
-              </div>
+              <div className="text-xs md:text-sm text-muted-foreground">Win Rate</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Tabs */}
-        <Card className="border border-border/50 bg-background/80 backdrop-blur-sm mb-6">
-          <CardContent className="p-2">
-            <div className="flex flex-wrap gap-2">
+        <Card className="border border-border bg-card mb-4 md:mb-6">
+          <CardContent className="p-1.5 md:p-2">
+            <div className="grid grid-cols-2 md:flex md:flex-wrap gap-1.5 md:gap-2">
               <button
                 onClick={() => setActiveTab('pools')}
-                className={`flex-1 min-w-[120px] px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                className={`px-3 md:px-4 py-2 md:py-3 rounded-lg text-xs md:text-sm font-medium transition-all ${
                   activeTab === 'pools'
                     ? 'bg-primary text-primary-foreground shadow-lg'
                     : 'text-muted-foreground hover:text-foreground hover:bg-accent/10'
                 }`}
               >
-                Pools Created ({poolsCreated.length})
+                <span className="hidden sm:inline">Pools ({poolsCreated.length})</span>
+                <span className="sm:hidden">Pools</span>
               </button>
               <button
                 onClick={() => setActiveTab('stakes')}
-                className={`flex-1 min-w-[120px] px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                className={`px-3 md:px-4 py-2 md:py-3 rounded-lg text-xs md:text-sm font-medium transition-all ${
                   activeTab === 'stakes'
                     ? 'bg-primary text-primary-foreground shadow-lg'
                     : 'text-muted-foreground hover:text-foreground hover:bg-accent/10'
                 }`}
               >
-                Stakes History ({stakesHistory.length})
+                <span className="hidden sm:inline">Stakes ({stakesHistory.length})</span>
+                <span className="sm:hidden">Stakes</span>
               </button>
               <button
                 onClick={() => setActiveTab('news')}
-                className={`flex-1 min-w-[120px] px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                className={`px-3 md:px-4 py-2 md:py-3 rounded-lg text-xs md:text-sm font-medium transition-all ${
                   activeTab === 'news'
                     ? 'bg-primary text-primary-foreground shadow-lg'
                     : 'text-muted-foreground hover:text-foreground hover:bg-accent/10'
                 }`}
               >
-                News Created ({newsCreated.length})
+                <span className="hidden sm:inline">News ({newsCreated.length})</span>
+                <span className="sm:hidden">News</span>
               </button>
               <button
                 onClick={() => setActiveTab('activity')}
-                className={`flex-1 min-w-[120px] px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+                className={`px-3 md:px-4 py-2 md:py-3 rounded-lg text-xs md:text-sm font-medium transition-all ${
                   activeTab === 'activity'
                     ? 'bg-primary text-primary-foreground shadow-lg'
                     : 'text-muted-foreground hover:text-foreground hover:bg-accent/10'
@@ -327,45 +348,55 @@ export default function ProfilePage() {
         <div>
           {activeTab === 'pools' && (
             <div>
-              <h2 className="text-xl font-bold mb-4">Pools Created</h2>
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Pools Created</h2>
               {poolsCreated.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-3 md:space-y-4">
                   {poolsCreated.map(pool => {
                     const news = newsCreated.find(n => n.id === pool.newsId);
                     return (
-                      <Card key={pool.id} className="border border-border/50 bg-background/80 backdrop-blur-sm">
-                        <CardContent className="p-6">
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex-1">
+                      <Card key={pool.id} className="border border-border bg-card">
+                        <CardContent className="p-4 md:p-6">
+                          <div className="flex items-start justify-between gap-3 mb-3">
+                            <div className="flex-1 min-w-0">
                               <Link href={`/news/${pool.newsId}`} className="hover:underline">
-                                <div className="font-semibold text-sm text-muted-foreground mb-1">
+                                <div className="font-semibold text-xs md:text-sm text-muted-foreground mb-1.5 line-clamp-2">
                                   {news?.title || 'Unknown News'}
                                 </div>
                               </Link>
-                              <div className="flex items-center gap-2 mt-2">
+                              <div className="flex items-center gap-1.5 md:gap-2 flex-wrap mt-2">
                                 <Badge
-                                  variant={pool.position === 'YES' ? 'default' : 'secondary'}
                                   className={pool.position === 'YES'
-                                    ? 'bg-green-500 text-white'
-                                    : 'bg-red-500 text-white'
+                                    ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30 text-xs'
+                                    : 'bg-rose-500/10 text-rose-600 border-rose-500/30 text-xs'
                                   }
                                 >
                                   {pool.position}
                                 </Badge>
-                                <Badge variant="secondary">
-                                  {pool.status === 'resolved'
-                                    ? pool.outcome === 'creator_correct' ? '✅ Correct' : '❌ Wrong'
-                                    : '⏳ Active'
-                                  }
+                                <Badge variant="secondary" className="text-xs">
+                                  {pool.status === 'resolved' ? (
+                                    pool.outcome === 'creator_correct' ? (
+                                      <span className="flex items-center gap-1">
+                                        <CheckCircle className="h-3 w-3" /> Correct
+                                      </span>
+                                    ) : (
+                                      <span className="flex items-center gap-1">
+                                        <XCircle className="h-3 w-3" /> Wrong
+                                      </span>
+                                    )
+                                  ) : (
+                                    <span className="flex items-center gap-1">
+                                      <Clock className="h-3 w-3" /> Active
+                                    </span>
+                                  )}
                                 </Badge>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <div className="text-sm font-semibold">${pool.totalStaked.toLocaleString()}</div>
-                              <div className="text-xs text-muted-foreground">Total Staked</div>
+                            <div className="text-right shrink-0">
+                              <div className="text-sm md:text-base font-semibold">${pool.totalStaked.toLocaleString()}</div>
+                              <div className="text-xs text-muted-foreground">Staked</div>
                             </div>
                           </div>
-                          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                          <p className="text-xs md:text-sm text-muted-foreground line-clamp-2 mb-2 md:mb-3">
                             {pool.reasoning}
                           </p>
                           <div className="text-xs text-muted-foreground">
@@ -377,10 +408,10 @@ export default function ProfilePage() {
                   })}
                 </div>
               ) : (
-                <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
-                  <CardContent className="p-12 text-center">
-                    <div className="text-4xl mb-4">🏊</div>
-                    <p className="text-muted-foreground">
+                <Card className="border border-border bg-card">
+                  <CardContent className="p-8 md:p-12 text-center">
+                    <Layers className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-sm md:text-base text-muted-foreground">
                       {isOwnProfile
                         ? "You haven't created any analysis pools yet. Start building your reputation!"
                         : "This user hasn't created any analysis pools yet."}
@@ -393,9 +424,9 @@ export default function ProfilePage() {
 
           {activeTab === 'stakes' && (
             <div>
-              <h2 className="text-xl font-bold mb-4">Stakes History</h2>
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Stakes History</h2>
               {stakesHistory.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-3 md:space-y-4">
                   {stakesHistory.map(stake => {
                     const pool = poolMap.get(stake.poolId);
                     const news = newsCreated.find(n => n.id === pool?.newsId);
@@ -408,31 +439,51 @@ export default function ProfilePage() {
                     ) : false;
 
                     return (
-                      <Card key={stake.id} className="border border-border/50 bg-background/80 backdrop-blur-sm">
-                        <CardContent className="p-6">
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex-1">
+                      <Card key={stake.id} className="border border-border bg-card">
+                        <CardContent className="p-4 md:p-6">
+                          <div className="flex items-start justify-between gap-3 mb-3">
+                            <div className="flex-1 min-w-0">
                               <Link href={`/news/${pool?.newsId}`} className="hover:underline">
-                                <div className="font-semibold text-sm text-muted-foreground mb-1">
+                                <div className="font-semibold text-xs md:text-sm text-muted-foreground mb-1.5 line-clamp-2">
                                   {news?.title || 'Unknown News'}
                                 </div>
                               </Link>
-                              <div className="flex items-center gap-2 mt-2">
-                                <Badge variant="secondary">
-                                  {stake.position === 'agree' ? '✅ Agreed' : '❌ Disagreed'}
+                              <div className="flex items-center gap-1.5 md:gap-2 flex-wrap mt-2">
+                                <Badge variant="secondary" className="text-xs">
+                                  {stake.position === 'agree' ? (
+                                    <span className="flex items-center gap-1">
+                                      <CheckCircle className="h-3 w-3" /> Agreed
+                                    </span>
+                                  ) : (
+                                    <span className="flex items-center gap-1">
+                                      <XCircle className="h-3 w-3" /> Disagreed
+                                    </span>
+                                  )}
                                 </Badge>
                                 {isResolved && (
-                                  <Badge variant={isWon ? 'default' : 'secondary'} className={isWon ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}>
-                                    {isWon ? '🏆 Won' : '😞 Lost'}
+                                  <Badge className={isWon ? 'bg-green-500/10 text-green-600 border-green-500/30 text-xs' : 'bg-red-500/10 text-red-600 border-red-500/30 text-xs'}>
+                                    {isWon ? (
+                                      <span className="flex items-center gap-1">
+                                        <Award className="h-3 w-3" /> Won
+                                      </span>
+                                    ) : (
+                                      <span className="flex items-center gap-1">
+                                        <XCircle className="h-3 w-3" /> Lost
+                                      </span>
+                                    )}
                                   </Badge>
                                 )}
                                 {!isResolved && (
-                                  <Badge variant="secondary">⏳ Pending</Badge>
+                                  <Badge variant="secondary" className="text-xs">
+                                    <span className="flex items-center gap-1">
+                                      <Clock className="h-3 w-3" /> Pending
+                                    </span>
+                                  </Badge>
                                 )}
                               </div>
                             </div>
-                            <div className="text-right">
-                              <div className="text-sm font-semibold">${stake.amount.toLocaleString()}</div>
+                            <div className="text-right shrink-0">
+                              <div className="text-sm md:text-base font-semibold">${stake.amount.toLocaleString()}</div>
                               <div className="text-xs text-muted-foreground">Staked</div>
                             </div>
                           </div>
@@ -445,10 +496,10 @@ export default function ProfilePage() {
                   })}
                 </div>
               ) : (
-                <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
-                  <CardContent className="p-12 text-center">
-                    <div className="text-4xl mb-4">💰</div>
-                    <p className="text-muted-foreground">
+                <Card className="border border-border bg-card">
+                  <CardContent className="p-8 md:p-12 text-center">
+                    <DollarSign className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-sm md:text-base text-muted-foreground">
                       {isOwnProfile
                         ? "You haven't staked on any pools yet. Browse news and support analysts!"
                         : "This user hasn't staked on any pools yet."}
@@ -461,31 +512,39 @@ export default function ProfilePage() {
 
           {activeTab === 'news' && (
             <div>
-              <h2 className="text-xl font-bold mb-4">News Created</h2>
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">News Created</h2>
               {newsCreated.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-3 md:space-y-4">
                   {newsCreated.map(news => (
-                    <Card key={news.id} className="border border-border/50 bg-background/80 backdrop-blur-sm">
-                      <CardContent className="p-6">
+                    <Card key={news.id} className="border border-border bg-card">
+                      <CardContent className="p-4 md:p-6">
                         <Link href={`/news/${news.id}`}>
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex-1">
-                              <h3 className="font-semibold mb-2 hover:text-primary transition-colors">
+                          <div className="flex items-start justify-between gap-3 mb-3">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-semibold text-sm md:text-base mb-2 hover:text-primary transition-colors line-clamp-2">
                                 {news.title}
                               </h3>
-                              <div className="flex items-center gap-2">
-                                <Badge variant="secondary">{news.category}</Badge>
-                                <Badge variant={news.status === 'resolved' ? 'default' : 'secondary'}>
-                                  {news.status === 'resolved' ? '✅ Resolved' : '⏳ Active'}
+                              <div className="flex items-center gap-1.5 md:gap-2 flex-wrap">
+                                <Badge variant="secondary" className="text-xs">{news.category}</Badge>
+                                <Badge variant="secondary" className="text-xs">
+                                  {news.status === 'resolved' ? (
+                                    <span className="flex items-center gap-1">
+                                      <CheckCircle className="h-3 w-3" /> Resolved
+                                    </span>
+                                  ) : (
+                                    <span className="flex items-center gap-1">
+                                      <Clock className="h-3 w-3" /> Active
+                                    </span>
+                                  )}
                                 </Badge>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <div className="text-sm font-semibold">{news.totalPools}</div>
+                            <div className="text-right shrink-0">
+                              <div className="text-sm md:text-base font-semibold">{news.totalPools}</div>
                               <div className="text-xs text-muted-foreground">Pools</div>
                             </div>
                           </div>
-                          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                          <p className="text-xs md:text-sm text-muted-foreground line-clamp-2 mb-2 md:mb-3">
                             {news.description}
                           </p>
                           <div className="text-xs text-muted-foreground">
@@ -497,10 +556,10 @@ export default function ProfilePage() {
                   ))}
                 </div>
               ) : (
-                <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
-                  <CardContent className="p-12 text-center">
-                    <div className="text-4xl mb-4">📰</div>
-                    <p className="text-muted-foreground">
+                <Card className="border border-border bg-card">
+                  <CardContent className="p-8 md:p-12 text-center">
+                    <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-sm md:text-base text-muted-foreground">
                       {isOwnProfile
                         ? "You haven't created any news yet. Submit predictions for analysts to analyze!"
                         : "This user hasn't created any news yet."}
@@ -513,11 +572,11 @@ export default function ProfilePage() {
 
           {activeTab === 'activity' && (
             <div>
-              <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
-              <Card className="border border-border/50 bg-background/80 backdrop-blur-sm">
-                <CardContent className="p-12 text-center">
-                  <div className="text-4xl mb-4">🚧</div>
-                  <p className="text-muted-foreground">Activity timeline coming soon</p>
+              <h2 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Recent Activity</h2>
+              <Card className="border border-border bg-card">
+                <CardContent className="p-8 md:p-12 text-center">
+                  <Activity className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-sm md:text-base text-muted-foreground">Activity timeline coming soon</p>
                 </CardContent>
               </Card>
             </div>

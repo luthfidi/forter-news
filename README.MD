@@ -9,13 +9,13 @@
 
 ## Executive Summary
 
-Forter adalah **Information Finance Protocol** - platform Web3 yang mengubah informasi kredibel menjadi aset finansial. Kami bukan prediction market untuk gambling - kami adalah infrastruktur **permissionless** untuk memverifikasi, memonetisasi, dan membangun reputasi berbasis analisis yang akurat.
+Forter is an **Information Finance Protocol** - a Web3 platform that transforms credible information into financial assets. We're not a prediction market for gambling - we're a **permissionless** infrastructure for verifying, monetizing, and building reputation based on accurate analysis.
 
 **Core Innovation**: Permissionless News + Independent Pool mechanism:
 
-1. **Anyone can create NEWS** - Prediksi/statement dengan timeline jelas (permissionless)
-2. **Anyone can create POOL** - Analisis dengan reasoning + own stake pool per news
-3. **Stake on specific pool** - Back reasoning yang paling kredibel (Setuju/Tidak Setuju)
+1. **Anyone can create NEWS** - Predictions/statements with clear timelines (permissionless)
+2. **Anyone can create POOL** - Analysis with reasoning + own stake pool per news
+3. **Stake on specific pool** - Back the most credible reasoning (Agree/Disagree)
 
 **Tagline**: "Stake on Credibility, Not Luck"
 
@@ -62,7 +62,7 @@ NEXT_PUBLIC_STAKINGPOOL_ADDRESS=0x71A3fe1BbE61cb6d79927008560127fe4c656e77
 ```
 ┌─────────────────────────────────────────┐
 │ NEWS (User-created, permissionless)     │
-│ "ETH akan ke $5000 desember ini"        │
+│ "ETH will reach $5000 this December"    │
 │ Resolution: Dec 31, 2024                │
 │ Creator: @alice                         │
 └─────────────────────────────────────────┘
@@ -74,32 +74,32 @@ NEXT_PUBLIC_STAKINGPOOL_ADDRESS=0x71A3fe1BbE61cb6d79927008560127fe4c656e77
 ┌──────────────────────────────────────────┐
 │ POOL 1 by @bob                           │
 │ Position: YES                            │
-│ Reasoning: "Setuju karena ETF approval"  │
+│ Reasoning: "I agree due to ETF approval" │
 │                                          │
 │ Stakes:                                  │
-│ - Setuju: $1000 (10 users)              │
-│ - Tidak Setuju: $200 (3 users)          │
+│ - Agree: $1000 (10 users)               │
+│ - Disagree: $200 (3 users)              │
 │                                          │
 │ Resolution: Same as NEWS (Dec 31)        │
-│ If ETH ≥ $5000 → "Setuju" wins          │
+│ If ETH ≥ $5000 → "Agree" wins           │
 └──────────────────────────────────────────┘
 ```
 
 ### User Flow
 
-1. **Create NEWS** - Permissionless prediction dengan timeline jelas
-2. **Create POOL** - Analisis dengan reasoning + evidence + stake
-3. **Stake on Pools** - Back specific reasoning (Setuju/Tidak Setuju)
-4. **Resolution** - Oracle verification pada tanggal yang ditentukan
+1. **Create NEWS** - Permissionless prediction with clear timeline
+2. **Create POOL** - Analysis with reasoning + evidence + stake
+3. **Stake on Pools** - Back specific reasoning (Agree/Disagree)
+4. **Resolution** - Oracle verification on specified date
 5. **Rewards** - Auto-distribute 20% creator / 80% stakers
 
 ### Key Features
 
-- ✅ **Permissionless Creation** - Siapapun bisa buat NEWS dan POOLS
-- ✅ **Independent Pools** - Setiap pool punya stake pool sendiri
+- ✅ **Permissionless Creation** - Anyone can create NEWS and POOLS
+- ✅ **Independent Pools** - Each pool has its own stake pool
 - ✅ **Auto-Distribute Rewards** - No manual claim needed
-- ✅ **Reputation NFTs** - Soulbound tokens untuk credibility tracking
-- ✅ **Point-Based System** - Dengan stake weight multipliers
+- ✅ **Reputation NFTs** - Soulbound tokens for credibility tracking
+- ✅ **Point-Based System** - With stake weight multipliers
 - ✅ **Type-Safe Enums** - Better security & clarity
 
 ---
@@ -122,8 +122,8 @@ Single Pool Total Stakes (100%)
          │    └─ Creator is EXCLUDED from staker pool
          │
          └─ Winning Stakers (80% of remaining) ✨ AUTO-DISTRIBUTED
-              ├── "Setuju" stakers (if pool correct)
-              └─ OR "Tidak Setuju" stakers (if pool wrong)
+              ├── "Agree" stakers (if pool correct)
+              └─ OR "Disagree" stakers (if pool wrong)
 ```
 
 **Key Changes:**
@@ -134,14 +134,14 @@ Single Pool Total Stakes (100%)
 
 ### Fee Structure
 
-- Platform Fee: 2% dari total pool
+- Platform Fee: 2% of total pool
 - Minimum Stake: $0.5 USDC (testnet) / $5 USDC (mainnet)
 - No withdrawal fees
 
 ### Staking Token
 
 - **Staking Token**: USDC on Base network
-- **No Platform Token**: Fokus pada utility, bukan speculation
+- **No Platform Token**: Focus on utility, not speculation
 
 ---
 
@@ -209,7 +209,7 @@ Stake Multiplier (based on pool total stake):
 
 ### Frontend Stack
 
-- **Next.js 14** - React framework dengan App Router
+- **Next.js 14** - React framework with App Router
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Utility-first styling
 - **RainbowKit + Wagmi** - Wallet integration
@@ -279,7 +279,7 @@ cast call 0xEb32CBB8ff13c5878D13A1476b0a0CF384c20681 "decimals()"
 ### ✅ Phase 0: MVP (December 2024) - COMPLETED
 
 - ✅ Core smart contracts
-- ✅ Basic UI dengan market browsing
+- ✅ Basic UI with market browsing
 - ✅ Mock oracle resolution
 - ✅ 8 curated demo markets
 
@@ -290,12 +290,12 @@ cast call 0xEb32CBB8ff13c5878D13A1476b0a0CF384c20681 "decimals()"
 - ✅ Reputation NFT system deployed
 - ✅ DAO governance system deployed
 - 🔄 Frontend integration with new contracts
-- 🔄 User testing dengan testnet USDC
+- 🔄 User testing with testnet USDC
 
 ### 🔄 Phase 2: Mainnet Beta (Q2 2025)
 
-- 🔄 Mainnet deployment dengan limited markets
-- 🔄 AI news aggregator untuk semi-automated resolution
+- 🔄 Mainnet deployment with limited markets
+- 🔄 AI news aggregator for semi-automated resolution
 - 🔄 Enhanced reputation system
 - 🔄 Mobile-responsive design
 
@@ -303,7 +303,7 @@ cast call 0xEb32CBB8ff13c5878D13A1476b0a0CF384c20681 "decimals()"
 
 - 🔮 Chainlink oracle integration
 - 🔮 Community-created markets
-- 🔮 Advanced analytics dan API
+- 🔮 Advanced analytics and API
 - 🔮 Cross-chain expansion plans
 
 ---
@@ -388,6 +388,6 @@ MIT License - see LICENSE file for details
 
 ---
 
-**Transform noise into signal, speculation into analysis, dan anonymity into accountability.**
+**Transform noise into signal, speculation into analysis, and anonymity into accountability.**
 
 *Forter is not just a product - it's a permissionless primitive for the information economy.*

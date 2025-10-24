@@ -45,6 +45,7 @@ export {
   createPool,
   stakeOnPool,
   resolveNews,
+  emergencyResolve,
   // Mappers
   mapContractToNews,
   mapContractToPool,

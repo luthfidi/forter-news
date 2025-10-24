@@ -13,6 +13,7 @@ import { usePoolStaking } from '@/lib/hooks/usePoolStaking';
 import { useTransactionFeedback } from '@/lib/hooks/useTransactionFeedback';
 import FloatingIndicator from '@/components/shared/FloatingIndicator';
 import { tokenService } from '@/lib/services';
+import { Award, Trophy, Crown, Gem, Medal, HelpCircle, CheckCircle, XCircle, ZoomIn, DollarSign, Lock } from 'lucide-react';
 
 interface PoolCardProps {
   pool: Pool;
@@ -62,12 +63,12 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
 
   const getTierIcon = (tier: string) => {
     switch (tier) {
-      case 'Novice': return '🥉';
-      case 'Analyst': return '🥈';
-      case 'Expert': return '🥇';
-      case 'Master': return '💎';
-      case 'Legend': return '👑';
-      default: return '❓';
+      case 'Novice': return <Medal className="w-3.5 h-3.5 text-amber-700" />;
+      case 'Analyst': return <Award className="w-3.5 h-3.5 text-gray-500" />;
+      case 'Expert': return <Trophy className="w-3.5 h-3.5 text-yellow-500" />;
+      case 'Master': return <Gem className="w-3.5 h-3.5 text-blue-500" />;
+      case 'Legend': return <Crown className="w-3.5 h-3.5 text-purple-600" />;
+      default: return <HelpCircle className="w-3.5 h-3.5 text-gray-400" />;
     }
   };
 
@@ -162,12 +163,22 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
         {/* Resolved Badge */}
         {pool.status === 'resolved' && pool.outcome && (
           <div className="pb-4 border-b border-border/30">
-            <Badge className={`px-3 py-1.5 font-semibold ${
+            <Badge className={`px-3 py-1.5 font-semibold flex items-center gap-1.5 ${
               pool.outcome === 'creator_correct'
                 ? 'bg-green-500 text-white'
                 : 'bg-red-500 text-white'
             }`}>
-              {pool.outcome === 'creator_correct' ? '✅ Resolved - Correct' : '❌ Resolved - Wrong'}
+              {pool.outcome === 'creator_correct' ? (
+                <>
+                  <CheckCircle className="w-4 h-4" />
+                  Resolved - Correct
+                </>
+              ) : (
+                <>
+                  <XCircle className="w-4 h-4" />
+                  Resolved - Wrong
+                </>
+              )}
             </Badge>
           </div>
         )}
@@ -218,8 +229,9 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
                 unoptimized
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                <div className="opacity-0 group-hover:opacity-100 text-white text-xs bg-black/70 px-3 py-1.5 rounded">
-                  🔍 Click to expand
+                <div className="opacity-0 group-hover:opacity-100 text-white text-xs bg-black/70 px-3 py-1.5 rounded flex items-center gap-1.5">
+                  <ZoomIn className="w-3.5 h-3.5" />
+                  Click to expand
                 </div>
               </div>
             </div>
@@ -277,6 +289,13 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
 
           {/* Combined Progress Bar */}
           <div className="space-y-2">
+            {/* Stake amounts above progress bar */}
+            <div className="flex justify-between text-xs font-semibold">
+              <span className="text-muted-foreground">${pool.agreeStakes.toLocaleString()}</span>
+              <span className="text-muted-foreground">${pool.disagreeStakes.toLocaleString()}</span>
+            </div>
+
+            {/* Progress Bar */}
             <div className="h-3 bg-muted rounded-full overflow-hidden flex">
               <div
                 className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
@@ -288,17 +307,15 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
               />
             </div>
 
-            {/* Legend */}
+            {/* Percentages below progress bar */}
             <div className="flex justify-between text-xs">
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                 <span className="text-emerald-700 font-medium">{agreePercentage}% Support</span>
-                <span className="text-muted-foreground">(${pool.agreeStakes.toLocaleString()})</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-rose-500"></div>
                 <span className="text-rose-700 font-medium">{disagreePercentage}% Oppose</span>
-                <span className="text-muted-foreground">(${pool.disagreeStakes.toLocaleString()})</span>
+                <div className="w-2 h-2 rounded-full bg-rose-500"></div>
               </div>
             </div>
           </div>
@@ -306,7 +323,10 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
           {/* Simplified Reward Info */}
           <div className="pt-2 border-t border-border/30 text-xs text-muted-foreground">
             <div className="flex items-center justify-between">
-              <span>💰 Winner takes 80% • Creator 20%</span>
+              <span className="flex items-center gap-1">
+                <DollarSign className="w-3.5 h-3.5" />
+                Winner takes 80% • Creator 20%
+              </span>
               <span>Fee: 2%</span>
             </div>
           </div>
@@ -319,7 +339,7 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
             {pool.autoDistributed && (
               <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-center justify-center mb-2">
-                  <span className="text-lg">✅</span>
+                  <CheckCircle className="w-5 h-5 text-green-600" />
                   <span className="text-sm font-medium text-green-700 ml-2">
                     Rewards Auto-Distributed
                   </span>
@@ -358,8 +378,9 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
             )}
 
             <div className="p-3 bg-accent/10 rounded-lg text-center">
-              <p className="text-sm text-muted-foreground">
-                🔒 Pool Settled - Staking Closed
+              <p className="text-sm text-muted-foreground flex items-center justify-center gap-1.5">
+                <Lock className="w-4 h-4" />
+                Pool Settled - Staking Closed
               </p>
             </div>
           </div>

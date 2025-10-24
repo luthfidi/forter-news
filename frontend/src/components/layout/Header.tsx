@@ -3,12 +3,15 @@
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from 'next/navigation'
-import { useAccount } from 'wagmi'
-import { Wallet } from '@coinbase/onchainkit/wallet'
+import { usePrivy } from '@privy-io/react-auth'
+import PrivyConnectButton from '@/components/wallet/PrivyConnectButton'
 
 export default function Header() {
   const pathname = usePathname()
-  const { address, isConnected } = useAccount()
+  const { authenticated, user } = usePrivy()
+
+  const address = user?.wallet?.address
+  const isConnected = authenticated && !!address
 
   const isNewsActive = pathname?.startsWith('/news')
   const isAnalystsActive = pathname?.startsWith('/analysts')
@@ -65,14 +68,9 @@ export default function Header() {
               ))}
             </div>
 
-            {/* Connect Wallet - Desktop */}
-            <div className="hidden md:block">
-              <Wallet />
-            </div>
-
-            {/* Connect Wallet - Mobile */}
-            <div className="md:hidden">
-              <Wallet />
+            {/* Connect Wallet - Desktop & Mobile */}
+            <div>
+              <PrivyConnectButton />
             </div>
           </div>
         </nav>

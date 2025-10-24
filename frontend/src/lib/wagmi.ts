@@ -1,4 +1,4 @@
-import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { createConfig } from '@privy-io/wagmi';
 import { http, fallback } from "viem";
 import { baseSepolia } from "viem/chains";
 
@@ -9,9 +9,7 @@ const baseSepoliaRPCs = [
   "https://base-sepolia-rpc.publicnode.com",
 ];
 
-export const config = getDefaultConfig({
-  appName: "Forter - Forecast Porter",
-  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || "YOUR_PROJECT_ID",
+export const config = createConfig({
   chains: [baseSepolia],
   transports: {
     [baseSepolia.id]: fallback(
@@ -22,5 +20,4 @@ export const config = getDefaultConfig({
       }))
     ),
   },
-  ssr: true,
 });

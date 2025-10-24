@@ -138,7 +138,7 @@ export default function ProfilePage() {
   // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen pt-28 pb-16">
+      <div className="min-h-screen pt-20 md:pt-28 pb-16">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
@@ -152,7 +152,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen pt-28 pb-16">
+    <div className="min-h-screen pt-20 md:pt-28 pb-16">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">

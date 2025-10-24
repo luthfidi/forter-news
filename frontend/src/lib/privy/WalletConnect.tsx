@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { Button } from '@/components/ui/button';
 import { User, AlertCircle } from 'lucide-react';
-import { useWallet } from '@/lib/hooks/useWallet';
+import { useWallet } from './useWallet';
 
 interface WalletConnectProps {
   className?: string;

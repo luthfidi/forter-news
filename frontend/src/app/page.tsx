@@ -16,7 +16,10 @@ export default function Page() {
 
       {/* Content Layer */}
       <div className="relative z-10">
-        <Header />
+        {/* Desktop Header is handled in layout */}
+        <div className="hidden md:block">
+          <Header />
+        </div>
         <Hero />
 
         <section id="pillars" className="px-4 md:px-6 py-16">

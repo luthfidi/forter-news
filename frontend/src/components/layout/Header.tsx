@@ -29,9 +29,9 @@ export default function Header() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 p-4 md:p-6">
+    <header className="hidden md:block fixed top-0 left-0 right-0 z-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
-        <nav className="bg-background border border-border/30 rounded-2xl px-4 py-2 shadow-lg">
+        <nav className="bg-background/80 backdrop-blur-md border border-border/30 rounded-2xl px-4 py-2 shadow-lg shadow-primary/10">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link
@@ -51,7 +51,7 @@ export default function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="flex items-center space-x-8">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
@@ -70,7 +70,7 @@ export default function Header() {
             <div className="flex items-center gap-3">
               {/* Farcaster User Info - Only show in MiniApp */}
               {isReady && isInFarcaster && farcasterUser && (
-                <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20">
                   {farcasterUser.pfpUrl && (
                     <Image
                       src={farcasterUser.pfpUrl}

@@ -50,7 +50,7 @@ export default function AnalystsPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen pt-28 pb-16">
+      <div className="min-h-screen pt-20 md:pt-28 pb-16">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
@@ -66,7 +66,7 @@ export default function AnalystsPage() {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen pt-28 pb-16">
+      <div className="min-h-screen pt-20 md:pt-28 pb-16">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <Card className="border border-destructive/50 bg-destructive/5">
             <CardContent className="p-8 text-center">
@@ -81,7 +81,7 @@ export default function AnalystsPage() {
   }
 
   return (
-    <div className="min-h-screen pt-28 pb-16">
+    <div className="min-h-screen pt-20 md:pt-28 pb-16">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* Header */}
         <div className="mb-8">

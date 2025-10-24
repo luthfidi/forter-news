@@ -145,7 +145,7 @@ export default function NewsPage() {
   const totalPools = activeNews.reduce((sum, news) => sum + news.totalPools, 0);
 
   return (
-    <div className="min-h-screen pt-28 pb-16">
+    <div className="min-h-screen pt-20 md:pt-28 pb-16">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* Header */}
         <div className="mb-8">

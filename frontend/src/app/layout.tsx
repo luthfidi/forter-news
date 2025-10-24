@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import Header from "@/components/layout/Header";
+import MobileHeader from "@/components/layout/MobileHeader";
+import MobileNav from "@/components/layout/MobileNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,8 +59,21 @@ export default function RootLayout({
       >
         <Providers>
           <div className="min-h-screen">
+            {/* Desktop Header */}
             <Header />
-            <main>{children}</main>
+            
+            {/* Mobile Header */}
+            <div className="md:hidden">
+              <MobileHeader />
+            </div>
+            
+            {/* Main Content */}
+            <main className="pb-24 md:pb-0">{children}</main>
+            
+            {/* Mobile Navigation */}
+            <div className="md:hidden">
+              <MobileNav />
+            </div>
           </div>
         </Providers>
       </body>

@@ -54,7 +54,7 @@ export function mapContractToPool(
     id: poolId,
     newsId: newsId,
     creatorAddress: contractData.creator || '0x0',
-    position: mapPositionToYesNo(contractData.position),
+    position: contractData.position ? 'YES' : 'NO', // Boolean position (true=YES, false=NO)
     reasoning: contractData.reasoning || '',
     evidence: contractData.evidenceLinks || [],
     imageUrl: contractData.imageUrl || undefined,
@@ -69,11 +69,4 @@ export function mapContractToPool(
       : null,
     createdAt: timestampToDate(contractData.createdAt),
   };
-}
-
-/**
- * Map contract position enum to frontend string
- */
-function mapPositionToYesNo(position: number): 'YES' | 'NO' {
-  return position === 0 ? 'YES' : 'NO'; // Position enum: 0=YES, 1=NO
 }

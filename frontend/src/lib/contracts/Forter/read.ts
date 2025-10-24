@@ -137,7 +137,7 @@ export async function getPoolsByNewsId(newsId: string): Promise<Pool[]> {
         evidenceLinks: result[2],
         imageUrl: result[3],
         imageCaption: result[4],
-        position: Number(result[5] || 0), // Position enum (0=YES, 1=NO), handle boolean to number conversion
+        position: result[5], // Position as boolean (true=YES, false=NO)
         creatorStake: result[6],
         totalStaked: result[7],
         agreeStakes: result[8],

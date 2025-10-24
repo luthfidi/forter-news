@@ -47,7 +47,7 @@ export interface PoolContractData {
   evidenceLinks: string[];       // string[]
   imageUrl: string;              // string
   imageCaption: string;          // string
-  position: number;              // Position enum (0=YES, 1=NO)
+  position: boolean;            // Position as boolean (true=YES, false=NO)
   creatorStake: bigint;          // uint256
   totalStaked: bigint;           // uint256
   agreeStakes: bigint;           // uint256

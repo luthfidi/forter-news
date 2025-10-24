@@ -286,7 +286,7 @@ sequenceDiagram
 
 ## Quick Start
 
-**Try Live**: <a href="https://forter-news.vercel.app/" target="_blank">forter-news.vercel.app</a> → Connect wallet → Switch to Base Sepolia → Get <a href="https://faucet.quicknode.com/base/sepolia" target="_blank">testnet USDC</a> → Create & stake
+**Try Live**: <a href="https://forter-news.vercel.app/" target="_blank">forter-news.vercel.app</a> → Connect wallet → Switch to Base Sepolia → Get <a href="https://console.optimism.io/faucet" target="_blank">testnet USDC</a> → Create & stake
 
 **Local Dev**:
 ```bash

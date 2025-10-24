@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from '@privy-io/wagmi';
 import { config as wagmiConfig } from '@/lib/wagmi';
-import { ClientOnly } from './ClientOnly';
+import { ClientOnly } from '@/lib/privy';
 import { FarcasterProvider } from '@/contexts/FarcasterProvider';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';

@@ -3,9 +3,8 @@
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from 'next/navigation'
-import { WalletConnect } from '@/components/wallet/WalletConnect'
+import { WalletConnect, useWallet } from '@/lib/privy'
 import { useFarcaster } from '@/contexts/FarcasterProvider'
-import { useWallet } from '@/lib/hooks/useWallet'
 
 export default function Header() {
   const pathname = usePathname()

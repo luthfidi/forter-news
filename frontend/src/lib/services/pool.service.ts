@@ -327,6 +327,8 @@ class PoolService {
         throw new Error('Pool was created but could not be fetched. Please refresh the page.');
       }
 
+      // Attach transaction hash to pool for BaseScan link
+      (newPool as any).creationTxHash = result.hash;
       return newPool;
 
     } catch (error) {

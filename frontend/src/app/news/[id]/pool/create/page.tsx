@@ -171,7 +171,7 @@ export default function CreatePoolPage() {
           return {
             success: true,
             data: result,
-            hash: result.id // In contract mode, this would be tx hash
+            hash: (result as any).creationTxHash // Transaction hash attached to pool data
           };
         },
         'Creating pool on blockchain...',

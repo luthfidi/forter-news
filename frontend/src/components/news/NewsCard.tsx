@@ -85,7 +85,7 @@ export default function NewsCard({ news }: NewsCardProps) {
           <div className="flex items-start justify-between gap-3 mb-4">
             <div className="flex items-center gap-2 flex-wrap">
               <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${getCategoryColor(news.category)} flex items-center justify-center shadow-md flex-shrink-0`}>
-                <span className="text-white text-sm">{getCategoryIcon(news.category)}</span>
+                {getCategoryIcon(news.category)}
               </div>
               <Badge variant="secondary" className="bg-card/50">
                 {news.category}
@@ -101,12 +101,13 @@ export default function NewsCard({ news }: NewsCardProps) {
             </div>
             <div className="flex gap-2 flex-shrink-0">
               {news.status === 'resolved' && news.outcome && (
-                <Badge className={`${
+                <Badge className={`flex items-center gap-1 ${
                   news.outcome === 'YES'
                     ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
                     : 'bg-rose-100 text-rose-700 border-rose-200'
                 }`}>
-                  {news.outcome === 'YES' ? '✅' : '❌'} {news.outcome}
+                  {news.outcome === 'YES' ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                  {news.outcome}
                 </Badge>
               )}
               {isEndingSoon && news.status === 'active' && (

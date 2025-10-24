@@ -232,6 +232,18 @@ class StakingService {
         throw new Error(`News ${resolvedNewsId} is already resolved`);
       }
 
+      // Check if user already has a stake in this pool with different position
+      const existingStake = await this.getUserStake(input.newsId, input.poolId, input.userAddress);
+      if (existingStake && !existingStake.isWithdrawn) {
+        const userChoicePosition = input.position === 'agree';
+        const existingPosition = existingStake.position;
+
+        if (userChoicePosition !== existingPosition) {
+          const userChoiceText = input.position === 'agree' ? 'agree' : 'disagree';
+          const existingText = existingPosition ? 'agree' : 'disagree';
+          throw new Error(`Cannot change position. You already staked "${existingText}" on this pool. You can only add more stakes to the same position.`);
+        }
+      }
 
       const poolPositionBool = pool.position === 'YES';
       const userPositionAbsolute = input.position === 'agree'

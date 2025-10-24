@@ -29,25 +29,34 @@ export function usePoolStaking() {
       // Update pool stakes in local state
       const poolIndex = pools.findIndex(p => p.id === poolId);
       if (poolIndex !== -1) {
+        // Calculate if user's position aligns with pool's position (Support Stakers)
+        const pool = pools[poolIndex];
+        const poolPositionBool = pool.position === 'YES';
+        const userPositionBool = position === 'agree';
+        const isSupporting = userPositionBool === poolPositionBool;
+
         const updatedPool = {
-          ...pools[poolIndex],
-          agreeStakes: position === 'agree'
-            ? pools[poolIndex].agreeStakes + amount
-            : pools[poolIndex].agreeStakes,
-          disagreeStakes: position === 'disagree'
-            ? pools[poolIndex].disagreeStakes + amount
-            : pools[poolIndex].disagreeStakes,
-          totalStaked: pools[poolIndex].totalStaked + amount
+          ...pool,
+          agreeStakes: isSupporting
+            ? pool.agreeStakes + amount  // User position aligns with pool = Support Stakers
+            : pool.agreeStakes,
+          disagreeStakes: !isSupporting
+            ? pool.disagreeStakes + amount  // User position opposes pool = Oppose Stakers
+            : pool.disagreeStakes,
+          totalStaked: pool.totalStaked + amount
         };
 
-        console.log('[usePoolStaking] Updating pool:', {
+        console.log('[usePoolStaking] 🎯 Updated pool stakes:', {
           poolId,
-          position,
+          poolPosition: pool.position,
+          userChoice: position,
+          isSupporting,
           amount,
-          oldAgree: pools[poolIndex].agreeStakes,
-          oldDisagree: pools[poolIndex].disagreeStakes,
+          oldAgree: pool.agreeStakes,
+          oldDisagree: pool.disagreeStakes,
           newAgree: updatedPool.agreeStakes,
-          newDisagree: updatedPool.disagreeStakes
+          newDisagree: updatedPool.disagreeStakes,
+          calculation: `Pool ${pool.position} + User ${position} = ${isSupporting ? 'Support Stakers' : 'Oppose Stakers'}`
         });
 
         // Update pools list with new array reference to force re-render

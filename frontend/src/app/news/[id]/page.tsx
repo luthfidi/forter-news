@@ -271,8 +271,8 @@ export default function NewsDetailPage() {
             </Card>
 
             {/* Mobile Create Pool Button */}
-            <Link href={`/news/${newsId}/pool/create`} className="md:hidden fixed bottom-20 right-4 z-40">
-              <Button size="lg" className="h-14 w-14 rounded-full bg-gradient-to-r from-primary to-accent shadow-lg shadow-primary/30 p-0">
+            <Link href={`/news/${newsId}/pool/create`} className="md:hidden fixed bottom-10 right-4 z-40">
+              <Button size="lg" className="h-12 w-12 rounded-full bg--primary shadow-lg shadow-primary/30 p-0">
                 <span className="text-2xl">+</span>
               </Button>
             </Link>

@@ -1,25 +1,9 @@
 # Forter - Information Finance Protocol
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-forter--news.vercel.app-00C7B7?style=for-the-badge)](https://forter-news.vercel.app/)
-[![Farcaster MiniApp](https://img.shields.io/badge/🔮_Farcaster-MiniApp-8A63D2?style=for-the-badge)](https://farcaster.xyz/miniapps/gM4PKvjzcF47/forter)
-[![Demo Video](https://img.shields.io/badge/📹_Demo_Video-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=Dxlh9GIQCZM)
-[![Presentation](https://img.shields.io/badge/📊_Presentation-Canva-00C4CC?style=for-the-badge&logo=canva&logoColor=white)](https://www.canva.com/design/DAG2DT4E5pw/CndHiIzlbRZwgaPH-iOHnw/view?utm_content=DAG2DT4E5pw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h99613be7e9)
-
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Base Batches 002 Submission](#base-batches-002-submission)
-- [Deployed Contracts](#deployed-contracts)
-- [How It Works](#how-it-works)
-- [Tokenomics & Incentives](#tokenomics--incentives)
-- [Reputation System](#reputation-system)
-- [Technical Architecture](#technical-architecture)
-- [Development Roadmap](#development-roadmap)
-- [Team](#team)
-- [Quick Start](#quick-start)
-- [Resources](#resources)
+<a href="https://forter-news.vercel.app/" target="_blank"><img src="https://img.shields.io/badge/🌐_Live_Demo-forter--news.vercel.app-00C7B7?style=for-the-badge" alt="Live Demo"></a>
+<a href="https://farcaster.xyz/miniapps/gM4PKvjzcF47/forter" target="_blank"><img src="https://img.shields.io/badge/🔮_Farcaster-MiniApp-8A63D2?style=for-the-badge" alt="Farcaster MiniApp"></a>
+<a href="https://www.youtube.com/watch?v=Dxlh9GIQCZM" target="_blank"><img src="https://img.shields.io/badge/📹_Demo_Video-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Demo Video"></a>
+<a href="https://www.canva.com/design/DAG2DT4E5pw/CndHiIzlbRZwgaPH-iOHnw/view?utm_content=DAG2DT4E5pw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h99613be7e9" target="_blank"><img src="https://img.shields.io/badge/📊_Presentation-Canva-00C4CC?style=for-the-badge&logo=canva&logoColor=white" alt="Presentation"></a>
 
 ---
 
@@ -48,9 +32,9 @@ Forter is participating in **Base Batches 002 Builder Track** with a fully funct
 | **Built on Base** | ✅ | Deployed on Base Sepolia with verified contracts |
 | **Functioning Onchain App** | ✅ | Full news, pools, staking, and rewards system |
 | **Open Source** | ✅ | Complete codebase available on GitHub |
-| **Live Demo** | ✅ | Working application at [forter-news.vercel.app](https://forter-news.vercel.app/) |
+| **Live Demo** | ✅ | Working application at <a href="https://forter-news.vercel.app/" target="_blank">forter-news.vercel.app</a> |
 | **Testnet Transactions** | ✅ | Multiple live staking transactions on Base Sepolia |
-| **Demo Video** | ✅ | 6-minute comprehensive [demo](https://www.youtube.com/watch?v=Dxlh9GIQCZM) |
+| **Demo Video** | ✅ | 6-minute comprehensive <a href="https://www.youtube.com/watch?v=Dxlh9GIQCZM" target="_blank">demo</a> |
 | **Basenames Ready** | ✅ | Integration ready for Base Account |
 
 ### Key Differentiators
@@ -69,11 +53,11 @@ Forter is participating in **Base Batches 002 Builder Track** with a fully funct
 
 | Contract | Address | Purpose |
 |----------|---------|---------|
-| **Forter (Main)** | [0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb](https://base-sepolia.blockscout.com/address/0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb) | Core protocol contract |
-| **StakingPool** | [0x71A3fe1BbE61cb6d79927008560127fe4c656e77](https://base-sepolia.blockscout.com/address/0x71A3fe1BbE61cb6d79927008560127fe4c656e77) | Pool staking & rewards |
-| **ReputationNFT** | [0x4bA16F71dAb1229B53e1f564d92D3C6b8A8f986A](https://base-sepolia.blockscout.com/address/0x4bA16F71dAb1229B53e1f564d92D3C6b8A8f986A) | Soulbound NFT for reputation |
-| **Governance** | [0x3581C4a29eA317A5eeE5d7015eBBDE457E3d9D5B](https://base-sepolia.blockscout.com/address/0x3581C4a29eA317A5eeE5d7015eBBDE457E3d9D5B) | DAO governance contract |
-| **USDC Mock** | [0xf385829673a3A7e74818c0d44c502FFe171C7fAd](https://base-sepolia.blockscout.com/address/0xf385829673a3A7e74818c0d44c502FFe171C7fAd) | Testnet USDC token (6 decimals) |
+| **Forter (Main)** | <a href="https://base-sepolia.blockscout.com/address/0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb" target="_blank">0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb</a> | Core protocol contract |
+| **StakingPool** | <a href="https://base-sepolia.blockscout.com/address/0x71A3fe1BbE61cb6d79927008560127fe4c656e77" target="_blank">0x71A3fe1BbE61cb6d79927008560127fe4c656e77</a> | Pool staking & rewards |
+| **ReputationNFT** | <a href="https://base-sepolia.blockscout.com/address/0x4bA16F71dAb1229B53e1f564d92D3C6b8A8f986A" target="_blank">0x4bA16F71dAb1229B53e1f564d92D3C6b8A8f986A</a> | Soulbound NFT for reputation |
+| **Governance** | <a href="https://base-sepolia.blockscout.com/address/0x3581C4a29eA317A5eeE5d7015eBBDE457E3d9D5B" target="_blank">0x3581C4a29eA317A5eeE5d7015eBBDE457E3d9D5B</a> | DAO governance contract |
+| **USDC Mock** | <a href="https://base-sepolia.blockscout.com/address/0xf385829673a3A7e74818c0d44c502FFe171C7fAd" target="_blank">0xf385829673a3A7e74818c0d44c502FFe171C7fAd</a> | Testnet USDC token (6 decimals) |
 
 ---
 
@@ -236,7 +220,7 @@ graph TB
 ### User Flow Architecture
 
 ```mermaid
-%%{init: {'theme': 'neutral'}}%%
+%%{init: {'theme': 'default'}}%%
 sequenceDiagram
     participant User as 👤 User
     participant Frontend as 🌐 Frontend
@@ -302,7 +286,7 @@ sequenceDiagram
 
 ## Quick Start
 
-**Try Live**: [forter-news.vercel.app](https://forter-news.vercel.app/) → Connect wallet → Switch to Base Sepolia → Get [testnet USDC](https://faucet.quicknode.com/base/sepolia) → Create & stake
+**Try Live**: <a href="https://forter-news.vercel.app/" target="_blank">forter-news.vercel.app</a> → Connect wallet → Switch to Base Sepolia → Get <a href="https://faucet.quicknode.com/base/sepolia" target="_blank">testnet USDC</a> → Create & stake
 
 **Local Dev**:
 ```bash
@@ -317,14 +301,14 @@ cd frontend && pnpm dev
 ## Resources
 
 ### Live Applications
-- **Main App**: [forter-news.vercel.app](https://forter-news.vercel.app/)
-- **Farcaster MiniApp**: [forter](https://farcaster.xyz/miniapps/gM4PKvjzcF47/forter)
-- **Demo Video**: [Watch on YouTube](https://www.youtube.com/watch?v=Dxlh9GIQCZM)
-- **Presentation**: [Canva Design](https://www.canva.com/design/DAG2DT4E5pw/CndHiIzlbRZwgaPH-iOHnw/view?utm_content=DAG2DT4E5pw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h99613be7e9)
+- **Main App**: <a href="https://forter-news.vercel.app/" target="_blank">forter-news.vercel.app</a>
+- **Farcaster MiniApp**: <a href="https://farcaster.xyz/miniapps/gM4PKvjzcF47/forter" target="_blank">forter</a>
+- **Demo Video**: <a href="https://www.youtube.com/watch?v=Dxlh9GIQCZM" target="_blank">Watch on YouTube</a>
+- **Presentation**: <a href="https://www.canva.com/design/DAG2DT4E5pw/CndHiIzlbRZwgaPH-iOHnw/view?utm_content=DAG2DT4E5pw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h99613be7e9" target="_blank">Canva Design</a>
 
 ### Technical Resources
-- **GitHub Repository**: [github.com/luthfidi/forter-news](https://github.com/luthfidi/forter-news)
-- **Base Sepolia Explorer**: [View Contracts](https://base-sepolia.blockscout.com/address/0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb)
+- **GitHub Repository**: <a href="https://github.com/luthfidi/forter-news" target="_blank">github.com/luthfidi/forter-news</a>
+- **Base Sepolia Explorer**: <a href="https://base-sepolia.blockscout.com/address/0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb" target="_blank">View Contracts</a>
 - **Contract Verification**: All contracts verified on Blockscout
 - **Documentation**: Complete contract and API documentation in repository
 

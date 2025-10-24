@@ -43,7 +43,7 @@ export function mapContractToNews(contractData: NewsContractData | unknown[], ne
       totalPools: Number(totalPools || BigInt(0)),
       totalStaked: Number(formatUSDC(totalStaked)),
       outcome: status !== 0 ? mapOutcomeToYesNo(outcome) : undefined,
-    };
+    } as News;
 
     console.log('[Forter/mappers] Array mapping result:', {
       newsId,

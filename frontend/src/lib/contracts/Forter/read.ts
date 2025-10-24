@@ -71,7 +71,7 @@ export async function getNewsById(newsId: string): Promise<News | null> {
         // Add resolution data to news object (handle both array and object formats)
         if (resolutionData && Array.isArray(resolutionData)) {
           // Array format: [resolvedAt, resolvedBy, resolutionSource, resolutionNotes]
-          const [resolvedAt, resolvedBy, resolutionSource, resolutionNotes] = resolutionData as [bigint, string, string, string];
+          const [resolvedAt, resolvedBy, resolutionSource, resolutionNotes] = resolutionData as unknown as [bigint, string, string, string];
 
           if (resolvedAt > 0) {
             mappedNews.resolvedAt = timestampToDate(resolvedAt);

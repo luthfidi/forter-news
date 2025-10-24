@@ -5,10 +5,12 @@ import Image from "next/image"
 import { usePathname } from 'next/navigation'
 import { usePrivy } from '@privy-io/react-auth'
 import PrivyConnectButton from '@/components/wallet/PrivyConnectButton'
+import { useFarcaster } from '@/contexts/FarcasterProvider'
 
 export default function Header() {
   const pathname = usePathname()
   const { authenticated, user } = usePrivy()
+  const { isInFarcaster, user: farcasterUser, isReady } = useFarcaster()
 
   const address = user?.wallet?.address
   const isConnected = authenticated && !!address
@@ -68,8 +70,26 @@ export default function Header() {
               ))}
             </div>
 
-            {/* Connect Wallet - Desktop & Mobile */}
-            <div>
+            {/* Farcaster User & Connect Wallet */}
+            <div className="flex items-center gap-3">
+              {/* Farcaster User Info - Only show in MiniApp */}
+              {isReady && isInFarcaster && farcasterUser && (
+                <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20">
+                  {farcasterUser.pfpUrl && (
+                    <Image
+                      src={farcasterUser.pfpUrl}
+                      alt={farcasterUser.username || 'User'}
+                      width={24}
+                      height={24}
+                      className="w-6 h-6 rounded-full"
+                    />
+                  )}
+                  <span className="text-sm font-medium text-foreground">
+                    @{farcasterUser.username || `FID:${farcasterUser.fid}`}
+                  </span>
+                </div>
+              )}
+
               <PrivyConnectButton />
             </div>
           </div>

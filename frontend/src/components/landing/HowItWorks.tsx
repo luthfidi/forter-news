@@ -61,7 +61,7 @@ export default function HowItWorks() {
           const IconComponent = step.icon
           return (
             <div key={step.title} className="relative">
-              <Card className="group border border-border bg-background hover:border-blue-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden h-full">
+              <Card className="group border border-border bg-card hover:border-blue-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 overflow-hidden h-full">
                 <CardContent className="p-6 flex flex-col h-full">
                   {/* Step Number & Icon */}
                   <div className="flex items-start justify-between mb-4">

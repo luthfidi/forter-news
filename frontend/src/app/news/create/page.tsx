@@ -13,6 +13,8 @@ import Link from 'next/link';
 import FloatingIndicator from '@/components/shared/FloatingIndicator';
 import { useTransactionFeedback } from '@/lib/hooks/useTransactionFeedback';
 import { newsService } from '@/lib/services';
+import { useFarcasterNavigation } from '@/lib/hooks/useFarcasterNavigation';
+import { useFarcaster } from '@/contexts/FarcasterProvider';
 
 const CATEGORIES = ['Crypto', 'Macro', 'Tech', 'Sports', 'Politics'];
 
@@ -20,6 +22,8 @@ export default function CreateNewsPage() {
   const router = useRouter();
   const { address, isConnected } = useAccount();
   const { feedback, executeTransaction } = useTransactionFeedback();
+  const { navigateTo } = useFarcasterNavigation();
+  const { isInFarcaster, user: farcasterUser } = useFarcaster();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -61,15 +65,20 @@ export default function CreateNewsPage() {
       );
 
       if (news) {
-        // Mock: Auto-post to Farcaster
-        console.log('Posting to Farcaster:', {
-          text: `Just created a new prediction on @forter!\n\n${formData.title}\n\nCreate pools and stake: forter.app/news/${news.id}`,
-          embeds: []
-        });
+        // Auto-post to Farcaster if in MiniApp
+        if (isInFarcaster && farcasterUser) {
+          console.log('[Farcaster] Posting to Farcaster:', {
+            text: `Just created a new prediction on @forter!\n\n${formData.title}\n\nCreate pools and stake: forter.app/news/${news.id}`,
+            embeds: [],
+            author: farcasterUser.username || `FID:${farcasterUser.fid}`
+          });
+        } else {
+          console.log('[Farcaster] Not in MiniApp, skipping auto-post');
+        }
 
-        // Redirect after success feedback
+        // Redirect after success feedback using Farcaster-aware navigation
         setTimeout(() => {
-          router.push('/news');
+          navigateTo('/news');
         }, 2000);
       }
     } catch (error) {

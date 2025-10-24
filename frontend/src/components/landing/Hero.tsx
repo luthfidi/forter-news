@@ -8,6 +8,9 @@ export default function Hero() {
         <AnimatedPaths />
       </div>
       
+      {/* Dark overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/20 z-10" />
+      
       {/* Content */}
       <div className="relative z-20 max-w-4xl mx-auto text-center px-4 md:px-6">
         <div className="inline-flex items-center gap-2 rounded-full border border-border/50 bg-background/80 backdrop-blur-md px-4 py-2 text-sm font-medium shadow-lg shadow-primary/10">

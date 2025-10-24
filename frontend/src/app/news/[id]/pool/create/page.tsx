@@ -15,6 +15,8 @@ import Image from 'next/image';
 import FloatingIndicator from '@/components/shared/FloatingIndicator';
 import { useTransactionFeedback } from '@/lib/hooks/useTransactionFeedback';
 import { poolService, tokenService } from '@/lib/services';
+import { useFarcasterNavigation } from '@/lib/hooks/useFarcasterNavigation';
+import { useFarcaster } from '@/contexts/FarcasterProvider';
 
 export default function CreatePoolPage() {
   const params = useParams();
@@ -22,6 +24,8 @@ export default function CreatePoolPage() {
   const newsId = params.id as string;
   const { address, isConnected } = useAccount();
   const { feedback, executeTransaction, showError } = useTransactionFeedback();
+  const { navigateTo } = useFarcasterNavigation();
+  const { isInFarcaster, user: farcasterUser } = useFarcaster();
 
   const [news, setNews] = useState<News | null>(null);
   const [formData, setFormData] = useState({
@@ -187,9 +191,9 @@ export default function CreatePoolPage() {
           text: `Just created a pool on @forter!\n\n${news?.title}\nPosition: ${formData.position}\n\nStake & discuss: forter.app/news/${newsId}`
         });
 
-        // Redirect after success
+        // Redirect after success using Farcaster-aware navigation
         setTimeout(() => {
-          router.push(`/news/${newsId}`);
+          navigateTo(`/news/${newsId}`);
         }, 2000);
       }
     } catch (error) {

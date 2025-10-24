@@ -19,7 +19,7 @@ export default function DualStaking() {
       {/* Two Staking Options */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Outcome Staking Card */}
-        <Card className="group border border-border bg-background hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
+        <Card className="group border border-border bg-gradient-to-br from-card to-card/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
           <CardContent className="p-8">
             <div className="flex items-start gap-4 mb-8">
               <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/20">
@@ -74,7 +74,7 @@ export default function DualStaking() {
         </Card>
 
         {/* Credibility Staking Card */}
-        <Card className="group border border-border bg-background hover:border-accent/50 transition-all duration-300 hover:shadow-lg hover:shadow-accent/10">
+        <Card className="group border border-border bg-gradient-to-br from-card to-card/50 hover:border-accent/50 transition-all duration-300 hover:shadow-lg hover:shadow-accent/10">
           <CardContent className="p-8">
             <div className="flex items-start gap-4 mb-8">
               <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center flex-shrink-0 shadow-lg shadow-accent/20">
@@ -130,7 +130,7 @@ export default function DualStaking() {
       </div>
 
       {/* Reward Pool Distribution */}
-      <Card className="border border-border bg-background">
+      <Card className="border border-border bg-gradient-to-br from-card to-card/50">
         <CardContent className="p-8">
           <h3 className="text-2xl font-bold text-center mb-8 text-foreground">Reward Pool Distribution</h3>
 

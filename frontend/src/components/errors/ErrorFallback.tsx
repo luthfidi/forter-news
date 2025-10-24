@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useFarcasterNavigation } from '@/lib/hooks/useFarcasterNavigation';
+import { useFarcaster } from '@/contexts/FarcasterProvider';
 
 interface ErrorFallbackProps {
   error?: Error;
@@ -27,6 +29,8 @@ interface ErrorFallbackProps {
  */
 export function ErrorFallback({ error, reset }: ErrorFallbackProps) {
   const router = useRouter();
+  const { navigateToHome } = useFarcasterNavigation();
+  const { isInFarcaster } = useFarcaster();
 
   // Parse error message for user-friendly display
   const errorMessage = error?.message || 'An unexpected error occurred';
@@ -83,7 +87,8 @@ export function ErrorFallback({ error, reset }: ErrorFallbackProps) {
   };
 
   const handleGoHome = () => {
-    router.push('/');
+    // Use Farcaster-aware navigation for better compatibility
+    navigateToHome();
   };
 
   return (

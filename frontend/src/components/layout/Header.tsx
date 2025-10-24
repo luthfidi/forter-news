@@ -3,17 +3,14 @@
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from 'next/navigation'
-import { usePrivy } from '@privy-io/react-auth'
-import PrivyConnectButton from '@/components/wallet/PrivyConnectButton'
+import { WalletConnect } from '@/components/wallet/WalletConnect'
 import { useFarcaster } from '@/contexts/FarcasterProvider'
+import { useWallet } from '@/lib/hooks/useWallet'
 
 export default function Header() {
   const pathname = usePathname()
-  const { authenticated, user } = usePrivy()
   const { isInFarcaster, user: farcasterUser, isReady } = useFarcaster()
-
-  const address = user?.wallet?.address
-  const isConnected = authenticated && !!address
+  const { address, isConnected } = useWallet()
 
   const isNewsActive = pathname?.startsWith('/news')
   const isAnalystsActive = pathname?.startsWith('/analysts')
@@ -90,7 +87,7 @@ export default function Header() {
                 </div>
               )}
 
-              <PrivyConnectButton />
+              <WalletConnect />
             </div>
           </div>
         </nav>

@@ -1,57 +1,79 @@
 # Forter - Information Finance Protocol
 
-> **🎉 Smart Contracts Deployed - January 21, 2025**
->
-> **Status**: ✅ **DEPLOYED to Base Sepolia Testnet**
-> **Next**: Frontend integration with new contracts
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-forter--news.vercel.app-00C7B7?style=for-the-badge)](https://forter-news.vercel.app/)
+[![Farcaster MiniApp](https://img.shields.io/badge/🔮_Farcaster-MiniApp-8A63D2?style=for-the-badge)](https://farcaster.xyz/miniapps/gM4PKvjzcF47/forter)
+[![Demo Video](https://img.shields.io/badge/📹_Demo_Video-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=Dxlh9GIQCZM)
+[![Presentation](https://img.shields.io/badge/📊_Presentation-Canva-00C4CC?style=for-the-badge&logo=canva&logoColor=white)](https://www.canva.com/design/DAG2DT4E5pw/CndHiIzlbRZwgaPH-iOHnw/view?utm_content=DAG2DT4E5pw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h99613be7e9)
 
 ---
 
-## Executive Summary
+## Table of Contents
 
-Forter is an **Information Finance Protocol** - a Web3 platform that transforms credible information into financial assets. We're not a prediction market for gambling - we're a **permissionless** infrastructure for verifying, monetizing, and building reputation based on accurate analysis.
+- [Overview](#overview)
+- [Base Batches 002 Submission](#base-batches-002-submission)
+- [Deployed Contracts](#deployed-contracts)
+- [How It Works](#how-it-works)
+- [Tokenomics & Incentives](#tokenomics--incentives)
+- [Reputation System](#reputation-system)
+- [Technical Architecture](#technical-architecture)
+- [Development Roadmap](#development-roadmap)
+- [Team](#team)
+- [Quick Start](#quick-start)
+- [Resources](#resources)
 
-**Core Innovation**: Permissionless News + Independent Pool mechanism:
+---
 
-1. **Anyone can create NEWS** - Predictions/statements with clear timelines (permissionless)
-2. **Anyone can create POOL** - Analysis with reasoning + own stake pool per news
-3. **Stake on specific pool** - Back the most credible reasoning (Agree/Disagree)
+## Overview
+
+Forter is an **Information Finance Protocol** that transforms credible information into financial assets through permissionless prediction markets. Unlike traditional betting platforms, we enable users to fund quality analysis and build verifiable on-chain reputation.
+
+**Core Innovation**: Permissionless News + Independent Pools
+
+1. **Anyone can create NEWS** - Permissionless predictions with clear resolution criteria
+2. **Anyone can create POOL** - Independent analysis with reasoning and separate stake pools
+3. **Stake on specific pools** - Back credible reasoning, not just outcomes
 
 **Tagline**: "Stake on Credibility, Not Luck"
 
 ---
 
-## 📡 Deployed Contract Addresses
+## Base Batches 002 Submission
 
-> **Network**: Base Sepolia Testnet
-> **Deploy Date**: January 21, 2025
+Forter is participating in **Base Batches 002 Builder Track** with a fully functional information finance protocol built on Base network.
 
-### Environment Variables (Frontend)
-```bash
-# Copy these to your .env.local or .env file
-NEXT_PUBLIC_TOKEN_ADDRESS=0x6Cf43885F95F269F51b1122657F3FBF18eC7F43A
-NEXT_PUBLIC_REPUTATION_NFT_ADDRESS=0x4bA16F71dAb1229B53e1f564d92D3C6b8A8f986A
-NEXT_PUBLIC_GOVERNANCE_ADDRESS=0x3581C4a29eA317A5eeE5d7015eBBDE457E3d9D5B
-NEXT_PUBLIC_FORTER_ADDRESS=0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb
-NEXT_PUBLIC_STAKINGPOOL_ADDRESS=0x71A3fe1BbE61cb6d79927008560127fe4c656e77
-```
+### Requirements Compliance
 
-### Contract Details
+| Requirement | Status | Details |
+|-------------|--------|---------|
+| **Built on Base** | ✅ | Deployed on Base Sepolia with verified contracts |
+| **Functioning Onchain App** | ✅ | Full news, pools, staking, and rewards system |
+| **Open Source** | ✅ | Complete codebase available on GitHub |
+| **Live Demo** | ✅ | Working application at [forter-news.vercel.app](https://forter-news.vercel.app/) |
+| **Testnet Transactions** | ✅ | Multiple live staking transactions on Base Sepolia |
+| **Demo Video** | ✅ | 2-minute comprehensive [demo](https://www.youtube.com/watch?v=Dxlh9GIQCZM) |
+| **Basenames Ready** | ✅ | Integration ready for Base Account |
+
+### Key Differentiators
+
+- **Independent Pool Architecture**: Multiple analysis pools per news item (unique in prediction markets)
+- **Auto-Distribute Rewards**: 20/80 creator/staker split with automatic distribution
+- **Dynamic Reputation NFTs**: Soulbound tokens that update based on performance
+- **Information Finance**: Transform analysis into yield-generating assets, not gambling
+- **Base Native**: Built for Base ecosystem with Farcaster MiniApp integration
+
+---
+
+## Deployed Contracts
+
+**Network**: Base Sepolia Testnet | **Deploy Date**: October 23, 2025
 
 | Contract | Address | Purpose |
 |----------|---------|---------|
-| **Token (USDC)** | `0x6Cf43885F95F269F51b1122657F3FBF18eC7F43A` | Staking token (6 decimals) |
-| **ReputationNFT** | `0x4bA16F71dAb1229B53e1f564d92D3C6b8A8f986A` | Soulbound NFT for reputation |
-| **Governance** | `0x3581C4a29eA317A5eeE5d7015eBBDE457E3d9D5B` | DAO governance contract |
-| **Forter (Main)** | `0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb` | Core protocol contract |
-| **StakingPool** | `0x71A3fe1BbE61cb6d79927008560127fe4c656e77` | Pool staking & rewards |
-
-### Quick Setup
-
-1. **Copy environment variables** to your frontend `.env.local`
-2. **Update contract configuration** in `src/config/contracts.ts`
-3. **Verify connection** with wallet and test staking functionality
-4. **Check deployed contracts** on [Base Sepolia Explorer](https://sepolia.basescan.org/)
+| **Forter (Main)** | [0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb](https://base-sepolia.blockscout.com/address/0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb) | Core protocol contract |
+| **StakingPool** | [0x71A3fe1BbE61cb6d79927008560127fe4c656e77](https://base-sepolia.blockscout.com/address/0x71A3fe1BbE61cb6d79927008560127fe4c656e77) | Pool staking & rewards |
+| **ReputationNFT** | [0x4bA16F71dAb1229B53e1f564d92D3C6b8A8f986A](https://base-sepolia.blockscout.com/address/0x4bA16F71dAb1229B53e1f564d92D3C6b8A8f986A) | Soulbound NFT for reputation |
+| **Governance** | [0x3581C4a29eA317A5eeE5d7015eBBDE457E3d9D5B](https://base-sepolia.blockscout.com/address/0x3581C4a29eA317A5eeE5d7015eBBDE457E3d9D5B) | DAO governance contract |
+| **USDC Mock** | [0xf385829673a3A7e74818c0d44c502FFe171C7fAd](https://base-sepolia.blockscout.com/address/0xf385829673a3A7e74818c0d44c502FFe171C7fAd) | Testnet USDC token (6 decimals) |
 
 ---
 
@@ -63,7 +85,7 @@ NEXT_PUBLIC_STAKINGPOOL_ADDRESS=0x71A3fe1BbE61cb6d79927008560127fe4c656e77
 ┌─────────────────────────────────────────┐
 │ NEWS (User-created, permissionless)     │
 │ "ETH will reach $5000 this December"    │
-│ Resolution: Dec 31, 2024                │
+│ Resolution: Dec 31, 2025                │
 │ Creator: @alice                         │
 └─────────────────────────────────────────┘
               ↓
@@ -87,28 +109,21 @@ NEXT_PUBLIC_STAKINGPOOL_ADDRESS=0x71A3fe1BbE61cb6d79927008560127fe4c656e77
 
 ### User Flow
 
-1. **Create NEWS** - Permissionless prediction with clear timeline
-2. **Create POOL** - Analysis with reasoning + evidence + stake
-3. **Stake on Pools** - Back specific reasoning (Agree/Disagree)
-4. **Resolution** - Oracle verification on specified date
-5. **Rewards** - Auto-distribute 20% creator / 80% stakers
+1. **Create NEWS** → 2. **Create POOL** (reasoning + stake) → 3. **Stake** (Agree/Disagree) → 4. **Resolution** (admin verification) → 5. **Auto-Distribute Rewards** (20% creator / 80% stakers)
 
-### Key Features
+### vs Traditional Prediction Markets
 
-- ✅ **Permissionless Creation** - Anyone can create NEWS and POOLS
-- ✅ **Independent Pools** - Each pool has its own stake pool
-- ✅ **Auto-Distribute Rewards** - No manual claim needed
-- ✅ **Reputation NFTs** - Soulbound tokens for credibility tracking
-- ✅ **Point-Based System** - With stake weight multipliers
-- ✅ **Type-Safe Enums** - Better security & clarity
+| Feature | Traditional | Forter |
+|---------|------------|--------|
+| **Pool Structure** | 1 shared pool | Multiple independent pools |
+| **Focus** | Bet on outcomes | Fund credible analysis |
+| **Value** | Speculation | Knowledge discovery + accountability |
 
 ---
 
 ## Tokenomics & Incentives
 
 ### Reward Distribution
-
-> **Updated: January 21, 2025** - New 20/80 split with auto-distribute
 
 ```
 Single Pool Total Stakes (100%)
@@ -126,36 +141,30 @@ Single Pool Total Stakes (100%)
               └─ OR "Disagree" stakers (if pool wrong)
 ```
 
-**Key Changes:**
-- Creator gets **20%** instead of 70% (fairer for stakers)
-- Stakers get **80%** instead of 30% (better incentive)
-- **Auto-distribute**: Rewards sent directly to wallets on resolution
-- **No double-dipping**: Creator excluded from winning staker pool calculations
-
 ### Fee Structure
 
-- Platform Fee: 2% of total pool
-- Minimum Stake: $0.5 USDC (testnet) / $5 USDC (mainnet)
-- No withdrawal fees
+| Parameter | Value |
+|-----------|-------|
+| **Platform Fee** | 2% of total pool |
+| **Minimum Stake** | $0.5 USDC (testnet) / $5 USDC (mainnet) |
+| **Staking Token** | USDC (6 decimals) |
+| **Withdrawal** | Free |
 
-### Staking Token
-
-- **Staking Token**: USDC on Base network
-- **No Platform Token**: Focus on utility, not speculation
+**Key Features**: Creator gets 20% when correct, Stakers get 80%, Auto-distribute rewards, No double-dipping
 
 ---
 
-## Dynamic Reputation NFT System
+## Reputation System
 
-### Reputation Tiers (Point-Based)
+### Reputation Tiers
 
 | Tier | Points Required | Min Pools | Badge | Benefits |
 |------|----------------|-----------|-------|----------|
-| **Novice** | 0-199 | 0 | 🥉 Bronze | Basic access |
-| **Analyst** | 200-499 | 0 | 🥈 Silver | Standard visibility |
-| **Expert** | 500-999 | 5+ | 🥇 Gold | Featured in leaderboard |
-| **Master** | 1,000-4,999 | 10+ | 💎 Diamond | Priority display |
-| **Legend** | 5,000+ | 20+ | 👑 Crown | Elite status |
+| **Novice** | 0-199 | 0 | 🥉 | Basic access |
+| **Analyst** | 200-499 | 0 | 🥈 | Standard visibility |
+| **Expert** | 500-999 | 5+ | 🥇 | Featured in leaderboard |
+| **Master** | 1,000-4,999 | 10+ | 💎 | Priority display |
+| **Legend** | 5,000+ | 20+ | 👑 | Elite status |
 
 ### Point Calculation
 
@@ -167,227 +176,167 @@ Pool Points:
 └─ Wrong prediction: -30 points
 
 Stake Multiplier (based on pool total stake):
-├─ < $100:       1.0x (no bonus)
-├─ $100-$499:    1.5x (small pool bonus)
-├─ $500-$999:    2.0x (medium pool bonus)
+├─ < $100:        1.0x (no bonus)
+├─ $100-$499:     1.5x (small pool bonus)
+├─ $500-$999:     2.0x (medium pool bonus)
 ├─ $1,000-$4,999: 2.5x (large pool bonus)
-└─ $5,000+:      3.0x (whale pool bonus)
+└─ $5,000+:       3.0x (whale pool bonus)
 ```
 
-### NFT Features
-
-- **Soulbound (Non-transferable)** - Tied to wallet address
-- **Dynamic Metadata** - Updates based on performance
-- **Visual Badges** - Tier-based appearance changes
-- **On-Chain Credibility** - Portable reputation across Web3
+**NFT Features**: Soulbound (non-transferable), Dynamic metadata, Tier-based visual badges, Portable across Web3
 
 ---
 
 ## Technical Architecture
 
-### Smart Contracts
+### Smart Contract Architecture
 
-1. **Forter.sol** - Core protocol contract
-   - News & Pool creation
-   - Resolution logic
-   - Auto-distribute rewards
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#0EA5E9', 'primaryTextColor': '#1F2937', 'lineColor': '#E5E7EB'}}}%%
+graph TB
+    User[User] --> Forter[Forter.sol<br/>Core Protocol]
+    Forter --> StakingPool[StakingPool.sol<br/>Reward Management]
+    Forter --> ReputationNFT[ReputationNFT.sol<br/>Reputation System]
+    Forter --> Governance[Governance.sol<br/>DAO Framework]
 
-2. **StakingPool.sol** - Staking & rewards management
-   - Pool staking mechanism
-   - Reward distribution
-   - User stake tracking
+    StakingPool --> USDC[USDC Token]
+    ReputationNFT --> NFTs[Dynamic NFTs]
 
-3. **ReputationNFT.sol** - Reputation system
-   - Point-based calculation
-   - Tier management
-   - Soulbound NFT minting
+    subgraph CoreFunctions [Core Functions]
+        NewsCreation[News Creation]
+        PoolCreation[Pool Creation]
+        ResolutionLogic[Resolution Logic]
+        AutoDistribute[Auto-Distribute Rewards]
+    end
 
-4. **ForterGovernance.sol** - DAO governance
-   - Protocol parameters
-   - Voting mechanism
-   - Fee management
+    subgraph RewardSystem [Reward System]
+        PoolStaking[Pool Staking]
+        UserTracking[User Tracking]
+        RewardDistribution[Reward Distribution]
+    end
 
-### Frontend Stack
+    subgraph ReputationSystem [Reputation System]
+        PointCalculation[Point Calculation]
+        TierManagement[Tier Management]
+        SoulboundNFTs[Soulbound NFTs]
+    end
 
-- **Next.js 14** - React framework with App Router
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Utility-first styling
-- **RainbowKit + Wagmi** - Wallet integration
-- **Zustand** - State management
+    subgraph GovernanceSystem [Governance]
+        ProtocolParams[Protocol Parameters]
+        VotingMechanism[Voting Mechanism]
+        FeeManagement[Fee Management]
+    end
 
-### Integration Points
-
-- **Base Network** - L2 for low fees & fast transactions
-- **Farcaster** - Social identity & distribution
-- **IPFS** - NFT metadata storage
-- **PostgreSQL** - Off-chain data storage
-
----
-
-## Quick Start Guide
-
-### Prerequisites
-
-- Node.js 20+
-- Base Sepolia ETH & USDC (testnet)
-- Wallet (MetaMask, Rainbow, etc.)
-
-### Local Development
-
-1. **Clone & Install**
-   ```bash
-   git clone <repository-url>
-   cd forter-news
-   pnpm install
-   ```
-
-2. **Setup Environment**
-   ```bash
-   cp frontend/.env.example frontend/.env.local
-   # Copy contract addresses from above section
-   ```
-
-3. **Run Frontend**
-   ```bash
-   cd frontend
-   pnpm dev
-   ```
-
-4. **Connect Wallet & Test**
-   - Switch to Base Sepolia network
-   - Connect your wallet
-   - Test creating NEWS and POOLS
-   - Try staking on existing pools
-
-### Deployment Verification
-
-```bash
-# Check contract ownership
-cast call 0x8973eA30b89d8937c9DD77FAD7e669f9caD4085b "owner()"
-
-# Check governance parameters
-cast call 0xD154a97e2D4B229e9f3aa162dC4e840B4e0Ef786 "minStakeAmount()"
-
-# Verify token decimals (should be 6 for USDC)
-cast call 0xEb32CBB8ff13c5878D13A1476b0a0CF384c20681 "decimals()"
+    Forter --> CoreFunctions
+    StakingPool --> RewardSystem
+    ReputationNFT --> ReputationSystem
+    Governance --> GovernanceSystem
 ```
+
+### User Flow Architecture
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#10B981', 'primaryTextColor': '#1F2937', 'lineColor': '#E5E7EB'}}}%%
+sequenceDiagram
+    participant User as 👤 User
+    participant Frontend as 🌐 Frontend
+    participant Forter as 🔒 Forter
+    participant StakingPool as 💰 StakingPool
+    participant ReputationNFT as 🏆 ReputationNFT
+
+    User->>Frontend: 🔗 Connect Wallet
+    User->>Frontend: 📝 Create News
+    Frontend->>Forter: createNews()
+    Forter-->>Frontend: ✅ News Created
+
+    User->>Frontend: 🎯 Create Pool
+    Frontend->>Forter: createPool()
+    Forter->>StakingPool: 💸 Transfer Creator Stake
+    StakingPool-->>Frontend: ✅ Pool Created
+
+    User->>Frontend: 💎 Stake on Pool
+    Frontend->>Forter: stake()
+    Forter->>StakingPool: 💸 Transfer Stake
+    StakingPool-->>Frontend: ✅ Stake Confirmed
+
+    Note over Forter: ⏰ Resolution Time Reached
+    Forter->>Forter: resolveNews()
+    Forter->>StakingPool: 📊 Calculate Rewards
+    Forter->>ReputationNFT: 🏆 Update Reputation
+    StakingPool->>User: 💰 Auto-Distribute Rewards
+```
+
+### Technology Stack
+
+**Smart Contracts**: Solidity 0.8.20, Foundry, OpenZeppelin
+**Frontend**: Next.js 15, TypeScript, Tailwind CSS, RainbowKit + Wagmi, Privy
+**Web3**: OnchainKit, MiniKit, Viem, Farcaster SDK
+**Future**: Envio Indexer, Neynar API, Chainlink Oracle
 
 ---
 
 ## Development Roadmap
 
-### ✅ Phase 0: MVP (December 2024) - COMPLETED
-
-- ✅ Core smart contracts
-- ✅ Basic UI with market browsing
-- ✅ Mock oracle resolution
-- ✅ 8 curated demo markets
-
-### ✅ Phase 1: Testnet Launch (Q1 2025) - COMPLETED
-
-- ✅ Live testnet deployment on Base Sepolia
-- ✅ Smart contracts with auto-distribute rewards
-- ✅ Reputation NFT system deployed
-- ✅ DAO governance system deployed
-- 🔄 Frontend integration with new contracts
-- 🔄 User testing with testnet USDC
-
-### 🔄 Phase 2: Mainnet Beta (Q2 2025)
-
-- 🔄 Mainnet deployment with limited markets
-- 🔄 AI news aggregator for semi-automated resolution
-- 🔄 Enhanced reputation system
-- 🔄 Mobile-responsive design
-
-### 🔮 Phase 3: Scale (Q3-Q4 2025)
-
-- 🔮 Chainlink oracle integration
-- 🔮 Community-created markets
-- 🔮 Advanced analytics and API
-- 🔮 Cross-chain expansion plans
+| Phase | Timeline | Status | Key Objectives |
+|-------|----------|--------|----------------|
+| **Phase 1: Testnet** | Oct 11-25, 2025 | ✅ Complete | Core contracts, Frontend, Farcaster MiniApp, 85% functionality |
+| **Phase 2: Mainnet** | Q1 2026 | 🔄 Next | Mainnet launch, Chainlink oracle, Enhanced UI, Base partnerships |
+| **Phase 3: Expansion** | Q2 2026 | 📋 Planned | Analytics platform, Mobile app, Public API, Cross-chain |
+| **Phase 4: Leadership** | Q3-Q4 2026 | 📋 Planned | DAO governance, Advanced markets, AI tools, L2 scaling |
+| **Phase 5: Global** | 2027+ | 📋 Vision | Multi-language, Compliance, Traditional markets, Academic partnerships |
 
 ---
 
-## Key Differentiators
+## Team
 
-### Information Finance vs Prediction Markets
+**Forter is built by a passionate team of Web3 builders:**
 
-| Aspect | Traditional Prediction Market | Forter (Information Finance) |
-|--------|------------------------------|------------------------------|
-| **Purpose** | Bet on outcomes | Fund credible analysis |
-| **Incentive** | Win bets | Earn yield on verified insights |
-| **Users** | Speculators | Analysts, researchers, informed investors |
-| **Core Value** | Entertainment + speculation | Knowledge discovery + accountability |
-
-### Permissionless Pools Architecture
-
-**Traditional Model:** ❌
-- 1 market = 1 shared pool
-- All compete in same pot
-- No differentiation between reasoning
-
-**Forter Model:** ✅
-- 1 news = multiple independent pools
-- Each pool = unique position + reasoning
-- Multiple perspectives coexist
+| Name | Role | Focus |
+|------|------|-------|
+| **Luthfi** | Lead Developer | Smart Contracts, Full-Stack, DeFi protocols |
+| **Tachul** | Frontend Developer | React, Web3 Integration, UX optimization |
+| **Cliff** | Business Strategy | Product Design, Tokenomics, Go-to-market |
+| **Zidan** | Business Development | Partnerships, Ecosystem growth, Community |
 
 ---
 
-## Risk Mitigation
+## Quick Start
 
-### Quality Control
+**Try Live**: [forter-news.vercel.app](https://forter-news.vercel.app/) → Connect wallet → Switch to Base Sepolia → Get [testnet USDC](https://faucet.quicknode.com/base/sepolia) → Create & stake
 
-- **Minimum Stake Requirements** - Prevent spam with skin in the game
-- **Reasoning Quality Score** - Algorithmic filtering
-- **Reputation System** - Tier-based visibility
-- **Community Reporting** - Decentralized moderation
-
-### Technical Risks
-
-- **Smart Contract Audits** - Professional security reviews
-- **Multi-sig Controls** - Secure fund management
-- **Oracle Integration** - Reliable resolution sources
-- **Emergency Functions** - Safety mechanisms
+**Local Dev**:
+```bash
+git clone https://github.com/luthfidi/forter-news && cd forter-news
+pnpm install
+cp frontend/.env.example frontend/.env.local  # Add contract addresses
+cd frontend && pnpm dev
+```
 
 ---
 
-## Get Involved
+## Resources
 
-### For Developers
+### Live Applications
+- **Main App**: [forter-news.vercel.app](https://forter-news.vercel.app/)
+- **Farcaster MiniApp**: [forter](https://farcaster.xyz/miniapps/gM4PKvjzcF47/forter)
+- **Demo Video**: [Watch on YouTube](https://www.youtube.com/watch?v=Dxlh9GIQCZM)
+- **Presentation**: [Canva Design](https://www.canva.com/design/DAG2DT4E5pw/vu4G-lBIpxykkGTSEeOemA/edit)
 
-- Check `sc/CONTRACT_REVISION_SUMMARY.md` for technical details
-- Review smart contracts on [Base Sepolia Explorer](https://sepolia.basescan.org/)
-- Contribute to frontend development
-
-### For Analysts
-
-- Join our early analyst program
-- Build on-chain reputation
-- Earn from accurate analysis
-
-### For Users
-
-- Connect wallet and test on Base Sepolia
-- Explore existing NEWS and POOLS
-- Start staking on credible analysis
+### Technical Resources
+- **GitHub Repository**: [github.com/luthfidi/forter-news](https://github.com/luthfidi/forter-news)
+- **Base Sepolia Explorer**: [View Contracts](https://base-sepolia.blockscout.com/address/0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb)
+- **Contract Verification**: All contracts verified on Blockscout
+- **Documentation**: Complete contract and API documentation in repository
 
 ---
 
-## Links & Resources
 
-- **Explorer**: [Base Sepolia Explorer](https://sepolia.basescan.org/)
-- **Contracts**: See deployed addresses above
-- **Documentation**: `sc/` directory for technical details
-- **Frontend**: Next.js application in `frontend/` directory
-
----
-
-## License
-
-MIT License - see LICENSE file for detail
-
----
+## Vision
 
 **Transform noise into signal, speculation into analysis, and anonymity into accountability.**
 
-*Forter is not just a product - it's a permissionless primitive for the information economy.*
+*Forter is not just a product - it's a permissionless primitive for the information economy, built on Base.*
+
+---
+
+**🎯 Ready for Base Batches 002 evaluation. Let's build the future of information finance together!**

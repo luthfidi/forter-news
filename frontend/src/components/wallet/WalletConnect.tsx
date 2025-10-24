@@ -1,9 +1,10 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { Button } from '@/components/ui/button';
-import { User } from 'lucide-react';
-import { NetworkIndicator } from './NetworkIndicator';
+import { User, AlertCircle } from 'lucide-react';
+import { useWallet } from '@/lib/hooks/useWallet';
 
 interface WalletConnectProps {
   className?: string;
@@ -11,6 +12,17 @@ interface WalletConnectProps {
 
 export function WalletConnect({ className }: WalletConnectProps) {
   const { ready, authenticated, user, login, logout } = usePrivy();
+  const { isConnected, isCorrectNetwork, switchToBaseSepoliaChain } = useWallet();
+  const [hasMounted, setHasMounted] = useState(false);
+
+  // ClientOnly - prevent hydration mismatch
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!hasMounted) {
+    return null;
+  }
 
   // Loading state
   if (!ready) {
@@ -42,7 +54,23 @@ export function WalletConnect({ className }: WalletConnectProps) {
   // Connected state
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
-      <NetworkIndicator />
+      {/* Network Indicator - only show when on wrong network */}
+      {isConnected && !isCorrectNetwork && (
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-yellow-600 dark:text-yellow-400">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <span className="text-xs font-medium">Wrong Network</span>
+          <Button
+            onClick={switchToBaseSepoliaChain}
+            size="sm"
+            variant="outline"
+            className="ml-auto h-7 text-xs border-yellow-500/50 hover:bg-yellow-500/20"
+          >
+            Switch to Base Sepolia
+          </Button>
+        </div>
+      )}
+
+      {/* Wallet Button */}
       <Button
         onClick={logout}
         variant="outline"

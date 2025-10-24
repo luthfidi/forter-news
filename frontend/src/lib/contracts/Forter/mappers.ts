@@ -30,7 +30,7 @@ export function mapContractToNews(contractData: NewsContractData | unknown[], ne
       totalStaked
     ] = contractData as [string, string, string, string, string, bigint, bigint, number, number, bigint, bigint];
 
-    return {
+    const mappedNews = {
       id: newsId,
       title: title || '',
       description: description || '',
@@ -44,6 +44,21 @@ export function mapContractToNews(contractData: NewsContractData | unknown[], ne
       totalStaked: Number(formatUSDC(totalStaked)),
       outcome: status !== 0 ? mapOutcomeToYesNo(outcome) : undefined,
     };
+
+    console.log('[Forter/mappers] Array mapping result:', {
+      newsId,
+      title,
+      description,
+      category,
+      status,
+      outcome,
+      totalPools,
+      totalStaked,
+      resolvedAt: resolveTime,
+      mappedNews
+    });
+
+    return mappedNews;
   } else {
     // Object format (future compatibility)
     return {

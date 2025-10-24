@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useGlobalStore } from '@/store/useGlobalStore';
 import { newsService, poolService } from '@/lib/services';
+import { calculateNewsQualityScore } from '@/lib/quality-scoring';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -32,13 +33,25 @@ export default function NewsDetailPage() {
       try {
         // Load news
         const news = await newsService.getById(newsId);
-        setCurrentNews(news || null);
         console.log('[NewsDetail] Loaded news:', news?.title);
 
         // Load pools
         const newsPools = await poolService.getByNewsId(newsId);
         setPools(newsPools);
         console.log('[NewsDetail] Loaded', newsPools.length, 'pools');
+
+        // Calculate and set quality score in one go
+        if (news) {
+          const qualityScore = calculateNewsQualityScore(news, newsPools);
+          console.log('[NewsDetail] Calculated quality score:', qualityScore);
+
+          // Set news with quality score in single operation
+          const newsWithQuality = { ...news, qualityScore };
+          setCurrentNews(newsWithQuality);
+          console.log('[NewsDetail] Set news with quality score:', newsWithQuality.qualityScore);
+        } else {
+          setCurrentNews(null);
+        }
       } catch (error) {
         console.error('[NewsDetail] Failed to load data:', error);
         setCurrentNews(null);

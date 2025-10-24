@@ -15,7 +15,7 @@ import { calculateNewsQualityScore, QualityFilter, ActivityFilter } from '@/lib/
 const CATEGORIES = ['All', 'Crypto', 'Macro', 'Tech', 'Sports', 'Politics'];
 
 export default function NewsPage() {
-  const { newsList, setNewsList, loading, setLoading } = useGlobalStore();
+  const { newsList, setNewsList, pools, loading, setLoading } = useGlobalStore();
   const [filteredNews, setFilteredNews] = useState<News[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'active' | 'resolved'>('all');
@@ -51,15 +51,26 @@ export default function NewsPage() {
     );
 
     return newsList.map(news => {
-      const pools = MOCK_POOLS.filter(p => p.newsId === news.id);
-      const qualityScore = calculateNewsQualityScore(news, pools, reputationMap);
+      // Use contract pools if available, fallback to mock pools
+      const contractPools = pools.filter(p => p.newsId === news.id);
+      const mockPools = MOCK_POOLS.filter(p => p.newsId === news.id);
+      const allPools = contractPools.length > 0 ? contractPools : mockPools;
+      const qualityScore = calculateNewsQualityScore(news, allPools, reputationMap);
+
+      console.log('[NewsPage] Quality calculation for news', news.id, {
+        contractPools: contractPools.length,
+        mockPools: mockPools.length,
+        usedPools: allPools.length,
+        qualityScore,
+        title: news.title
+      });
 
       return {
         ...news,
         qualityScore,
       };
     });
-  }, [newsList]);
+  }, [newsList, pools]);
 
   // Filter and sort news
   useEffect(() => {

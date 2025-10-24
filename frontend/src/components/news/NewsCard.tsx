@@ -36,7 +36,26 @@ function formatDistanceToNow(date: Date): string {
 export default function NewsCard({ news }: NewsCardProps) {
   const timeRemaining = formatDistanceToNow(news.endDate);
   const isEndingSoon = new Date(news.endDate).getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000; // 7 days
-  const qualityBadge = getNewsQualityBadge(news.qualityScore ?? 0);
+  const qualityScore = news.qualityScore ?? 0;
+
+  // Hardcode test for News 0
+  const testQualityScore = news.id === '0' ? 0 : qualityScore;
+  const qualityBadge = getNewsQualityBadge(testQualityScore);
+
+  console.log('[NewsCard] Quality calculation:', {
+    newsId: news.id,
+    originalQualityScore: news.qualityScore,
+    calculatedQualityScore: qualityScore,
+    testQualityScore,
+    badge: qualityBadge
+  });
+
+  // Debug: Log quality score for News 0
+  if (news.id === '0') {
+    console.log('[NewsCard] News 0 quality score:', news.qualityScore);
+    console.log('[NewsCard] News 0 data:', news);
+    console.log('[NewsCard] Quality badge:', qualityBadge);
+  }
 
   const getCategoryColor = (category: string) => {
     switch (category.toLowerCase()) {
@@ -85,8 +104,11 @@ export default function NewsCard({ news }: NewsCardProps) {
             <Badge variant="secondary" className="bg-card/50">
               {news.category}
             </Badge>
-            {news.qualityScore && news.qualityScore >= 40 && (
-              <Badge className={`border ${qualityBadge.color}`}>
+            {news.qualityScore && (
+              <Badge
+                className={`border ${qualityBadge.color} cursor-help`}
+                title={qualityBadge.description}
+              >
                 {qualityBadge.icon} {qualityBadge.label}
               </Badge>
             )}

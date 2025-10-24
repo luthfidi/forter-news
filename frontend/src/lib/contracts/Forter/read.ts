@@ -66,14 +66,43 @@ export async function getNewsById(newsId: string): Promise<News | null> {
           args: [newsIdBigInt],
         }) as NewsResolutionContractData;
 
-        console.log('[Forter/read] Resolution data:', resolutionData);
+        console.log('[Forter/read] Resolution data fetched:', resolutionData);
 
-        // Add resolution data to news object
-        if (resolutionData && resolutionData.resolvedAt > 0) {
-          mappedNews.resolvedAt = timestampToDate(resolutionData.resolvedAt);
-          mappedNews.resolvedBy = resolutionData.resolvedBy;
-          mappedNews.resolutionSource = resolutionData.resolutionSource;
-          mappedNews.resolutionNotes = resolutionData.resolutionNotes;
+        // Add resolution data to news object (handle both array and object formats)
+        if (resolutionData && Array.isArray(resolutionData)) {
+          // Array format: [resolvedAt, resolvedBy, resolutionSource, resolutionNotes]
+          const [resolvedAt, resolvedBy, resolutionSource, resolutionNotes] = resolutionData as [bigint, string, string, string];
+
+          if (resolvedAt > 0) {
+            mappedNews.resolvedAt = timestampToDate(resolvedAt);
+            mappedNews.resolvedBy = resolvedBy;
+            mappedNews.resolutionSource = resolutionSource;
+            mappedNews.resolutionNotes = resolutionNotes;
+            console.log('[Forter/read] Updated news with resolution data (array format):', {
+              resolvedAt: mappedNews.resolvedAt,
+              resolvedBy: mappedNews.resolvedBy,
+              resolutionSource: mappedNews.resolutionSource
+            });
+          } else {
+            console.log('[Forter/read] Resolution timestamp is 0');
+          }
+        } else if (resolutionData && !Array.isArray(resolutionData)) {
+          // Object format
+          if (resolutionData.resolvedAt > 0) {
+            mappedNews.resolvedAt = timestampToDate(resolutionData.resolvedAt);
+            mappedNews.resolvedBy = resolutionData.resolvedBy;
+            mappedNews.resolutionSource = resolutionData.resolutionSource;
+            mappedNews.resolutionNotes = resolutionData.resolutionNotes;
+            console.log('[Forter/read] Updated news with resolution data (object format):', {
+              resolvedAt: mappedNews.resolvedAt,
+              resolvedBy: mappedNews.resolvedBy,
+              resolutionSource: mappedNews.resolutionSource
+            });
+          } else {
+            console.log('[Forter/read] Resolution timestamp is 0');
+          }
+        } else {
+          console.log('[Forter/read] No resolution data available');
         }
       } catch (resolutionError) {
         console.warn('[Forter/read] Failed to fetch resolution data:', resolutionError);

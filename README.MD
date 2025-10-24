@@ -176,7 +176,7 @@ Stake Multiplier (based on pool total stake):
 ### Smart Contract Architecture
 
 ```mermaid
-%%{init: {'theme': 'neutral'}}%%
+%%{init: {'theme': 'forest'}}%%
 graph TB
     User[👤 User] --> Forter[🔒 Forter.sol<br/>Core Protocol]
     Forter --> StakingPool[💰 StakingPool.sol<br/>Reward Management]

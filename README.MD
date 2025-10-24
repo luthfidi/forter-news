@@ -220,7 +220,7 @@ graph TB
 ### User Flow Architecture
 
 ```mermaid
-%%{init: {'theme': 'default'}}%%
+%%{init: {'theme': 'forest'}}%%
 sequenceDiagram
     participant User as 👤 User
     participant Frontend as 🌐 Frontend

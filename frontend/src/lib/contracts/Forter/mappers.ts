@@ -10,56 +10,35 @@ import { formatUSDC, timestampToDate, positionToString } from '../utils';
 
 /**
  * Map contract news data to frontend News interface
- * Contract returns: [creator, title, description, category, resolutionCriteria, createdAt, endDate, status, outcome, totalPools, totalStaked]
+ * Contract getNewsInfo() returns exactly 11 fields in tuple format
  */
-export function mapContractToNews(contractData: NewsContractData | unknown[], newsId: string): News {
-  // Handle both array and object formats for compatibility
-  if (Array.isArray(contractData)) {
-    // Contract returns array format
-    const [
-      creator,
-      title,
-      description,
-      category,
-      resolutionCriteria,
-      createdAt,
-      endDate,
-      status,
-      outcome,
-      totalPools,
-      totalStaked
-    ] = contractData as [string, string, string, string, string, bigint, bigint, number, boolean, bigint, bigint];
+export function mapContractToNews(contractData: NewsContractData, newsId: string): News {
+  // Contract returns object format from wagmi readContract
+  return {
+    id: newsId,
+    title: contractData.title || '',
+    description: contractData.description || '',
+    category: contractData.category || '',
+    endDate: timestampToDate(contractData.resolveTime),
+    resolutionCriteria: contractData.resolutionCriteria || '',
+    creatorAddress: contractData.creator || '0x0',
+    createdAt: timestampToDate(contractData.createdAt),
+    status: contractData.status === 0 ? 'active' : 'resolved', // NewsStatus enum: 0=Active, 1=Resolved
+    totalPools: Number(contractData.totalPools || BigInt(0)),
+    totalStaked: Number(formatUSDC(contractData.totalStaked)),
+    outcome: contractData.status !== 0 ? mapOutcomeToYesNo(contractData.outcome) : undefined,
+  };
+}
 
-    return {
-      id: newsId,
-      title: title || '',
-      description: description || '',
-      category: category || '',
-      endDate: timestampToDate(endDate),
-      resolutionCriteria: resolutionCriteria || '',
-      creatorAddress: creator || '0x0',
-      createdAt: timestampToDate(createdAt),
-      status: status === 0 ? 'active' : 'resolved', // 0 = active, 1+ = resolved
-      totalPools: Number(totalPools || BigInt(0)),
-      totalStaked: Number(formatUSDC(totalStaked)),
-      outcome: status !== 0 ? positionToString(outcome) : undefined,
-    };
-  } else {
-    // Object format (for future compatibility)
-    return {
-      id: newsId,
-      title: contractData.title || '',
-      description: contractData.description || '',
-      category: contractData.category || '',
-      endDate: timestampToDate(contractData.resolveTime),
-      resolutionCriteria: contractData.resolutionCriteria || '',
-      creatorAddress: contractData.creator || '0x0',
-      createdAt: timestampToDate(contractData.createdAt),
-      status: contractData.isResolved ? 'resolved' : 'active',
-      totalPools: Number(contractData.totalPools || BigInt(0)),
-      totalStaked: Number(formatUSDC(contractData.totalStaked)),
-      outcome: contractData.isResolved ? positionToString(contractData.outcome) : undefined,
-    };
+/**
+ * Map contract outcome enum to frontend string
+ */
+function mapOutcomeToYesNo(outcome: number): 'YES' | 'NO' | undefined {
+  switch (outcome) {
+    case 1: return 'YES';  // Outcome.YES
+    case 2: return 'NO';   // Outcome.NO
+    case 0:
+    default: return undefined; // Outcome.None or invalid
   }
 }
 
@@ -75,7 +54,7 @@ export function mapContractToPool(
     id: poolId,
     newsId: newsId,
     creatorAddress: contractData.creator || '0x0',
-    position: positionToString(contractData.position || false),
+    position: mapPositionToYesNo(contractData.position),
     reasoning: contractData.reasoning || '',
     evidence: contractData.evidenceLinks || [],
     imageUrl: contractData.imageUrl || undefined,
@@ -90,4 +69,11 @@ export function mapContractToPool(
       : null,
     createdAt: timestampToDate(contractData.createdAt),
   };
+}
+
+/**
+ * Map contract position enum to frontend string
+ */
+function mapPositionToYesNo(position: number): 'YES' | 'NO' {
+  return position === 0 ? 'YES' : 'NO'; // Position enum: 0=YES, 1=NO
 }

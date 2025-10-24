@@ -109,6 +109,34 @@
   },
   {
     "type": "function",
+    "name": "emergencyResolve",
+    "inputs": [
+      {
+        "name": "newsId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "outcome",
+        "type": "uint8",
+        "internalType": "enum Forter.Outcome"
+      },
+      {
+        "name": "resolutionSource",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "resolutionNotes",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "getGovernanceParameters",
     "inputs": [],
     "outputs": [
@@ -625,6 +653,11 @@
         "name": "resolutionNotes",
         "type": "string",
         "internalType": "string"
+      },
+      {
+        "name": "emergencyResolve",
+        "type": "bool",
+        "internalType": "bool"
       }
     ],
     "stateMutability": "view"
@@ -913,6 +946,31 @@
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "EmergencyResolved",
+    "inputs": [
+      {
+        "name": "newsId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "outcome",
+        "type": "uint8",
+        "indexed": false,
+        "internalType": "uint8"
+      },
+      {
+        "name": "resolvedBy",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
       }
     ],
     "anonymous": false

@@ -52,7 +52,7 @@ export const config: IntegrationConfig = {
   
   // Protocol parameters
   USDC_DECIMALS: 6,
-  MIN_STAKE_AMOUNT: 20, // $20 USDC minimum
+  MIN_STAKE_AMOUNT: 10, // $10 USDC minimum (matches contract)
   NEWS_DEPOSIT: 10, // $10 USDC deposit for creating news
   PLATFORM_FEE_PERCENT: 2, // 2% platform fee
   

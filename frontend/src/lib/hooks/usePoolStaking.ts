@@ -14,9 +14,9 @@ export function usePoolStaking() {
     try {
       setLoading('stakes', true);
 
-      // Validate amount with minimum stake
-      if (amount < 1) {
-        throw new Error('Minimum stake is $1 USDC');
+      // Validate amount with minimum stake ($10 from contract)
+      if (amount < 10) {
+        throw new Error('Minimum stake is $10 USDC');
       }
 
       // Use stakingService which handles both contract and mock data

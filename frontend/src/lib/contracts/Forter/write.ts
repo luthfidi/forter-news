@@ -321,3 +321,36 @@ export async function resolveNews(
     };
   }
 }
+
+/**
+ * Emergency resolve news (Admin/Owner only) - bypasses time restrictions
+ */
+export async function emergencyResolve(
+  newsId: string,
+  outcome: 0 | 1 | 2, // 0 = None, 1 = YES, 2 = NO
+  resolutionSource: string,
+  resolutionNotes: string
+): Promise<TransactionResult> {
+  try {
+    // Convert string ID to BigInt safely
+    const newsIdBigInt = convertToBigInt(newsId);
+
+    const hash = await writeContract(wagmiConfig, {
+      address: contracts.forter.address,
+      abi: contracts.forter.abi,
+      functionName: 'emergencyResolve',
+      args: [newsIdBigInt, outcome, resolutionSource, resolutionNotes],
+    }) as Hash;
+
+    await waitForTransactionReceipt(wagmiConfig, { hash });
+
+    return { hash, success: true };
+  } catch (error: unknown) {
+    console.error('[Forter/write] emergencyResolve failed:', error);
+    return {
+      hash: '0x' as Hash,
+      success: false,
+      error: error instanceof Error ? error.message : 'Transaction failed',
+    };
+  }
+}

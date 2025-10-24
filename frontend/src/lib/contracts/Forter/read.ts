@@ -31,28 +31,56 @@ export async function getNewsCount(): Promise<number> {
 }
 
 /**
- * Get single news by ID
+ * Get single news by ID (includes resolution data)
  */
 export async function getNewsById(newsId: string): Promise<News | null> {
   try {
     console.log('[Forter/read] Fetching news with ID:', newsId);
     const newsIdBigInt = convertToBigInt(newsId);
-    const data = await readContract(wagmiConfig, {
+
+    // Get basic news info
+    const newsData = await readContract(wagmiConfig, {
       address: contracts.forter.address,
       abi: contracts.forter.abi,
       functionName: 'getNewsInfo',
       args: [newsIdBigInt],
     }) as NewsContractData;
 
-    console.log('[Forter/read] Raw contract data:', data);
+    console.log('[Forter/read] Raw contract news data:', newsData);
 
-    if (!data) {
+    if (!newsData) {
       console.warn('[Forter/read] No data returned from contract');
       return null;
     }
 
-    const mappedNews = mapContractToNews(data, newsId);
+    const mappedNews = mapContractToNews(newsData, newsId);
     console.log('[Forter/read] Mapped news data:', mappedNews);
+
+    // If news is resolved, get resolution data
+    if (mappedNews.status === 'resolved') {
+      try {
+        const resolutionData = await readContract(wagmiConfig, {
+          address: contracts.forter.address,
+          abi: contracts.forter.abi,
+          functionName: 'getNewsResolutionInfo',
+          args: [newsIdBigInt],
+        }) as NewsResolutionContractData;
+
+        console.log('[Forter/read] Resolution data:', resolutionData);
+
+        // Add resolution data to news object
+        if (resolutionData && resolutionData.resolvedAt > 0) {
+          mappedNews.resolvedAt = timestampToDate(resolutionData.resolvedAt);
+          mappedNews.resolvedBy = resolutionData.resolvedBy;
+          mappedNews.resolutionSource = resolutionData.resolutionSource;
+          mappedNews.resolutionNotes = resolutionData.resolutionNotes;
+        }
+      } catch (resolutionError) {
+        console.warn('[Forter/read] Failed to fetch resolution data:', resolutionError);
+        // Don't fail the whole function if resolution data is missing
+      }
+    }
+
     return mappedNews;
   } catch (error) {
     console.error('[Forter/read] getNewsById failed:', error);
@@ -109,7 +137,7 @@ export async function getPoolsByNewsId(newsId: string): Promise<Pool[]> {
         evidenceLinks: result[2],
         imageUrl: result[3],
         imageCaption: result[4],
-        position: result[5],
+        position: Number(result[5]), // Position enum (0=YES, 1=NO)
         creatorStake: result[6],
         totalStaked: result[7],
         agreeStakes: result[8],

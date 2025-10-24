@@ -22,7 +22,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
 
   const handleStake = async () => {
     const stakeAmount = parseFloat(amount);
-    if (stakeAmount < 1) return;
+    if (stakeAmount < 10) return; // $10 minimum stake
 
     setIsSubmitting(true);
     const result = await stakeOnPool(pool.id, selectedPosition, stakeAmount);

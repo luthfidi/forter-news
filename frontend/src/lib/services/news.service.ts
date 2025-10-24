@@ -356,6 +356,67 @@ class NewsService {
   }
 
   /**
+   * Emergency resolve news (Admin/Owner only) - bypasses time restrictions
+   *
+   * Contract Integration:
+   * - Function: emergencyResolve(newsId, outcome, resolutionSource, resolutionNotes)
+   * - Emits: EmergencyResolved + Resolved events with auto-distribute
+   * - Requires: Owner role
+   * - Bypasses: resolveTime restrictions
+   */
+  async emergencyResolve(
+    newsId: string,
+    outcome: 'YES' | 'NO',
+    resolutionSource: string,
+    resolutionNotes: string
+  ): Promise<{ success: boolean; txHash?: string; error?: string }> {
+    if (!isContractsEnabled()) {
+      // Mock implementation for development
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log(`[Mock] Emergency resolved news ${newsId} with outcome ${outcome}`);
+      return { success: true, txHash: '0xmock...hash' };
+    }
+
+    try {
+      console.log('[NewsService] Emergency resolving news via smart contract...', {
+        newsId,
+        outcome,
+        resolutionSource,
+        resolutionNotes
+      });
+
+      // Import emergencyResolve
+      const { emergencyResolve } = await import('@/lib/contracts');
+
+      // Convert outcome to contract format
+      const outcomeValue = outcome === 'YES' ? 1 : 2; // Outcome.YES = 1, Outcome.NO = 2
+
+      // Call smart contract
+      const result = await emergencyResolve(
+        newsId,
+        outcomeValue,
+        resolutionSource,
+        resolutionNotes
+      );
+
+      if (!result.success) {
+        throw new Error(result.error || 'Emergency resolve transaction failed');
+      }
+
+      console.log('[NewsService] Emergency resolve transaction successful:', result.hash);
+
+      return { success: true, txHash: result.hash };
+
+    } catch (error) {
+      console.error('[NewsService] Emergency resolve failed:', error);
+      return {
+        success: false,
+        error: handleContractError(error)
+      };
+    }
+  }
+
+  /**
    * Get resolution information for a resolved news
    *
    * Contract Integration:

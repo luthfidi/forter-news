@@ -21,6 +21,7 @@ export {
   createPool,
   stakeOnPool,
   resolveNews,
+  emergencyResolve,
 } from './write';
 
 // Data mappers

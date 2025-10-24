@@ -32,6 +32,13 @@ interface IForter {
         string memory resolutionNotes
     ) external;
 
+    function emergencyResolve(
+        uint256 newsId,
+        uint8 outcome,
+        string memory resolutionSource,
+        string memory resolutionNotes
+    ) external;
+
     // View functions
     function getNewsCount() external view returns (uint256);
 

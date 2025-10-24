@@ -39,6 +39,7 @@ contract Forter is Ownable2Step, ReentrancyGuard {
         address resolvedBy;
         string resolutionSource;
         string resolutionNotes;
+        bool emergencyResolve;
         mapping(uint256 => Pool) pools;
     }
 
@@ -95,6 +96,8 @@ contract Forter is Ownable2Step, ReentrancyGuard {
     );
 
     event Resolved(uint256 indexed newsId, uint8 outcome, address resolvedBy);
+
+    event EmergencyResolved(uint256 indexed newsId, uint8 outcome, address resolvedBy);
 
     constructor(address _stakingToken, address _reputationNFT, address payable _governance)
         Ownable(msg.sender)
@@ -273,6 +276,31 @@ contract Forter is Ownable2Step, ReentrancyGuard {
         // Resolve all pools, update reputations, and AUTO-DISTRIBUTE rewards
         _resolvePoolsAndDistributeRewards(newsId, outcome);
 
+        emit Resolved(newsId, uint8(outcome), msg.sender);
+    }
+
+    function emergencyResolve(
+        uint256 newsId,
+        Outcome outcome,
+        string memory resolutionSource,
+        string memory resolutionNotes
+    ) external onlyOwner validNews(newsId) {
+        News storage news = newsItems[newsId];
+        require(news.status == NewsStatus.Active, "Already resolved");
+        require(outcome != Outcome.None, "Invalid outcome");
+
+        news.status = NewsStatus.Resolved;
+        news.outcome = outcome;
+        news.resolvedAt = block.timestamp;
+        news.resolvedBy = msg.sender;
+        news.resolutionSource = resolutionSource;
+        news.resolutionNotes = resolutionNotes;
+        news.emergencyResolve = true;
+
+        // Resolve all pools, update reputations, and AUTO-DISTRIBUTE rewards
+        _resolvePoolsAndDistributeRewards(newsId, outcome);
+
+        emit EmergencyResolved(newsId, uint8(outcome), msg.sender);
         emit Resolved(newsId, uint8(outcome), msg.sender);
     }
 

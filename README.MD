@@ -50,7 +50,7 @@ Forter is participating in **Base Batches 002 Builder Track** with a fully funct
 | **Open Source** | ✅ | Complete codebase available on GitHub |
 | **Live Demo** | ✅ | Working application at [forter-news.vercel.app](https://forter-news.vercel.app/) |
 | **Testnet Transactions** | ✅ | Multiple live staking transactions on Base Sepolia |
-| **Demo Video** | ✅ | 2-minute comprehensive [demo](https://www.youtube.com/watch?v=Dxlh9GIQCZM) |
+| **Demo Video** | ✅ | 6-minute comprehensive [demo](https://www.youtube.com/watch?v=Dxlh9GIQCZM) |
 | **Basenames Ready** | ✅ | Integration ready for Base Account |
 
 ### Key Differentiators
@@ -99,11 +99,11 @@ Forter is participating in **Base Batches 002 Builder Track** with a fully funct
 │ Reasoning: "I agree due to ETF approval" │
 │                                          │
 │ Stakes:                                  │
-│ - Agree: $1000 (10 users)               │
-│ - Disagree: $200 (3 users)              │
+│ - Agree: $1000 (10 users)                │
+│ - Disagree: $200 (3 users)               │
 │                                          │
 │ Resolution: Same as NEWS (Dec 31)        │
-│ If ETH ≥ $5000 → "Agree" wins           │
+│ If ETH ≥ $5000 → "Agree" wins            │
 └──────────────────────────────────────────┘
 ```
 
@@ -192,51 +192,51 @@ Stake Multiplier (based on pool total stake):
 ### Smart Contract Architecture
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#0EA5E9', 'primaryTextColor': '#1F2937', 'lineColor': '#E5E7EB'}}}%%
+%%{init: {'theme': 'neutral'}}%%
 graph TB
-    User[User] --> Forter[Forter.sol<br/>Core Protocol]
-    Forter --> StakingPool[StakingPool.sol<br/>Reward Management]
-    Forter --> ReputationNFT[ReputationNFT.sol<br/>Reputation System]
-    Forter --> Governance[Governance.sol<br/>DAO Framework]
+    User[👤 User] --> Forter[🔒 Forter.sol<br/>Core Protocol]
+    Forter --> StakingPool[💰 StakingPool.sol<br/>Reward Management]
+    Forter --> ReputationNFT[🏆 ReputationNFT.sol<br/>Reputation System]
+    Forter --> Governance[⚖️ Governance.sol<br/>DAO Framework]
 
-    StakingPool --> USDC[USDC Token]
-    ReputationNFT --> NFTs[Dynamic NFTs]
+    StakingPool --> USDC[💵 USDC Token]
+    ReputationNFT --> NFTs[🎨 Dynamic NFTs]
 
-    subgraph CoreFunctions [Core Functions]
+    subgraph CoreFunctions ["📋 Core Functions"]
         NewsCreation[News Creation]
         PoolCreation[Pool Creation]
         ResolutionLogic[Resolution Logic]
-        AutoDistribute[Auto-Distribute Rewards]
+        AutoDistribute[Auto-Distribute]
     end
 
-    subgraph RewardSystem [Reward System]
+    subgraph RewardSystem ["💎 Reward System"]
         PoolStaking[Pool Staking]
         UserTracking[User Tracking]
         RewardDistribution[Reward Distribution]
     end
 
-    subgraph ReputationSystem [Reputation System]
+    subgraph ReputationSystem ["⭐ Reputation System"]
         PointCalculation[Point Calculation]
         TierManagement[Tier Management]
         SoulboundNFTs[Soulbound NFTs]
     end
 
-    subgraph GovernanceSystem [Governance]
+    subgraph GovernanceSystem ["🗳️ Governance"]
         ProtocolParams[Protocol Parameters]
         VotingMechanism[Voting Mechanism]
         FeeManagement[Fee Management]
     end
 
-    Forter --> CoreFunctions
-    StakingPool --> RewardSystem
-    ReputationNFT --> ReputationSystem
-    Governance --> GovernanceSystem
+    Forter -.-> CoreFunctions
+    StakingPool -.-> RewardSystem
+    ReputationNFT -.-> ReputationSystem
+    Governance -.-> GovernanceSystem
 ```
 
 ### User Flow Architecture
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#10B981', 'primaryTextColor': '#1F2937', 'lineColor': '#E5E7EB'}}}%%
+%%{init: {'theme': 'neutral'}}%%
 sequenceDiagram
     participant User as 👤 User
     participant Frontend as 🌐 Frontend
@@ -320,7 +320,7 @@ cd frontend && pnpm dev
 - **Main App**: [forter-news.vercel.app](https://forter-news.vercel.app/)
 - **Farcaster MiniApp**: [forter](https://farcaster.xyz/miniapps/gM4PKvjzcF47/forter)
 - **Demo Video**: [Watch on YouTube](https://www.youtube.com/watch?v=Dxlh9GIQCZM)
-- **Presentation**: [Canva Design](https://www.canva.com/design/DAG2DT4E5pw/vu4G-lBIpxykkGTSEeOemA/edit)
+- **Presentation**: [Canva Design](https://www.canva.com/design/DAG2DT4E5pw/CndHiIzlbRZwgaPH-iOHnw/view?utm_content=DAG2DT4E5pw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h99613be7e9)
 
 ### Technical Resources
 - **GitHub Repository**: [github.com/luthfidi/forter-news](https://github.com/luthfidi/forter-news)

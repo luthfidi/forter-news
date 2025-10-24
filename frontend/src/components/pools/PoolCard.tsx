@@ -43,10 +43,6 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
     ? Math.round((pool.disagreeStakes / pool.totalStaked) * 100)
     : 0;
 
-  const creatorStakePercentage = pool.totalStaked > 0
-    ? Math.round((pool.creatorStake / pool.totalStaked) * 100)
-    : 0;
-
   // Mock reputation data
   const getReputationDisplay = (address: string) => {
     const mockReputations: Record<string, { accuracy: number; tier: string }> = {
@@ -157,119 +153,93 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
       {/* Floating Indicator */}
       <FloatingIndicator {...feedback} />
 
-      <Card className={`border transition-all duration-300 hover:shadow-md ${
+      <Card className={`border transition-all duration-300 hover:shadow-lg ${
         pool.status === 'resolved'
           ? 'border-accent/50 bg-accent/5 hover:bg-accent/10'
-          : 'border-border bg-card hover:bg-secondary'
+          : 'border-border bg-card hover:bg-muted/30'
       }`}>
-        <CardContent className="p-6">
-        {/* Resolved Badge (if resolved) */}
+        <CardContent className="p-5 md:p-6 space-y-4">
+        {/* Resolved Badge */}
         {pool.status === 'resolved' && pool.outcome && (
-          <div className="mb-4 pb-4 border-b border-border/30">
-            <div className="flex items-center justify-between">
-              <Badge className={`px-3 py-1 ${
-                pool.outcome === 'creator_correct'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-red-500 text-white'
-              }`}>
-                {pool.outcome === 'creator_correct' ? '✅ CORRECT' : '❌ WRONG'}
-              </Badge>
-              <span className="text-xs text-muted-foreground">
-                Resolved Pool
-              </span>
-            </div>
-            {pool.outcome === 'creator_correct' ? (
-              <p className="text-xs text-muted-foreground mt-2">
-                Pool creator was correct. &quot;Agree&quot; stakers won.
-              </p>
-            ) : (
-              <p className="text-xs text-muted-foreground mt-2">
-                Pool creator was wrong. &quot;Disagree&quot; stakers won.
-              </p>
-            )}
+          <div className="pb-4 border-b border-border/30">
+            <Badge className={`px-3 py-1.5 font-semibold ${
+              pool.outcome === 'creator_correct'
+                ? 'bg-green-500 text-white'
+                : 'bg-red-500 text-white'
+            }`}>
+              {pool.outcome === 'creator_correct' ? '✅ Resolved - Correct' : '❌ Resolved - Wrong'}
+            </Badge>
           </div>
         )}
 
-        {/* Creator Info */}
-        <div className="flex items-start justify-between mb-4">
-          <Link href={`/profile/${pool.creatorAddress}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
+        {/* Creator Info - Simplified */}
+        <div className="flex items-center justify-between gap-3">
+          <Link href={`/profile/${pool.creatorAddress}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity flex-1 min-w-0">
+            <div className="w-10 h-10 flex-shrink-0 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm">
               {pool.creatorAddress.slice(2, 4).toUpperCase()}
             </div>
-            <div>
+            <div className="flex flex-col min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm hover:underline">{pool.creatorAddress}</span>
-                <Badge variant="secondary" className="text-xs">
+                {/* Mobile: shortened address */}
+                <span className="font-semibold text-sm md:hidden">
+                  {pool.creatorAddress.slice(0, 6)}...{pool.creatorAddress.slice(-4)}
+                </span>
+                {/* Desktop: full address */}
+                <span className="font-semibold text-sm hidden md:block">{pool.creatorAddress}</span>
+                <Badge variant="secondary" className="text-xs hidden md:inline-flex">
                   {getTierIcon(reputation.tier)} {reputation.tier}
                 </Badge>
               </div>
-              <div className="text-xs text-muted-foreground">
+              <span className="text-xs text-muted-foreground hidden md:block">
                 {reputation.accuracy}% accuracy
-              </div>
+              </span>
             </div>
           </Link>
-          <div className="flex items-center gap-2">
-            <Badge
-              variant={pool.position === 'YES' ? 'default' : 'secondary'}
-              className={pool.position === 'YES'
-                ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
-                : 'bg-rose-100 text-rose-700 border-rose-200'
-              }
-            >
-              {pool.position}
-            </Badge>
-          </div>
+          <Badge
+            variant={pool.position === 'YES' ? 'default' : 'secondary'}
+            className={`text-sm font-semibold px-3 py-1 flex-shrink-0 ${pool.position === 'YES'
+              ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
+              : 'bg-rose-100 text-rose-700 border-rose-200'
+            }`}
+          >
+            {pool.position}
+          </Badge>
         </div>
 
-        {/* Image if exists - OPTIMIZED DISPLAY */}
+        {/* Image - Simplified */}
         {pool.imageUrl && (
-          <div className="mb-4 rounded-lg overflow-hidden border border-border/30 bg-card">
-            {/* Better Image Display - object-contain to avoid cropping important content */}
-            <div
-              className="relative w-full min-h-[200px] max-h-[400px] cursor-pointer group"
-              onClick={handleImageClick}
-            >
+          <div className="rounded-lg overflow-hidden border border-border/30 bg-muted/20 cursor-pointer group" onClick={handleImageClick}>
+            <div className="relative w-full h-[180px] md:h-[240px]">
               <Image
                 src={pool.imageUrl}
                 alt={pool.imageCaption || 'Pool analysis chart'}
                 fill
-                className="object-contain transition-transform duration-200 group-hover:scale-105"
+                className="object-cover group-hover:scale-105 transition-transform duration-200"
                 unoptimized
-                style={{ maxHeight: '400px' }}
               />
-
-              {/* Click to expand hint */}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                <div className="text-white text-xs bg-black/70 px-2 py-1 rounded flex items-center gap-1">
-                  <span>🔍</span>
-                  <span>Click to view full size</span>
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                <div className="opacity-0 group-hover:opacity-100 text-white text-xs bg-black/70 px-3 py-1.5 rounded">
+                  🔍 Click to expand
                 </div>
               </div>
             </div>
-
-            {/* Image Caption with link */}
-            <div className="p-3 bg-card/80 border-t border-border/30">
-              {pool.imageCaption && (
-                <div className="text-sm text-muted-foreground text-center mb-2">
-                  📊 {pool.imageCaption}
-                </div>
-              )}
-              <div className="text-xs text-muted-foreground text-center">
-                <span className="text-primary">Click image</span> • View in new tab • No cropping applied • Full resolution preserved
+            {pool.imageCaption && (
+              <div className="px-3 py-2 bg-muted/30 text-xs text-muted-foreground text-center">
+                {pool.imageCaption}
               </div>
-            </div>
+            )}
           </div>
         )}
 
         {/* Reasoning */}
-        <div className="mb-4">
+        <div>
           <p className={`text-sm text-foreground leading-relaxed ${!showFullReasoning && pool.reasoning.length > 150 ? 'line-clamp-3' : ''}`}>
             {pool.reasoning}
           </p>
           {pool.reasoning.length > 150 && (
             <button
               onClick={() => setShowFullReasoning(!showFullReasoning)}
-              className="text-xs text-primary hover:underline mt-1"
+              className="text-xs text-primary hover:underline mt-2"
             >
               {showFullReasoning ? 'Show less' : 'Read more'}
             </button>
@@ -278,9 +248,9 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
 
         {/* Evidence Links */}
         {pool.evidence.length > 0 && (
-          <div className="mb-4">
+          <div>
             <div className="text-xs font-medium text-muted-foreground mb-2">
-              Supporting Evidence:
+              Supporting Evidence
             </div>
             <div className="flex flex-wrap gap-2">
               {pool.evidence.map((link, index) => (
@@ -289,7 +259,7 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
                   href={link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs px-2 py-1 bg-accent/10 text-accent rounded hover:bg-accent/20 transition-colors"
+                  className="text-xs px-3 py-1.5 bg-accent/10 text-accent rounded-md hover:bg-accent/20 transition-colors font-medium"
                 >
                   Source {index + 1}
                 </a>
@@ -298,51 +268,16 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
           </div>
         )}
 
-        {/* Stakes Visualization - UPDATED FOR 20/80 SPLIT */}
-        <div className="mb-4 p-4 rounded-lg bg-card/50 border border-border/30">
-          <div className="flex justify-between text-sm mb-3">
-            <span className="font-medium">Pool Distribution</span>
-            <span className="text-muted-foreground">${pool.totalStaked.toLocaleString()}</span>
+        {/* Stakes Visualization - Simplified */}
+        <div className="p-4 rounded-lg bg-muted/20 border border-border/30 space-y-3">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-semibold">Total Pool</span>
+            <span className="text-lg font-bold text-primary">${pool.totalStaked.toLocaleString()}</span>
           </div>
 
-          {/* Creator Stake - SEPARATE */}
-          <div className="mb-3 pb-3 border-b border-border/30">
-            <div className="flex items-center justify-between text-xs mb-1">
-              <span className="text-muted-foreground">Creator Stake ({pool.position})</span>
-              <span className="font-medium">${pool.creatorStake.toLocaleString()} ({creatorStakePercentage}%)</span>
-            </div>
-            <div className="h-2 bg-muted rounded-full overflow-hidden">
-              <div
-                className={`h-full transition-all duration-500 ${
-                  pool.position === 'YES'
-                    ? 'bg-gradient-to-r from-emerald-400 to-emerald-500'
-                    : 'bg-gradient-to-r from-rose-400 to-rose-500'
-                }`}
-                style={{ width: `${creatorStakePercentage}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Staker Pools */}
+          {/* Combined Progress Bar */}
           <div className="space-y-2">
-            <div className="text-xs font-medium text-muted-foreground">Staker Pools</div>
-
-            {/* Staker Progress bar legend */}
-            <div className="flex justify-between text-xs mb-1">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-gradient-to-r from-emerald-400 to-emerald-500"></div>
-                <span className="text-emerald-600">Support Stakers</span>
-                <span className="font-medium">${pool.agreeStakes.toLocaleString()} ({agreePercentage}%)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="font-medium">${pool.disagreeStakes.toLocaleString()} ({disagreePercentage}%)</span>
-                <span className="text-rose-600">Oppose Stakers</span>
-                <div className="w-3 h-3 rounded bg-gradient-to-r from-rose-400 to-rose-500"></div>
-              </div>
-            </div>
-
-            {/* Staker combined progress bar */}
-            <div className="h-4 bg-muted rounded-full overflow-hidden flex">
+            <div className="h-3 bg-muted rounded-full overflow-hidden flex">
               <div
                 className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
                 style={{ width: `${agreePercentage}%` }}
@@ -352,21 +287,29 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
                 style={{ width: `${disagreePercentage}%` }}
               />
             </div>
+
+            {/* Legend */}
+            <div className="flex justify-between text-xs">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                <span className="text-emerald-700 font-medium">{agreePercentage}% Support</span>
+                <span className="text-muted-foreground">(${pool.agreeStakes.toLocaleString()})</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-rose-500"></div>
+                <span className="text-rose-700 font-medium">{disagreePercentage}% Oppose</span>
+                <span className="text-muted-foreground">(${pool.disagreeStakes.toLocaleString()})</span>
+              </div>
+            </div>
           </div>
 
-          {/* Reward Distribution Info */}
-          <div className="mt-3 pt-3 border-t border-border/30 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1 mb-1">
-              <span>💰</span>
-              <span>Reward Distribution:</span>
-            </div>
-            <div className="pl-4 space-y-1">
-              <div>• Creator gets <span className="font-medium text-primary">20%</span> if correct</div>
-              <div>• Winning stakers get <span className="font-medium text-primary">80%</span> of remaining pool</div>
-              <div>• Platform fee: <span className="font-medium">2%</span></div>
+          {/* Simplified Reward Info */}
+          <div className="pt-2 border-t border-border/30 text-xs text-muted-foreground">
+            <div className="flex items-center justify-between">
+              <span>💰 Winner takes 80% • Creator 20%</span>
+              <span>Fee: 2%</span>
             </div>
           </div>
-
         </div>
 
         {/* Action Buttons */}
@@ -421,57 +364,50 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
             </div>
           </div>
         ) : !showStakeInput ? (
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button
               onClick={() => handleStakeButtonClick('agree')}
-              className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white"
-              size="sm"
+              className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold"
             >
-              Stake Agree
+              Support
             </Button>
             <Button
               onClick={() => handleStakeButtonClick('disagree')}
-              variant="outline"
-              className="flex-1 hover:border-rose-500/50 bg-rose-500 hover:bg-rose-600 text-white border-rose-500"
-              size="sm"
+              className="flex-1 bg-rose-500 hover:bg-rose-600 text-white border-rose-500 font-semibold"
             >
-              Stake Disagree
+              Oppose
             </Button>
           </div>
         ) : (
-          /* Inline Stake Input */
-          <div className="space-y-3 p-4 rounded-lg border-2 border-primary/20 bg-primary/5">
+          /* Inline Stake Input - Simplified */
+          <div className="space-y-3 p-4 rounded-lg border border-primary/30 bg-primary/5">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">
-                Staking on:{' '}
+              <span className="text-sm font-semibold">
                 <span className={selectedPosition === 'agree' ? 'text-emerald-600' : 'text-rose-600'}>
-                  {selectedPosition === 'agree' ? 'Agree' : 'Disagree'}
+                  {selectedPosition === 'agree' ? 'Support' : 'Oppose'}
                 </span>
               </span>
               <button
                 onClick={handleCancelStake}
-                className="text-xs text-muted-foreground hover:text-foreground"
+                className="text-sm text-muted-foreground hover:text-foreground"
               >
-                ✕ Cancel
+                Cancel
               </button>
             </div>
 
             <div>
-              <label className="block text-xs font-medium mb-1">
-                Amount (USDC)
-              </label>
               <Input
                 type="number"
-                placeholder="Min $1"
+                placeholder="Amount (USDC) - Min $1"
                 value={stakeAmount}
                 onChange={(e) => setStakeAmount(e.target.value)}
                 min="1"
                 onWheel={(e) => e.currentTarget.blur()}
-                className="bg-background border-border"
+                className="bg-background border-border text-base"
               />
             </div>
 
-            {/* Potential Outcomes */}
+            {/* Potential Outcomes - Simplified */}
             {stakeAmount && parseFloat(stakeAmount) >= 1 && selectedPosition && (() => {
               const amount = parseFloat(stakeAmount);
               const potentialReward = calculatePotentialReward(pool, amount, selectedPosition);
@@ -479,48 +415,15 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
               const roi = (profit / amount) * 100;
 
               return (
-                <div className="p-3 rounded-lg bg-accent/5 border border-accent/20">
-                  <div className="text-xs font-medium text-accent mb-2">Potential Outcomes</div>
-                  <div className="space-y-2">
-                    {selectedPosition === 'agree' ? (
-                      <>
-                        <div className="flex justify-between items-center text-xs">
-                          <span>If pool CORRECT:</span>
-                          <span className="font-bold text-emerald-600">
-                            +${potentialReward.maxReward.toFixed(2)}
-                          </span>
-                        </div>
-                        <div className="text-[10px] text-muted-foreground">
-                          ${profit.toFixed(2)} profit ({roi.toFixed(1)}% ROI)
-                        </div>
-                        <div className="h-px bg-border my-1"></div>
-                        <div className="flex justify-between items-center text-xs">
-                          <span>If pool WRONG:</span>
-                          <span className="font-bold text-rose-600">
-                            -${amount.toFixed(2)}
-                          </span>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="flex justify-between items-center text-xs">
-                          <span>If pool WRONG:</span>
-                          <span className="font-bold text-emerald-600">
-                            +${potentialReward.maxReward.toFixed(2)}
-                          </span>
-                        </div>
-                        <div className="text-[10px] text-muted-foreground">
-                          ${profit.toFixed(2)} profit ({roi.toFixed(1)}% ROI)
-                        </div>
-                        <div className="h-px bg-border my-1"></div>
-                        <div className="flex justify-between items-center text-xs">
-                          <span>If pool CORRECT:</span>
-                          <span className="font-bold text-rose-600">
-                            -${amount.toFixed(2)}
-                          </span>
-                        </div>
-                      </>
-                    )}
+                <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
+                  <div className="flex justify-between items-center text-sm mb-1">
+                    <span className="text-muted-foreground">Potential Win:</span>
+                    <span className="font-bold text-emerald-600">
+                      +${potentialReward.maxReward.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    ${profit.toFixed(2)} profit • {roi.toFixed(1)}% ROI
                   </div>
                 </div>
               );
@@ -542,16 +445,16 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
         )}
 
         {/* Metadata */}
-        <div className="mt-4 pt-4 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">
-          <span>Created {pool.createdAt.toLocaleDateString()}</span>
+        <div className="pt-4 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">
+          <span>{pool.createdAt.toLocaleDateString()}</span>
           {pool.farcasterCastHash && (
             <a
               href={`https://warpcast.com/~/conversations/${pool.farcasterCastHash}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-foreground transition-colors"
+              className="hover:text-primary transition-colors font-medium"
             >
-              📱 View on Farcaster
+              View on Farcaster →
             </a>
           )}
         </div>

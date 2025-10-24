@@ -128,15 +128,15 @@ export default function NewsDetailPage() {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-16">
+    <div className="min-h-screen pt-20 md:pt-24 pb-32 md:pb-16">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+        <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">
           <Link href="/news" className="hover:text-foreground transition-colors">
             News
           </Link>
           <span>/</span>
-          <span className="text-foreground">NEWS Details</span>
+          <span className="text-foreground">Details</span>
         </div>
 
         {/* Resolved Banner */}
@@ -210,55 +210,55 @@ export default function NewsDetailPage() {
           </Card>
         )}
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
           {/* Main Content */}
-          <div className="xl:col-span-2">
+          <div className="lg:col-span-2">
             {/* NEWS Header */}
-            <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300 mb-8">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="bg-primary/10 text-primary">
+            <Card className="border border-border bg-card mb-6 md:mb-8">
+              <CardContent className="p-4 md:p-6">
+                <div className="flex items-start justify-between mb-4 gap-3">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge variant="secondary" className="bg-primary/10 text-primary text-xs">
                       {currentNews.category}
                     </Badge>
                     <Badge
-                      variant={currentNews.status === 'active' ? 'default' : 'secondary'}
-                      className={currentNews.status === 'active'
+                      className={`text-xs ${currentNews.status === 'active'
                         ? 'bg-green-500/10 text-green-600'
                         : 'bg-gray-500/10 text-gray-600'
-                      }
+                      }`}
                     >
                       {currentNews.status.charAt(0).toUpperCase() + currentNews.status.slice(1)}
                     </Badge>
                   </div>
-                  <Link href={`/news/${newsId}/pool/create`}>
-                    <Button className="bg-gradient-to-r from-primary to-accent">
+                  {/* Desktop Create Pool Button */}
+                  <Link href={`/news/${newsId}/pool/create`} className="hidden md:block">
+                    <Button size="sm" className="bg-gradient-to-r from-primary to-accent">
                       + Create Pool
                     </Button>
                   </Link>
                 </div>
 
-                <h1 className="text-2xl md:text-3xl font-bold leading-tight mb-3">
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold leading-tight mb-3">
                   {currentNews.title}
                 </h1>
 
-                <p className="text-muted-foreground leading-relaxed mb-4">
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed mb-4">
                   {currentNews.description}
                 </p>
 
                 {/* Resolution Criteria */}
-                <div className="p-4 rounded-lg bg-accent/5 border border-accent/20">
-                  <div className="text-sm font-medium text-accent mb-1">Resolution Criteria:</div>
-                  <div className="text-sm text-muted-foreground">
+                <div className="p-3 md:p-4 rounded-lg bg-accent/5 border border-accent/20 mb-4">
+                  <div className="text-xs md:text-sm font-medium text-accent mb-1">Resolution Criteria:</div>
+                  <div className="text-xs md:text-sm text-muted-foreground">
                     {currentNews.resolutionCriteria}
                   </div>
                 </div>
 
-                {/* Creator & Date */}
-                <div className="mt-4 flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-3">
+                {/* Creator & Date - Stack on mobile */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs md:text-sm">
+                  <div className="flex items-center gap-2">
                     <span className="text-muted-foreground">Created by:</span>
-                    <span className="font-medium">{currentNews.creatorAddress}</span>
+                    <span className="font-medium truncate max-w-[200px]">{currentNews.creatorAddress}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="h-1.5 w-1.5 rounded-full bg-current opacity-60" />
@@ -270,16 +270,23 @@ export default function NewsDetailPage() {
               </CardContent>
             </Card>
 
+            {/* Mobile Create Pool Button */}
+            <Link href={`/news/${newsId}/pool/create`} className="md:hidden fixed bottom-20 right-4 z-40">
+              <Button size="lg" className="h-14 w-14 rounded-full bg-gradient-to-r from-primary to-accent shadow-lg shadow-primary/30 p-0">
+                <span className="text-2xl">+</span>
+              </Button>
+            </Link>
+
             {/* Pools Section */}
             <div className="mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold">Pools ({stats.totalPools})</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                <h2 className="text-xl md:text-2xl font-bold">Pools ({stats.totalPools})</h2>
 
                 {/* Filter Buttons */}
-                <div className="flex gap-2">
+                <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
                   <button
                     onClick={() => setActiveFilter('all')}
-                    className={`px-3 py-1 rounded-full text-sm transition-all ${
+                    className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all ${
                       activeFilter === 'all'
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-card text-muted-foreground hover:bg-secondary'
@@ -289,7 +296,7 @@ export default function NewsDetailPage() {
                   </button>
                   <button
                     onClick={() => setActiveFilter('YES')}
-                    className={`px-3 py-1 rounded-full text-sm transition-all ${
+                    className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all ${
                       activeFilter === 'YES'
                         ? 'bg-emerald-500 text-white'
                         : 'bg-card text-muted-foreground hover:bg-emerald-500/10'
@@ -299,7 +306,7 @@ export default function NewsDetailPage() {
                   </button>
                   <button
                     onClick={() => setActiveFilter('NO')}
-                    className={`px-3 py-1 rounded-full text-sm transition-all ${
+                    className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all ${
                       activeFilter === 'NO'
                         ? 'bg-rose-500 text-white'
                         : 'bg-card text-muted-foreground hover:bg-rose-500/10'
@@ -312,10 +319,10 @@ export default function NewsDetailPage() {
 
               {/* Pools List */}
               {loading.pools ? (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {[...Array(3)].map((_, i) => (
                     <Card key={i} className="border border-border bg-card animate-pulse">
-                      <CardContent className="p-6">
+                      <CardContent className="p-4 md:p-6">
                         <div className="h-4 bg-muted rounded w-3/4 mb-3"></div>
                         <div className="h-3 bg-muted rounded w-full mb-2"></div>
                         <div className="h-3 bg-muted rounded w-2/3"></div>
@@ -324,17 +331,17 @@ export default function NewsDetailPage() {
                   ))}
                 </div>
               ) : filteredPools.length > 0 ? (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {filteredPools.map((pool) => (
                     <PoolCard key={pool.id} pool={pool} onStakeSuccess={refetchPools} />
                   ))}
                 </div>
               ) : (
                 <Card className="border border-border bg-card">
-                  <CardContent className="p-12 text-center">
+                  <CardContent className="p-8 md:p-12 text-center">
                     <div className="text-4xl mb-4">🏊</div>
-                    <h3 className="text-xl font-semibold mb-2">No pools yet</h3>
-                    <p className="text-muted-foreground mb-6">
+                    <h3 className="text-lg md:text-xl font-semibold mb-2">No pools yet</h3>
+                    <p className="text-sm md:text-base text-muted-foreground mb-6">
                       Be the first to create a pool with your analysis for this NEWS.
                     </p>
                     <Link href={`/news/${newsId}/pool/create`}>
@@ -348,8 +355,8 @@ export default function NewsDetailPage() {
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
+          {/* Sidebar - Hidden on mobile */}
+          <div className="hidden lg:block space-y-6">
             {/* Stats Card */}
             <Card className="border border-border bg-card hover:bg-secondary transition-all duration-300">
               <CardContent className="p-6">
@@ -441,20 +448,6 @@ export default function NewsDetailPage() {
               </CardContent>
             </Card>
 
-            {/* Create Pool CTA */}
-            <Card className="border border-primary/50 bg-primary/5 hover:bg-primary/10 transition-all duration-300">
-              <CardContent className="p-6 text-center">
-                <h3 className="font-bold mb-2">Have an Opinion?</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Create your own pool with analysis and stake to earn rewards.
-                </p>
-                <Link href={`/news/${newsId}/pool/create`}>
-                  <Button className="w-full bg-gradient-to-r from-primary to-accent">
-                    Create Pool
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>

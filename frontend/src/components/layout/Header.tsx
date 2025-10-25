@@ -69,7 +69,7 @@ export default function Header() {
             {/* Farcaster User & Connect Wallet */}
             <div className="flex items-center gap-3">
               {/* Farcaster User Info - Only show in MiniApp */}
-              {isReady && isInFarcaster && farcasterUser && (
+              {/* {isReady && isInFarcaster && farcasterUser && (
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20">
                   {farcasterUser.pfpUrl && (
                     <Image
@@ -84,7 +84,7 @@ export default function Header() {
                     @{farcasterUser.username || `FID:${farcasterUser.fid}`}
                   </span>
                 </div>
-              )}
+              )} */}
 
               <WalletConnect />
             </div>

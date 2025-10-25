@@ -85,6 +85,34 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 },
                 testnet: true,
               },
+              // IMPORTANT: Only allow Base Sepolia - this prevents connection on other chains
+              supportedChains: [
+                {
+                  id: 84532, // Base Sepolia chain ID
+                  name: 'Base Sepolia',
+                  network: 'base-sepolia',
+                  nativeCurrency: {
+                    decimals: 18,
+                    name: 'Ethereum',
+                    symbol: 'ETH',
+                  },
+                  rpcUrls: {
+                    default: {
+                      http: ['https://sepolia.base.org'],
+                    },
+                    public: {
+                      http: ['https://sepolia.base.org'],
+                    },
+                  },
+                  blockExplorers: {
+                    default: {
+                      name: 'BaseScan',
+                      url: 'https://sepolia.basescan.org',
+                    },
+                  },
+                  testnet: true,
+                },
+              ],
               mfa: {
                 noPromptOnMfaRequired: false,
               },

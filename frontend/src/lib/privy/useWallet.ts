@@ -17,12 +17,12 @@ export function useWallet() {
 
   // Get the active wallet address - either from embedded wallet or connected wallet
   const walletAddress = address || wallets[0]?.address;
-  const isConnected = authenticated && !!walletAddress;
   const isCorrectNetwork = chainId === baseSepolia.id;
+  const isConnected = authenticated && !!walletAddress;
 
-  // Auto-switch to Base Sepolia when wallet is connected but on wrong network
+  // Auto-switch to Base Sepolia when wallet is authenticated but on wrong network
   useEffect(() => {
-    if (isConnected && !isCorrectNetwork && switchChain) {
+    if (authenticated && walletAddress && !isCorrectNetwork && switchChain) {
       // Add a small delay to ensure wallet is fully initialized
       const timer = setTimeout(() => {
         try {
@@ -37,7 +37,7 @@ export function useWallet() {
 
       return () => clearTimeout(timer);
     }
-  }, [isConnected, isCorrectNetwork, switchChain]);
+  }, [authenticated, walletAddress, isCorrectNetwork, switchChain]);
 
   const switchToBaseSepoliaChain = useCallback(() => {
     if (switchChain) {
@@ -62,7 +62,8 @@ export function useWallet() {
   });
 
   const getBalance = useCallback(async (assetSymbol: string): Promise<number> => {
-    if (!walletAddress) return 0;
+    // Block balance queries if not on correct network
+    if (!walletAddress || !isCorrectNetwork) return 0;
 
     if (assetSymbol === 'USDC' && usdcBalance) {
       return Number(usdcBalance.value) / Math.pow(10, usdcBalance.decimals);
@@ -79,7 +80,7 @@ export function useWallet() {
     };
 
     return mockBalances[assetSymbol] || 0;
-  }, [walletAddress, usdcBalance, ethBalance]);
+  }, [walletAddress, isCorrectNetwork, usdcBalance, ethBalance]);
 
   return {
     address: walletAddress,
@@ -88,8 +89,9 @@ export function useWallet() {
     chainId,
     disconnect: logout,
     getBalance,
-    usdcBalance: usdcBalance ? Number(usdcBalance.value) / Math.pow(10, usdcBalance.decimals) : 0,
-    ethBalance: ethBalance ? Number(ethBalance.value) / Math.pow(10, ethBalance.decimals) : 0,
+    // Return 0 balance if not on correct network
+    usdcBalance: (isCorrectNetwork && usdcBalance) ? Number(usdcBalance.value) / Math.pow(10, usdcBalance.decimals) : 0,
+    ethBalance: (isCorrectNetwork && ethBalance) ? Number(ethBalance.value) / Math.pow(10, ethBalance.decimals) : 0,
     user,
     authenticated,
     switchToBaseSepoliaChain

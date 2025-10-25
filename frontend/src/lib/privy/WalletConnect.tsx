@@ -12,7 +12,7 @@ interface WalletConnectProps {
 
 export function WalletConnect({ className }: WalletConnectProps) {
   const { ready, authenticated, user, login, logout } = usePrivy();
-  const { isConnected, isCorrectNetwork, switchToBaseSepoliaChain } = useWallet();
+  const { isCorrectNetwork, switchToBaseSepoliaChain } = useWallet();
   const [hasMounted, setHasMounted] = useState(false);
 
   // ClientOnly - prevent hydration mismatch
@@ -51,25 +51,38 @@ export function WalletConnect({ className }: WalletConnectProps) {
     user?.google?.email ||
     (walletAddress ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` : 'User');
 
-  // Connected state
+  // Wrong network - show prominent warning and block usage
+  if (authenticated && !isCorrectNetwork) {
+    return (
+      <div className={`flex flex-col gap-2 ${className}`}>
+        <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-semibold">Wrong Network!</p>
+            <p className="text-xs opacity-80">Please switch to Base Sepolia to continue</p>
+          </div>
+        </div>
+        <Button
+          onClick={switchToBaseSepoliaChain}
+          className="bg-gradient-to-r from-red-500/70 to-orange-500/70 hover:from-red-500 hover:to-orange-500"
+        >
+          Switch to Base Sepolia
+        </Button>
+        <Button
+          onClick={logout}
+          variant="outline"
+          size="sm"
+          className="text-xs"
+        >
+          Disconnect
+        </Button>
+      </div>
+    );
+  }
+
+  // Connected state (on correct network)
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
-      {/* Network Indicator - only show when on wrong network */}
-      {isConnected && !isCorrectNetwork && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-yellow-600 dark:text-yellow-400">
-          <AlertCircle className="w-4 h-4 flex-shrink-0" />
-          <span className="text-xs font-medium">Wrong Network</span>
-          <Button
-            onClick={switchToBaseSepoliaChain}
-            size="sm"
-            variant="outline"
-            className="ml-auto h-7 text-xs border-yellow-500/50 hover:bg-yellow-500/20"
-          >
-            Switch to Base Sepolia
-          </Button>
-        </div>
-      )}
-
       {/* Wallet Button */}
       <Button
         onClick={logout}

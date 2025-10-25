@@ -23,14 +23,26 @@ export function useWallet() {
   // Auto-switch to Base Sepolia when wallet is connected but on wrong network
   useEffect(() => {
     if (isConnected && !isCorrectNetwork && switchChain) {
-      switchChain({ chainId: baseSepolia.id });
+      // Add a small delay to ensure wallet is fully initialized
+      const timer = setTimeout(() => {
+        try {
+          console.log('Auto-switching to Base Sepolia...');
+          switchChain({ chainId: baseSepolia.id });
+          console.log('Initiated switch to Base Sepolia');
+        } catch (error) {
+          console.error('Failed to auto-switch network:', error);
+          // User will see the manual switch button in WalletConnect component
+        }
+      }, 500);
+
+      return () => clearTimeout(timer);
     }
   }, [isConnected, isCorrectNetwork, switchChain]);
 
-  const switchToBaseSepoliaChain = useCallback(async () => {
+  const switchToBaseSepoliaChain = useCallback(() => {
     if (switchChain) {
       try {
-        await switchChain({ chainId: baseSepolia.id });
+        switchChain({ chainId: baseSepolia.id });
         return true;
       } catch (error) {
         console.error('Failed to switch network:', error);

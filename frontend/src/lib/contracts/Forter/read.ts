@@ -248,14 +248,25 @@ export async function getPoolsByCreator(creatorAddress: Address): Promise<{
   poolIds: bigint[];
 }> {
   try {
+    // BUGFIX: Contract returns tuple/array format [newsIds[], poolIds[]], not object
     const result = await readContract(wagmiConfig, {
       address: contracts.forter.address,
       abi: contracts.forter.abi,
       functionName: 'getPoolsByCreator',
       args: [creatorAddress],
-    }) as { newsIds: bigint[]; poolIds: bigint[] };
+    }) as [bigint[], bigint[]]; // Array format, not object
 
-    return result;
+    console.log('[Forter/read] getPoolsByCreator raw result:', result);
+
+    // Destructure array to object
+    const [newsIds, poolIds] = result;
+
+    console.log('[Forter/read] Found', newsIds?.length || 0, 'pools for creator:', creatorAddress);
+
+    return {
+      newsIds: newsIds || [],
+      poolIds: poolIds || []
+    };
   } catch (error) {
     console.error('[Forter/read] getPoolsByCreator failed:', error);
     return { newsIds: [], poolIds: [] };

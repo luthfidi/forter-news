@@ -17,14 +17,51 @@ import { mapContractToReputation } from './mappers';
  */
 export async function getUserReputation(address: Address): Promise<ReputationData | null> {
   try {
+    console.log('[ReputationNFT/read] Fetching reputation for:', address);
+
     const data = await readContract(wagmiConfig, {
       address: contracts.reputationNFT.address,
       abi: contracts.reputationNFT.abi,
       functionName: 'getUserReputation',
       args: [address],
-    }) as ReputationContractData;
+    }) as [bigint, bigint, bigint, bigint, bigint, string, bigint];
 
-    return mapContractToReputation(data, address);
+    console.log('[ReputationNFT/read] Raw contract data (array):', data);
+
+    if (!data) {
+      console.warn('[ReputationNFT/read] No data returned from contract');
+      return null;
+    }
+
+    // BUGFIX: Contract returns TUPLE array, not object!
+    // Function returns: (reputationPoints, lastUpdated, totalPredictions, correctPredictions, tier, tierName, accuracy)
+    const [
+      reputationPoints,
+      lastUpdated,
+      totalPredictions,
+      correctPredictions,
+      tier,
+      tierName,
+      accuracy
+    ] = data;
+
+    // Convert array to object format
+    const contractData: ReputationContractData = {
+      reputationPoints,
+      lastUpdated,
+      totalPredictions,
+      correctPredictions,
+      tier,
+      tierName,
+      accuracy
+    };
+
+    console.log('[ReputationNFT/read] Converted to object:', contractData);
+
+    const mapped = mapContractToReputation(contractData, address);
+    console.log('[ReputationNFT/read] Mapped reputation:', mapped);
+
+    return mapped;
   } catch (error) {
     console.error('[ReputationNFT/read] getUserReputation failed:', error);
     return null;

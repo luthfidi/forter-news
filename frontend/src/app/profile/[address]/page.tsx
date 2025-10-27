@@ -56,10 +56,79 @@ export default function ProfilePage() {
           reputationService.getByAddress(profileAddress)
         ]);
 
-        // Filter news created by this user
+        // Filter news created by this user (for News Created tab)
         const userNews = allNews.filter(n =>
           n.creatorAddress.toLowerCase() === profileAddress.toLowerCase()
         );
+
+        // BUGFIX: Collect all unique newsIds referenced by pools and stakes
+        const referencedNewsIds = new Set<string>();
+        const stakedPools = new Set<string>(); // Track pools user staked in
+
+        // Add newsIds from pools
+        poolsData.forEach(pool => {
+          if (pool.newsId) referencedNewsIds.add(pool.newsId);
+        });
+
+        // Add newsIds from stakes (extract from composite poolId: "newsId-poolId")
+        stakesData.forEach(stake => {
+          if (stake.poolId && stake.poolId.includes('-')) {
+            const [newsId, poolId] = stake.poolId.split('-');
+            referencedNewsIds.add(newsId);
+            stakedPools.add(stake.poolId); // Track this pool
+          }
+        });
+
+        console.log('[ProfilePage] Referenced newsIds:', Array.from(referencedNewsIds));
+        console.log('[ProfilePage] Staked pools:', Array.from(stakedPools));
+
+        // Fetch any missing news that are referenced but not in allNews
+        const existingNewsIds = new Set(allNews.map(n => n.id));
+        const missingNewsIds = Array.from(referencedNewsIds).filter(id => !existingNewsIds.has(id));
+
+        if (missingNewsIds.length > 0) {
+          console.log('[ProfilePage] Fetching missing news:', missingNewsIds);
+          const missingNewsPromises = missingNewsIds.map(id => newsService.getById(id));
+          const missingNewsResults = await Promise.all(missingNewsPromises);
+          const validMissingNews = missingNewsResults.filter(Boolean) as News[];
+
+          // Merge with allNews
+          allNews.push(...validMissingNews);
+          console.log('[ProfilePage] Added', validMissingNews.length, 'missing news');
+        }
+
+        // BUGFIX: Fetch pools that user staked in (not just pools user created)
+        const poolsToFetch: Array<{ newsId: string; poolId: string }> = [];
+
+        for (const compositePoolId of stakedPools) {
+          const [newsId, poolId] = compositePoolId.split('-');
+          // Check if this pool is already in poolsData
+          const alreadyHasPool = poolsData.some(p => p.id === poolId && p.newsId === newsId);
+          if (!alreadyHasPool) {
+            poolsToFetch.push({ newsId, poolId });
+          }
+        }
+
+        if (poolsToFetch.length > 0) {
+          console.log('[ProfilePage] Fetching', poolsToFetch.length, 'staked pools...');
+          const stakedPoolPromises = poolsToFetch.map(({ newsId, poolId }) =>
+            poolService.getById(poolId, newsId)
+          );
+          const stakedPoolResults = await Promise.all(stakedPoolPromises);
+          const validStakedPools = stakedPoolResults.filter(Boolean) as Pool[];
+
+          // Merge staked pools with created pools
+          poolsData.push(...validStakedPools);
+          console.log('[ProfilePage] Added', validStakedPools.length, 'staked pools to data');
+        }
+
+        // Create a Map for fast O(1) lookup of news by ID
+        const newsMap = new Map<string, News>();
+        allNews.forEach(news => newsMap.set(news.id, news));
+
+        // Store in a way that components can access
+        // We'll keep newsCreated for "News Created" tab, and use newsMap for lookups
+        (window as any).__profileNewsMap = newsMap;
 
         setPools(poolsData);
         setStakes(stakesData);
@@ -73,9 +142,33 @@ export default function ProfilePage() {
           stakesData: stakesData,
           news: userNews.length,
           newsData: userNews,
+          totalNewsInMap: newsMap.size,
           reputation: reputationData,
           address: profileAddress
         });
+
+        // BUGFIX: Debug reputation vs actual pools
+        if (reputationData && poolsData.length > 0) {
+          const resolvedPools = poolsData.filter(p => p.status === 'resolved');
+          const correctPools = poolsData.filter(p => p.status === 'resolved' && p.outcome === 'creator_correct');
+
+          console.log('[ProfilePage] Reputation Debug:', {
+            'Contract Says': {
+              points: reputationData.reputationPoints,
+              accuracy: reputationData.accuracy + '%',
+              totalPools: reputationData.totalPools,
+              correctPools: reputationData.correctPools,
+              wrongPools: reputationData.wrongPools
+            },
+            'Frontend Sees': {
+              totalPools: poolsData.length,
+              resolvedPools: resolvedPools.length,
+              correctPools: correctPools.length,
+              wrongPools: resolvedPools.length - correctPools.length
+            },
+            'Mismatch?': reputationData.totalPools !== resolvedPools.length
+          });
+        }
       } catch (error) {
         console.error('[ProfilePage] Error loading profile data:', error);
       } finally {
@@ -92,10 +185,13 @@ export default function ProfilePage() {
   const poolsCreated = pools;
   const stakesHistory = stakes;
 
-  // Create a map of poolId to Pool for quick lookup
+  // BUGFIX: Create a map using composite ID (newsId-poolId) to match stake.poolId format
   const poolMap = new Map<string, Pool>();
   pools.forEach(pool => {
-    poolMap.set(pool.id, pool);
+    // Create composite key: "newsId-poolId" to match stake.poolId format
+    const compositeKey = `${pool.newsId}-${pool.id}`;
+    poolMap.set(compositeKey, pool);
+    console.log('[ProfilePage] Added pool to map:', compositeKey, '→', pool.reasoning?.substring(0, 50));
   });
 
   // Calculate resolved stakes and won stakes with proper pool correlation
@@ -148,6 +244,29 @@ export default function ProfilePage() {
     return new Date(Math.min(...dates.map(d => d.getTime())));
   })();
 
+  // Helper function to get category badge color
+  const getCategoryBadgeColor = (category: string) => {
+    const categoryLower = category.toLowerCase();
+    switch (categoryLower) {
+      case 'crypto':
+        return 'bg-orange-500/10 text-orange-600 border-orange-500/30';
+      case 'politics':
+        return 'bg-blue-500/10 text-blue-600 border-blue-500/30';
+      case 'technology':
+      case 'tech':
+        return 'bg-purple-500/10 text-purple-600 border-purple-500/30';
+      case 'sports':
+        return 'bg-green-500/10 text-green-600 border-green-500/30';
+      case 'entertainment':
+        return 'bg-pink-500/10 text-pink-600 border-pink-500/30';
+      case 'business':
+      case 'finance':
+        return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30';
+      default:
+        return 'bg-gray-500/10 text-gray-600 border-gray-500/30';
+    }
+  };
+
   // Show loading state
   if (loading) {
     return (
@@ -198,23 +317,36 @@ export default function ProfilePage() {
                     )}
                   </div>
 
-                  {reputation && (
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs md:text-sm">
-                      <span className="text-muted-foreground flex items-center gap-1">
-                        <Award className="h-3 w-3 md:h-4 md:w-4" />
-                        <span className="font-semibold text-foreground">{reputation.accuracy}%</span> Accuracy
-                      </span>
-                      {memberSince && (
-                        <>
-                          <span className="text-muted-foreground hidden sm:inline">•</span>
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Calendar className="h-3 w-3 md:h-4 md:w-4" />
-                            Member since {memberSince.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                  <div className="flex flex-col gap-1.5">
+                    {/* Show Points + Accuracy if reputation exists */}
+                    {reputation ? (
+                      <>
+                        {/* Points + Pool Accuracy (Primary metrics) */}
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs md:text-sm">
+                          <span className="font-semibold text-primary">
+                            {reputation.reputationPoints?.toLocaleString() || '0'} Points
                           </span>
-                        </>
-                      )}
-                    </div>
-                  )}
+                          <span className="text-muted-foreground">•</span>
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Award className="h-3 w-3 md:h-4 md:w-4" />
+                            <span className="font-semibold text-foreground">{reputation.accuracy}%</span> Pool Accuracy
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-xs md:text-sm text-muted-foreground">
+                        No reputation data available yet
+                      </div>
+                    )}
+
+                    {/* Member Since (always show if available) */}
+                    {memberSince && (
+                      <span className="text-xs md:text-sm text-muted-foreground flex items-center gap-1">
+                        <Calendar className="h-3 w-3 md:h-3.5 md:w-3.5" />
+                        Member since {memberSince.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -257,9 +389,17 @@ export default function ProfilePage() {
                 {poolsCreated.length}
               </div>
               <div className="text-xs md:text-sm text-muted-foreground">Pools Created</div>
-              {reputation && reputation.correctPools > 0 && (
-                <div className="text-xs text-green-600 mt-1">
-                  {reputation.correctPools}W / {reputation.wrongPools}L
+              {reputation && (reputation.correctPools > 0 || reputation.wrongPools > 0) && (
+                <div className="text-xs mt-1 space-y-0.5">
+                  <div className="text-muted-foreground">
+                    {reputation.accuracy}% Pool Accuracy
+                  </div>
+                  <div className="text-green-600">
+                    {reputation.correctPools}W / {reputation.wrongPools}L
+                    {reputation.activePools > 0 && (
+                      <span className="text-muted-foreground"> ({reputation.activePools} active)</span>
+                    )}
+                  </div>
                 </div>
               )}
             </CardContent>
@@ -274,8 +414,20 @@ export default function ProfilePage() {
               </div>
               <div className="text-xs md:text-sm text-muted-foreground">Stakes Made</div>
               {resolvedStakes.length > 0 && (
-                <div className="text-xs text-blue-600 mt-1">
-                  {wonStakes.length}W / {resolvedStakes.length - wonStakes.length}L
+                <div className="text-xs mt-1 space-y-0.5">
+                  <div className="text-blue-600">
+                    {wonStakes.length}W / {resolvedStakes.length - wonStakes.length}L
+                    {stakesHistory.length - resolvedStakes.length > 0 && (
+                      <span className="text-muted-foreground">
+                        {' '}({stakesHistory.length - resolvedStakes.length} pending)
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+              {resolvedStakes.length === 0 && stakesHistory.length > 0 && (
+                <div className="text-xs mt-1 text-muted-foreground">
+                  ⏳ {stakesHistory.length} pending
                 </div>
               )}
             </CardContent>
@@ -288,7 +440,17 @@ export default function ProfilePage() {
               <div className="text-xl md:text-2xl font-bold text-foreground mb-1">
                 {stakingWinRate}%
               </div>
-              <div className="text-xs md:text-sm text-muted-foreground">Win Rate</div>
+              <div className="text-xs md:text-sm text-muted-foreground">Stake Win Rate</div>
+              {resolvedStakes.length > 0 && (
+                <div className="text-xs mt-1 text-muted-foreground">
+                  ({wonStakes.length}/{resolvedStakes.length} resolved)
+                </div>
+              )}
+              {resolvedStakes.length === 0 && stakesHistory.length > 0 && (
+                <div className="text-xs mt-1 text-muted-foreground">
+                  (No resolved stakes yet)
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -352,9 +514,13 @@ export default function ProfilePage() {
               {poolsCreated.length > 0 ? (
                 <div className="space-y-3 md:space-y-4">
                   {poolsCreated.map(pool => {
-                    const news = newsCreated.find(n => n.id === pool.newsId);
+                    // BUGFIX: Use newsMap from window for O(1) lookup instead of array.find()
+                    const newsMap = (window as any).__profileNewsMap as Map<string, News> | undefined;
+                    const news = newsMap?.get(pool.newsId);
+                    // BUGFIX: Use composite key to prevent duplicate key warnings
+                    const poolKey = `${pool.newsId}-${pool.id}`;
                     return (
-                      <Card key={pool.id} className="border border-border bg-card">
+                      <Card key={poolKey} className="border border-border bg-card">
                         <CardContent className="p-4 md:p-6">
                           <div className="flex items-start justify-between gap-3 mb-3">
                             <div className="flex-1 min-w-0">
@@ -372,23 +538,28 @@ export default function ProfilePage() {
                                 >
                                   {pool.position}
                                 </Badge>
-                                <Badge variant="secondary" className="text-xs">
-                                  {pool.status === 'resolved' ? (
-                                    pool.outcome === 'creator_correct' ? (
+                                {/* BUGFIX: Use different colors for different pool outcomes */}
+                                {pool.status === 'resolved' ? (
+                                  pool.outcome === 'creator_correct' ? (
+                                    <Badge className="bg-green-500/10 text-green-600 border-green-500/30 text-xs">
                                       <span className="flex items-center gap-1">
                                         <CheckCircle className="h-3 w-3" /> Correct
                                       </span>
-                                    ) : (
+                                    </Badge>
+                                  ) : (
+                                    <Badge className="bg-red-500/10 text-red-600 border-red-500/30 text-xs">
                                       <span className="flex items-center gap-1">
                                         <XCircle className="h-3 w-3" /> Wrong
                                       </span>
-                                    )
-                                  ) : (
+                                    </Badge>
+                                  )
+                                ) : (
+                                  <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/30 text-xs">
                                     <span className="flex items-center gap-1">
                                       <Clock className="h-3 w-3" /> Active
                                     </span>
-                                  )}
-                                </Badge>
+                                  </Badge>
+                                )}
                               </div>
                             </div>
                             <div className="text-right shrink-0">
@@ -429,7 +600,12 @@ export default function ProfilePage() {
                 <div className="space-y-3 md:space-y-4">
                   {stakesHistory.map(stake => {
                     const pool = poolMap.get(stake.poolId);
-                    const news = newsCreated.find(n => n.id === pool?.newsId);
+                    console.log('[Stakes] Looking up pool:', stake.poolId, '→ Found:', pool ? 'YES' : 'NO');
+
+                    // BUGFIX: Use newsMap from window for O(1) lookup instead of array.find()
+                    const newsMap = (window as any).__profileNewsMap as Map<string, News> | undefined;
+                    const news = newsMap?.get(pool?.newsId || '');
+                    console.log('[Stakes] Looking up news:', pool?.newsId, '→ Found:', news ? news.title : 'NO');
 
                     // Calculate if this stake won/lost based on pool outcome
                     const isResolved = pool?.status === 'resolved';
@@ -439,27 +615,30 @@ export default function ProfilePage() {
                     ) : false;
 
                     return (
-                      <Card key={stake.id} className="border border-border bg-card">
+                      <Card key={`${stake.poolId}-${stake.createdAt.getTime()}`} className="border border-border bg-card">
                         <CardContent className="p-4 md:p-6">
                           <div className="flex items-start justify-between gap-3 mb-3">
                             <div className="flex-1 min-w-0">
-                              <Link href={`/news/${pool?.newsId}`} className="hover:underline">
+                              <Link href={`/news/${pool?.newsId || 'unknown'}`} className="hover:underline">
                                 <div className="font-semibold text-xs md:text-sm text-muted-foreground mb-1.5 line-clamp-2">
                                   {news?.title || 'Unknown News'}
                                 </div>
                               </Link>
                               <div className="flex items-center gap-1.5 md:gap-2 flex-wrap mt-2">
-                                <Badge variant="secondary" className="text-xs">
-                                  {stake.position === 'agree' ? (
+                                {/* BUGFIX: Use colored badges for better visibility */}
+                                {stake.position === 'agree' ? (
+                                  <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/30 text-xs">
                                     <span className="flex items-center gap-1">
                                       <CheckCircle className="h-3 w-3" /> Agreed
                                     </span>
-                                  ) : (
+                                  </Badge>
+                                ) : (
+                                  <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/30 text-xs">
                                     <span className="flex items-center gap-1">
                                       <XCircle className="h-3 w-3" /> Disagreed
                                     </span>
-                                  )}
-                                </Badge>
+                                  </Badge>
+                                )}
                                 {isResolved && (
                                   <Badge className={isWon ? 'bg-green-500/10 text-green-600 border-green-500/30 text-xs' : 'bg-red-500/10 text-red-600 border-red-500/30 text-xs'}>
                                     {isWon ? (
@@ -474,7 +653,7 @@ export default function ProfilePage() {
                                   </Badge>
                                 )}
                                 {!isResolved && (
-                                  <Badge variant="secondary" className="text-xs">
+                                  <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/30 text-xs">
                                     <span className="flex items-center gap-1">
                                       <Clock className="h-3 w-3" /> Pending
                                     </span>
@@ -525,18 +704,24 @@ export default function ProfilePage() {
                                 {news.title}
                               </h3>
                               <div className="flex items-center gap-1.5 md:gap-2 flex-wrap">
-                                <Badge variant="secondary" className="text-xs">{news.category}</Badge>
-                                <Badge variant="secondary" className="text-xs">
-                                  {news.status === 'resolved' ? (
+                                {/* BUGFIX: Use category-specific colors */}
+                                <Badge className={`${getCategoryBadgeColor(news.category)} text-xs`}>
+                                  {news.category}
+                                </Badge>
+                                {/* BUGFIX: Use different colors for different statuses */}
+                                {news.status === 'resolved' ? (
+                                  <Badge className="bg-green-500/10 text-green-600 border-green-500/30 text-xs">
                                     <span className="flex items-center gap-1">
                                       <CheckCircle className="h-3 w-3" /> Resolved
                                     </span>
-                                  ) : (
+                                  </Badge>
+                                ) : (
+                                  <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/30 text-xs">
                                     <span className="flex items-center gap-1">
                                       <Clock className="h-3 w-3" /> Active
                                     </span>
-                                  )}
-                                </Badge>
+                                  </Badge>
+                                )}
                               </div>
                             </div>
                             <div className="text-right shrink-0">

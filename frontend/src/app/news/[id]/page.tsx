@@ -401,11 +401,11 @@ export default function NewsDetailPage() {
                   </div>
                   <div className="flex gap-2">
                     <span className="text-primary">2.</span>
-                    <span>Stake &quot;Setuju&quot; to back the pool&apos;s position</span>
+                    <span>Stake &quot;Agree&quot; to back the pool&apos;s position</span>
                   </div>
                   <div className="flex gap-2">
                     <span className="text-primary">3.</span>
-                    <span>Stake &quot;Tidak Setuju&quot; to bet against it</span>
+                    <span>Stake &quot;Disagree&quot; to bet against it</span>
                   </div>
                   <div className="flex gap-2">
                     <span className="text-primary">4.</span>

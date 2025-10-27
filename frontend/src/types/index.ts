@@ -46,8 +46,8 @@ export interface Pool {
   creatorStake: number;         // Pool creator's initial stake
 
   // Independent stake pool
-  agreeStakes: number;          // "Setuju" total
-  disagreeStakes: number;       // "Tidak Setuju" total
+  agreeStakes: number;          // "Agree" total
+  disagreeStakes: number;       // "Disagree" total
   totalStaked: number;          // agreeStakes + disagreeStakes + creatorStake
 
   // Quality metrics (calculated dynamically)
@@ -71,7 +71,7 @@ export interface PoolStake {
   id: string;
   poolId: string;
   userAddress: string;
-  position: 'agree' | 'disagree'; // Setuju or Tidak Setuju
+  position: 'agree' | 'disagree'; // Agree or Disagree
   amount: number;
   createdAt: Date;
 }

@@ -30,7 +30,6 @@ interface ErrorFallbackProps {
 export function ErrorFallback({ error, reset }: ErrorFallbackProps) {
   const router = useRouter();
   const { navigateToHome } = useFarcasterNavigation();
-  const { isInFarcaster } = useFarcaster();
 
   // Parse error message for user-friendly display
   const errorMessage = error?.message || 'An unexpected error occurred';

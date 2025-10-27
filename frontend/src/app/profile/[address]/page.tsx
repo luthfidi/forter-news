@@ -128,7 +128,7 @@ export default function ProfilePage() {
 
         // Store in a way that components can access
         // We'll keep newsCreated for "News Created" tab, and use newsMap for lookups
-        (window as any).__profileNewsMap = newsMap;
+        (window as Window & { __profileNewsMap?: Map<string, News> }).__profileNewsMap = newsMap;
 
         setPools(poolsData);
         setStakes(stakesData);
@@ -515,7 +515,7 @@ export default function ProfilePage() {
                 <div className="space-y-3 md:space-y-4">
                   {poolsCreated.map(pool => {
                     // BUGFIX: Use newsMap from window for O(1) lookup instead of array.find()
-                    const newsMap = (window as any).__profileNewsMap as Map<string, News> | undefined;
+                    const newsMap = (window as Window & { __profileNewsMap?: Map<string, News> }).__profileNewsMap;
                     const news = newsMap?.get(pool.newsId);
                     // BUGFIX: Use composite key to prevent duplicate key warnings
                     const poolKey = `${pool.newsId}-${pool.id}`;
@@ -603,7 +603,7 @@ export default function ProfilePage() {
                     console.log('[Stakes] Looking up pool:', stake.poolId, '→ Found:', pool ? 'YES' : 'NO');
 
                     // BUGFIX: Use newsMap from window for O(1) lookup instead of array.find()
-                    const newsMap = (window as any).__profileNewsMap as Map<string, News> | undefined;
+                    const newsMap = (window as Window & { __profileNewsMap?: Map<string, News> }).__profileNewsMap;
                     const news = newsMap?.get(pool?.newsId || '');
                     console.log('[Stakes] Looking up news:', pool?.newsId, '→ Found:', news ? news.title : 'NO');
 

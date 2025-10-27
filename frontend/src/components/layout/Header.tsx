@@ -8,7 +8,6 @@ import { useFarcaster } from '@/contexts/FarcasterProvider'
 
 export default function Header() {
   const pathname = usePathname()
-  const { isInFarcaster, user: farcasterUser, isReady } = useFarcaster()
   const { address, isConnected } = useWallet()
 
   const isNewsActive = pathname?.startsWith('/news')

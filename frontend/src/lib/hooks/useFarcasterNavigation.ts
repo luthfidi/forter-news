@@ -66,7 +66,7 @@ export function useFarcasterNavigation() {
       // Try Next.js router first, fallback to window.location
       try {
         router.push(path);
-      } catch (e) {
+      } catch {
         console.log('[FarcasterNav] Router failed, using window.location');
         window.location.href = path;
       }
@@ -85,7 +85,7 @@ export function useFarcasterNavigation() {
       // In MiniApp, be careful with history
       try {
         router.back();
-      } catch (e) {
+      } catch {
         console.log('[FarcasterNav] Router.back failed, navigating to home');
         navigateToHome();
       }
@@ -104,7 +104,7 @@ export function useFarcasterNavigation() {
     if (isInFarcaster) {
       try {
         router.replace(path);
-      } catch (e) {
+      } catch {
         console.log('[FarcasterNav] Router.replace failed, using window.location.replace');
         window.location.replace(path);
       }

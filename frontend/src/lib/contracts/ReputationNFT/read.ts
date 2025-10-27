@@ -24,7 +24,7 @@ export async function getUserReputation(address: Address): Promise<ReputationDat
       abi: contracts.reputationNFT.abi,
       functionName: 'getUserReputation',
       args: [address],
-    }) as [bigint, bigint, bigint, bigint, bigint, string, bigint];
+    }) as unknown as [bigint, bigint, bigint, bigint, bigint, string, bigint];
 
     console.log('[ReputationNFT/read] Raw contract data (array):', data);
 

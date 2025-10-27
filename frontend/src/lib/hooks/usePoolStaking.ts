@@ -38,7 +38,7 @@ export function usePoolStaking() {
       const poolIndex = pools.findIndex(p => p.id === poolId);
 
       // Define rollback variables in function scope
-      let optimisticPoolUpdate: { oldPool: any; newPool: any } | null = null;
+      let optimisticPoolUpdate: { oldPool: Pool; newPool: Pool } | null = null;
       let optimisticStakeUpdate: PoolStake[] | null = null;
 
       if (poolIndex !== -1) {

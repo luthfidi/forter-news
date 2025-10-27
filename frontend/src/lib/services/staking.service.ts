@@ -89,34 +89,30 @@ class StakingService {
    * - Used to display "Supporters" and "Opponents" on pool detail page
    * - Gets real-time data from contract, no mock fallback
    */
-  async getByPoolId(poolId: string): Promise<PoolStake[]> {
+  async getByPoolId(poolId: string, userAddress?: string): Promise<PoolStake[]> {
     if (!isContractsEnabled()) {
       throw new Error('Contracts are disabled. Enable contracts in environment variables.');
     }
 
     try {
-      console.log('[StakingService] Fetching stakes for pool from contract:', poolId);
+      console.log('[StakingService] Fetching stakes for pool from contract:', { poolId, userAddress });
 
-      // Get current user address from wagmi
-      const { useAccount } = await import('wagmi');
-      const { address } = useAccount();
-
-      if (!address) {
-        console.log('[StakingService] No wallet connected, returning empty stakes');
+      if (!userAddress) {
+        console.log('[StakingService] No user address provided, returning empty stakes');
         return [];
       }
 
       // Get user's complete stake history from contract
       const { getUserStakeHistory } = await import('@/lib/contracts/StakingPool');
-      const allUserStakes = await getUserStakeHistory(address as `0x${string}`);
+      const allUserStakes = await getUserStakeHistory(userAddress as `0x${string}`);
 
       // Filter stakes for this specific pool
       const poolStakes = allUserStakes
         .filter(stake => stake.poolId === poolId)
         .map((record, index) => ({
-          id: `stake-${address}-${record.newsId}-${record.poolId}-${index}`,
+          id: `stake-${userAddress}-${record.newsId}-${record.poolId}-${index}`,
           poolId: `${record.newsId}-${record.poolId}`,
-          userAddress: address,
+          userAddress: userAddress,
           position: record.position ? 'agree' : 'disagree', // true = agree, false = disagree
           amount: record.amount,
           createdAt: record.timestamp,
@@ -127,6 +123,7 @@ class StakingService {
 
       console.log('[StakingService] ✅ Contract pool stakes loaded:', {
         poolId,
+        userAddress,
         totalStakes: poolStakes.length,
         totalAmount: poolStakes.reduce((sum, stake) => sum + stake.amount, 0),
         stakes: poolStakes.map(s => ({ position: s.position, amount: s.amount }))
@@ -668,10 +665,11 @@ class StakingService {
     let stakes: PoolStake[];
 
     if (poolId && userAddress) {
-      stakes = await this.getByUser(userAddress);
-      stakes = stakes.filter(s => s.poolId === poolId);
+      stakes = await this.getByPoolId(poolId, userAddress);
     } else if (poolId) {
-      stakes = await this.getByPoolId(poolId);
+      // If only poolId is provided, we can't get stakes without user address
+      // Return empty array since getByPoolId now requires user address
+      stakes = [];
     } else if (userAddress) {
       stakes = await this.getByUser(userAddress);
     } else {

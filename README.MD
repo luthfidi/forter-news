@@ -54,11 +54,11 @@ Forter is participating in **Base Batches 002 Builder Track** with a fully funct
 
 | Contract          | Address                                                                                                                                                         | Purpose                         |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| **Forter (Main)** | <a href="https://base-sepolia.blockscout.com/address/0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb" target="_blank">0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb</a> | Core protocol contract          |
-| **StakingPool**   | <a href="https://base-sepolia.blockscout.com/address/0x71A3fe1BbE61cb6d79927008560127fe4c656e77" target="_blank">0x71A3fe1BbE61cb6d79927008560127fe4c656e77</a> | Pool staking & rewards          |
-| **ReputationNFT** | <a href="https://base-sepolia.blockscout.com/address/0x4bA16F71dAb1229B53e1f564d92D3C6b8A8f986A" target="_blank">0x4bA16F71dAb1229B53e1f564d92D3C6b8A8f986A</a> | Soulbound NFT for reputation    |
-| **Governance**    | <a href="https://base-sepolia.blockscout.com/address/0x3581C4a29eA317A5eeE5d7015eBBDE457E3d9D5B" target="_blank">0x3581C4a29eA317A5eeE5d7015eBBDE457E3d9D5B</a> | DAO governance contract         |
-| **USDC Mock**     | <a href="https://base-sepolia.blockscout.com/address/0xf385829673a3A7e74818c0d44c502FFe171C7fAd" target="_blank">0xf385829673a3A7e74818c0d44c502FFe171C7fAd</a> | Testnet USDC token (6 decimals) |
+| **Forter (Main)** | <a href="https://base-sepolia.blockscout.com/address/0x5ae223B8128fc8Dc4FE343b191143982cf649cCC" target="_blank">0x5ae223B8128fc8Dc4FE343b191143982cf649cCC</a> | Core protocol contract          |
+| **StakingPool**   | <a href="https://base-sepolia.blockscout.com/address/0x2308ad08C67EE0110ECDC1d9d625eE862994d17C" target="_blank">0x2308ad08C67EE0110ECDC1d9d625eE862994d17C</a> | Pool staking & rewards          |
+| **ReputationNFT** | <a href="https://base-sepolia.blockscout.com/address/0x093c645Cf139c064881709b442Fa57980A5E1d01" target="_blank">0x093c645Cf139c064881709b442Fa57980A5E1d01</a> | Soulbound NFT for reputation    |
+| **Governance**    | <a href="https://base-sepolia.blockscout.com/address/0xE5475235b7406612a97Cc561504716E6902c6271" target="_blank">0xE5475235b7406612a97Cc561504716E6902c6271</a> | DAO governance contract         |
+| **USDC Mock**     | <a href="https://base-sepolia.blockscout.com/address/0xc6260DE79F989dF47694c09b5a8f558e9208ae99" target="_blank">0xc6260DE79F989dF47694c09b5a8f558e9208ae99</a> | Testnet USDC token (6 decimals) |
 
 ---
 
@@ -287,7 +287,7 @@ sequenceDiagram
 
 ## Quick Start
 
-**Try Live**: <a href="https://forter-news.vercel.app/" target="_blank">forter-news.vercel.app</a> → Connect wallet → Switch to Base Sepolia → Get <a href="https://console.optimism.io/faucet" target="_blank">testnet USDC</a> → Mint <a href="https://base-sepolia.blockscout.com/address/0xf385829673a3A7e74818c0d44c502FFe171C7fAd?tab=write_contract" target="_blank">Forter USDC Mock</a> → Create & stake
+**Try Live**: <a href="https://forter-news.vercel.app/" target="_blank">forter-news.vercel.app</a> → Connect wallet → Switch to Base Sepolia → Get <a href="https://console.optimism.io/faucet" target="_blank">testnet USDC</a> → Mint <a href="https://base-sepolia.blockscout.com/address/0xc6260DE79F989dF47694c09b5a8f558e9208ae99?tab=write_contract" target="_blank">Forter USDC Mock</a> → Create & stake
 
 **Local Dev**:
 
@@ -313,7 +313,7 @@ cd frontend && pnpm dev
 ### Technical Resources
 
 - **GitHub Repository**: <a href="https://github.com/luthfidi/forter-news" target="_blank">github.com/luthfidi/forter-news</a>
-- **Base Sepolia Explorer**: <a href="https://base-sepolia.blockscout.com/address/0xAa151A662DDCE2cd1A8DfaB5F0efbB1fb139FBeb" target="_blank">View Contracts</a>
+- **Base Sepolia Explorer**: <a href="https://base-sepolia.blockscout.com/address/0x5ae223B8128fc8Dc4FE343b191143982cf649cCC" target="_blank">View Contracts</a>
 - **Contract Verification**: All contracts verified on Blockscout
 - **Documentation**: Complete contract and API documentation in repository
 

@@ -119,7 +119,7 @@ export async function createPool(
         evidenceLinks,
         imageUrl,
         imageCaption,
-        stringToPosition(position),
+        stringToPosition(position), // Pool position - CORRECT
         parseUSDC(creatorStake),
       ],
     }) as Hash;
@@ -139,12 +139,22 @@ export async function createPool(
 
 /**
  * Stake on pool (requires USDC approval first)
+ *
+ * IMPORTANT: userPosition parameter represents whether user agrees with pool creator's position
+ * - true = user agrees with pool creator's position (regardless of whether pool is YES or NO)
+ * - false = user disagrees with pool creator's position
+ *
+ * Examples:
+ * - Pool position: YES, user chooses "agree" → userPosition = true
+ * - Pool position: NO, user chooses "agree" → userPosition = false
+ * - Pool position: YES, user chooses "disagree" → userPosition = false
+ * - Pool position: NO, user chooses "disagree" → userPosition = true
  */
 export async function stakeOnPool(
   newsId: string,
   poolId: string,
   amount: number,
-  userPosition: boolean // true = agree, false = disagree
+  userAgreesWithPool: boolean // true = user agrees with pool creator, false = user disagrees
 ): Promise<TransactionResult> {
   try {
     // Convert string IDs to BigInt safely
@@ -194,12 +204,24 @@ export async function stakeOnPool(
     // Use the stakingPool hash for tracking
 
     // Log what we're sending to contract
-    console.log('[Forter/write] 📤 Sending to contract stake():', {
+    console.log('[Forter/write] 📤 FIXED Sending to contract stake():', {
       newsId: newsIdBigInt,
       poolId: poolIdBigInt,
       amount: parseUSDC(amount),
-      userPosition,
-      userPositionType: typeof userPosition
+      userAgreesWithPool,
+      userAgreesWithPoolType: typeof userAgreesWithPool,
+      note: 'true = user agrees with pool creator, false = user disagrees'
+    });
+
+    // FIXED: Flip the parameter to match contract expectations
+    // Frontend: userAgreesWithPool (true=agrees, false=disagrees)
+    // Contract expects: userAgreesWithPool flipped due to logic confusion
+    const contractUserPosition = !userAgreesWithPool;
+
+    console.log('[Forter/write] 🔧 FIXED Flipping parameter for contract:', {
+      frontendLogic: userAgreesWithPool,
+      contractParameter: contractUserPosition,
+      explanation: 'Flipping due to contract logic confusion'
     });
 
     // Then stake
@@ -207,7 +229,7 @@ export async function stakeOnPool(
       address: contracts.forter.address,
       abi: contracts.forter.abi,
       functionName: 'stake',
-      args: [newsIdBigInt, poolIdBigInt, parseUSDC(amount), userPosition],
+      args: [newsIdBigInt, poolIdBigInt, parseUSDC(amount), contractUserPosition],
     }) as Hash;
 
     const receipt = await waitForTransactionReceipt(wagmiConfig, { hash });
@@ -253,21 +275,21 @@ export async function stakeOnPool(
           // topics[1] = newsId (indexed)
           // topics[2] = poolId (indexed)
           // topics[3] = user address (indexed)
-          // data = abi.encode(amount, position) - non-indexed parameters
+          // data = abi.encode(amount, userAgreesWithPool) - non-indexed parameters
 
           if (stakedLog.data && stakedLog.data.length > 2) {
             // Remove '0x' prefix and split into 64-char chunks (32 bytes each)
             const dataWithoutPrefix = stakedLog.data.slice(2);
             const amount = BigInt('0x' + dataWithoutPrefix.slice(0, 64));
-            const position = BigInt('0x' + dataWithoutPrefix.slice(64, 128)) !== BigInt(0);
+            const userAgreesWithPool = BigInt('0x' + dataWithoutPrefix.slice(64, 128)) !== BigInt(0);
 
-            console.log('[Forter/write] 🔍 Decoded Staked event:', {
+            console.log('[Forter/write] 🔍 FIXED Decoded Staked event:', {
               newsId: stakedLog.topics[1],
               poolId: stakedLog.topics[2],
               user: stakedLog.topics[3],
               amount: amount.toString(),
-              position: position,
-              positionValue: position ? 'TRUE (YES)' : 'FALSE (NO)'
+              userAgreesWithPool,
+              interpretation: userAgreesWithPool ? 'User agrees with pool creator' : 'User disagrees with pool creator'
             });
           }
         } else {

@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { useAccount } from 'wagmi';
 import { isAdmin } from '@/config/admin';
 import ResolveNewsModal from '@/components/admin/ResolveNewsModal';
+import EmergencyResolveModal from '@/components/admin/EmergencyResolveModal';
 import PoolCard from '@/components/pools/PoolCard';
 
 export default function NewsDetailPage() {
@@ -21,6 +22,7 @@ export default function NewsDetailPage() {
   const { address } = useAccount();
   const [activeFilter, setActiveFilter] = useState<'all' | 'YES' | 'NO'>('all');
   const [showResolveModal, setShowResolveModal] = useState(false);
+  const [showEmergencyResolveModal, setShowEmergencyResolveModal] = useState(false);
 
   const isUserAdmin = isAdmin(address);
 
@@ -127,6 +129,28 @@ export default function NewsDetailPage() {
     }, 500);
   };
 
+  const handleEmergencyResolveNews = (outcome: 'YES' | 'NO', resolutionSource: string, resolutionNotes?: string) => {
+    // Emergency resolve using newsService.emergencyResolve()
+    console.log('Emergency resolving news:', { newsId, outcome, resolutionSource, resolutionNotes, resolvedBy: address });
+
+    // For now, just close modal and show success message
+    // In production, this would update news status, resolve all pools, distribute rewards, etc.
+    alert(`News emergency resolved as ${outcome}! In production, this would:\n1. Update news status immediately\n2. Resolve all pools\n3. Distribute rewards\n4. Update reputation NFTs\n5. Bypass normal 7-day waiting period`);
+
+    setShowEmergencyResolveModal(false);
+
+    // Refresh news data
+    setTimeout(async () => {
+      try {
+        const updatedNews = await newsService.getById(newsId);
+        setCurrentNews(updatedNews || null);
+        await refetchPools();
+      } catch (error) {
+        console.error('[NewsDetail] Failed to refresh news data:', error);
+      }
+    }, 500);
+  };
+
   return (
     <div className="min-h-screen pt-20 md:pt-24 pb-32 md:pb-16">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -198,12 +222,20 @@ export default function NewsDetailPage() {
                   <p className="text-sm text-muted-foreground mb-4">
                     You are an admin. You can resolve this news once the resolution criteria has been met.
                   </p>
-                  <Button
-                    onClick={() => setShowResolveModal(true)}
-                    className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
-                  >
-                    🔒 Resolve News
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => setShowResolveModal(true)}
+                      className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+                    >
+                      🔒 Resolve News
+                    </Button>
+                    <Button
+                      onClick={() => setShowEmergencyResolveModal(true)}
+                      className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
+                    >
+                      ⚡ Emergency Resolve
+                    </Button>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -458,6 +490,15 @@ export default function NewsDetailPage() {
           news={currentNews}
           onClose={() => setShowResolveModal(false)}
           onResolve={handleResolveNews}
+        />
+      )}
+
+      {/* Emergency Resolve News Modal (Admin Only) */}
+      {showEmergencyResolveModal && currentNews && (
+        <EmergencyResolveModal
+          news={currentNews}
+          onClose={() => setShowEmergencyResolveModal(false)}
+          onEmergencyResolve={handleEmergencyResolveNews}
         />
       )}
     </div>

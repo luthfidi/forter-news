@@ -85,37 +85,61 @@ class StakingService {
    * Get stakes by POOL ID
    *
    * Contract Integration:
-   * - Function: getPoolStakeStats(newsId, poolId) for aggregated data
+   * - Function: getUserStakeHistory(user) + filter by poolId
    * - Used to display "Supporters" and "Opponents" on pool detail page
-   * - Individual stakes require event indexing for full history
+   * - Gets real-time data from contract, no mock fallback
    */
   async getByPoolId(poolId: string): Promise<PoolStake[]> {
     if (!isContractsEnabled()) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      return mockGetPoolStakesByPoolId(poolId);
+      throw new Error('Contracts are disabled. Enable contracts in environment variables.');
     }
 
     try {
       console.log('[StakingService] Fetching stakes for pool from contract:', poolId);
-      
-      // Individual stake history requires event indexing
-      // For now, we'll fall back to mock data for detailed stake list
-      // In production, this would use events or The Graph protocol
-      
-      console.log('[StakingService] Pool stake details require event indexing, falling back to mock');
-      await new Promise(resolve => setTimeout(resolve, 300));
-      return mockGetPoolStakesByPoolId(poolId);
+
+      // Get current user address from wagmi
+      const { useAccount } = await import('wagmi');
+      const { address } = useAccount();
+
+      if (!address) {
+        console.log('[StakingService] No wallet connected, returning empty stakes');
+        return [];
+      }
+
+      // Get user's complete stake history from contract
+      const { getUserStakeHistory } = await import('@/lib/contracts/StakingPool');
+      const allUserStakes = await getUserStakeHistory(address as `0x${string}`);
+
+      // Filter stakes for this specific pool
+      const poolStakes = allUserStakes
+        .filter(stake => stake.poolId === poolId)
+        .map((record, index) => ({
+          id: `stake-${address}-${record.newsId}-${record.poolId}-${index}`,
+          poolId: `${record.newsId}-${record.poolId}`,
+          userAddress: address,
+          position: record.position ? 'agree' : 'disagree', // true = agree, false = disagree
+          amount: record.amount,
+          createdAt: record.timestamp,
+          status: 'active' as const,
+          potentialReward: 0,
+          actualReward: 0
+        }));
+
+      console.log('[StakingService] ✅ Contract pool stakes loaded:', {
+        poolId,
+        totalStakes: poolStakes.length,
+        totalAmount: poolStakes.reduce((sum, stake) => sum + stake.amount, 0),
+        stakes: poolStakes.map(s => ({ position: s.position, amount: s.amount }))
+      });
+
+      return poolStakes;
 
     } catch (error) {
-      console.error('[StakingService] Contract getByPoolId failed, falling back to mock:', error);
-      
-      // Fallback to mock data on error
-      if (process.env.NODE_ENV === 'development') {
-        await new Promise(resolve => setTimeout(resolve, 300));
-        return mockGetPoolStakesByPoolId(poolId);
-      }
-      
-      throw new Error(handleContractError(error));
+      console.error('[StakingService] Contract getByPoolId failed:', error);
+
+      // Return empty array instead of mock data to force contract data usage
+      console.log('[StakingService] Returning empty stakes due to contract error - NO MOCK FALLBACK');
+      return [];
     }
   }
 
@@ -206,8 +230,24 @@ class StakingService {
         resolvedNewsId = pool.newsId;
       }
 
-      // Convert string poolId to numeric format for contract
-      const poolIdNumeric = input.poolId.replace(/\D/g, '');
+      // FIXED: Extract poolId numeric part properly
+      // Pool IDs can be in formats: "5", "pool-5", "newsId-5", etc.
+      // We need to extract the actual pool number (last part after hyphen or the whole string if no hyphen)
+      let poolIdNumeric: string;
+
+      if (input.poolId.includes('-')) {
+        // Format: "something-5" → extract "5"
+        const parts = input.poolId.split('-');
+        poolIdNumeric = parts[parts.length - 1]; // Get the last part (actual pool ID)
+      } else {
+        // Format: "5" → use as is
+        poolIdNumeric = input.poolId;
+      }
+
+      // Validate that we extracted a valid number
+      if (!/^\d+$/.test(poolIdNumeric)) {
+        throw new Error(`Invalid pool ID format: ${input.poolId}. Expected numeric pool ID.`);
+      }
 
       // Validate pool exists and is active
       const { poolService } = await import('./pool.service');
@@ -233,16 +273,36 @@ class StakingService {
         throw new Error(`News ${resolvedNewsId} is already resolved`);
       }
 
-      // Check if user already has a stake in this pool with different position
+      // FIXED: Check for valid existing stake with amount > 0
       const existingStake = await this.getUserStake(input.newsId, input.poolId, input.userAddress);
-      if (existingStake && !existingStake.isWithdrawn) {
+      console.log('[StakingService] 🔍 EXISTING STAKE CHECK:');
+      console.log('  Input position:', input.position);
+      console.log('  Pool position:', pool.position);
+      console.log('  Existing stake:', existingStake);
+
+      // Only consider it as "existing stake" if amount > 0
+      const hasValidExistingStake = existingStake && existingStake.amount > 0;
+      console.log('  Has valid existing stake:', hasValidExistingStake);
+
+      if (hasValidExistingStake) {
         const userChoicePosition = input.position === 'agree';
         const existingPosition = existingStake.position;
+        const poolPositionBool = pool.position === 'YES';
+
+        console.log('[StakingService] 📊 VALIDATION CHECK:');
+        console.log('  userChoicePosition:', userChoicePosition);
+        console.log('  existingPosition:', existingPosition);
+        console.log('  poolPositionBool:', poolPositionBool);
 
         if (userChoicePosition !== existingPosition) {
           const existingText = existingPosition ? 'agree' : 'disagree';
+          console.log('[StakingService] ❌ POSITION MISMATCH - BLOCKING STAKE');
           throw new Error(`Cannot change position. You already staked "${existingText}" on this pool. You can only add more stakes to the same position.`);
+        } else {
+          console.log('[StakingService] ✅ POSITION MATCHES - ALLOWING STAKE');
         }
+      } else {
+        console.log('[StakingService] ✅ NO VALID EXISTING STAKE - ALLOWING NEW STAKE');
       }
 
       const poolPositionBool = pool.position === 'YES';
@@ -250,16 +310,24 @@ class StakingService {
         ? poolPositionBool      // Agree: same position as pool
         : !poolPositionBool;    // Disagree: opposite position from pool
 
+      // FIXED: Correct parameter mapping
+      // userAgreesWithPool: true = agrees with pool creator, false = disagrees
+      const userAgreesWithPool = userPositionAbsolute;
+
       // Log for debugging
-      console.log('[StakingService] 🎯 Stake Mapping:', {
+      console.log('[StakingService] 🎯 FIXED Stake Mapping:', {
+        poolId: {
+          original: input.poolId,
+          extracted: poolIdNumeric,
+          extractionMethod: input.poolId.includes('-') ? 'split-last-part' : 'direct'
+        },
         poolPosition: pool.position,
         poolPositionBool: poolPositionBool,
         userChoice: input.position,
         userPositionAbsolute: userPositionAbsolute,
         userPositionType: typeof userPositionAbsolute,
-        expectedUpdate: input.position === 'agree' ? 'agreeStakes' : 'disagreeStakes',
         amount: input.amount,
-        calculation: `${input.position} → ${poolPositionBool} (pool) → ${userPositionAbsolute} (sent)`
+        calculation: `${input.position} → ${poolPositionBool} (pool) → ${userPositionAbsolute} → ${userAgreesWithPool} (userAgreesWithPool)`
       });
 
       // Call smart contract
@@ -267,7 +335,7 @@ class StakingService {
         resolvedNewsId,
         poolIdNumeric,
         input.amount,
-        userPositionAbsolute
+        userAgreesWithPool
       );
 
       if (!result.success) {
@@ -304,13 +372,24 @@ class StakingService {
           const agreeIncrease = updatedPool.agreeStakes - pool.agreeStakes;
           const disagreeIncrease = updatedPool.disagreeStakes - pool.disagreeStakes;
 
-          console.log('[StakingService] 📊 Verification:', {
-            expected: input.position === 'agree' ? 'agreeStakes' : 'disagreeStakes',
+          // FIXED: Correct verification logic that accounts for pool position
+          const poolPositionBool = pool.position === 'YES';
+          const userPositionAbsolute = input.position === 'agree'
+            ? poolPositionBool      // Agree: same position as pool
+            : !poolPositionBool;    // Disagree: opposite position from pool
+
+          const expectedPool = userPositionAbsolute ? 'agreeStakes' : 'disagreeStakes';
+          const isCorrect = (userPositionAbsolute && agreeIncrease === input.amount) ||
+                           (!userPositionAbsolute && disagreeIncrease === input.amount);
+
+          console.log('[StakingService] 📊 FIXED Verification:', {
+            poolPosition: pool.position,
+            userChoice: input.position,
+            userPositionAbsolute,
+            expected: expectedPool,
             agreeChange: agreeIncrease > 0 ? `+$${agreeIncrease}` : '$0',
             disagreeChange: disagreeIncrease > 0 ? `+$${disagreeIncrease}` : '$0',
-            status: (input.position === 'agree' && agreeIncrease === input.amount) ||
-                    (input.position === 'disagree' && disagreeIncrease === input.amount)
-                    ? '✅ CORRECT' : '❌ WRONG POOL!'
+            status: isCorrect ? '✅ CORRECT POOL!' : '❌ WRONG POOL!'
           });
         }
       } catch (fetchError) {
@@ -430,6 +509,52 @@ class StakingService {
         success: false,
         error: handleContractError(error)
       };
+    }
+  }
+
+  /**
+   * Refresh all user stakes from contract (for real-time updates)
+   *
+   * Contract Integration:
+   * - Function: getUserStakeHistory(user) from StakingPool contract
+   * - Used to refresh user's complete stake history after transactions
+   */
+  async refreshUserStakes(userAddress: string): Promise<PoolStake[]> {
+    if (!isContractsEnabled()) {
+      throw new Error('Contracts are disabled. Enable contracts in environment variables.');
+    }
+
+    try {
+      console.log('[StakingService] 🔄 Refreshing all user stakes from contract:', userAddress);
+
+      // Get user's complete stake history from contract
+      const { getUserStakeHistory } = await import('@/lib/contracts/StakingPool');
+      const allUserStakes = await getUserStakeHistory(userAddress as `0x${string}`);
+
+      // Convert to PoolStake format
+      const poolStakes: PoolStake[] = allUserStakes.map((record, index) => ({
+        id: `stake-${userAddress}-${record.newsId}-${record.poolId}-${index}`,
+        poolId: `${record.newsId}-${record.poolId}`,
+        userAddress: userAddress,
+        position: record.position ? 'agree' : 'disagree', // true = agree, false = disagree
+        amount: record.amount,
+        createdAt: record.timestamp,
+        status: 'active' as const,
+        potentialReward: 0,
+        actualReward: 0
+      }));
+
+      console.log('[StakingService] ✅ Fresh user stakes loaded from contract:', {
+        userAddress,
+        totalStakes: poolStakes.length,
+        totalAmount: poolStakes.reduce((sum, stake) => sum + stake.amount, 0)
+      });
+
+      return poolStakes;
+
+    } catch (error) {
+      console.error('[StakingService] Failed to refresh user stakes from contract:', error);
+      return [];
     }
   }
 

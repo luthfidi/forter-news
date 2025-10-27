@@ -34,53 +34,214 @@ export function usePoolStaking() {
         userAddress: address as `0x${string}`
       }, newsId);
 
-      // Update pool stakes in local state
+      // FIXED: Implement optimistic updates with rollback
       const poolIndex = pools.findIndex(p => p.id === poolId);
+
+      // Define rollback variables in function scope
+      let optimisticPoolUpdate: { oldPool: any; newPool: any } | null = null;
+      let optimisticStakeUpdate: PoolStake[] | null = null;
+
       if (poolIndex !== -1) {
-        // Calculate if user's position aligns with pool's position (Support Stakers)
-        const pool = pools[poolIndex];
-        const poolPositionBool = pool.position === 'YES';
-        const userPositionBool = position === 'agree';
-        const isSupporting = userPositionBool === poolPositionBool;
+        // Store original state for potential rollback
+        const originalPool = pools[poolIndex];
+        const originalStakes = [...poolStakes];
+
+        // DETECT AND FIX CREATOR STAKE BUG FOR EXISTING POOLS
+        const pool = originalPool;
+
+        // FIXED: Check for legacy creator stake bug (only affects old contracts)
+        // OLD BUG: Creator stake was put in agreeStakes regardless of pool position
+        // NEW CONTRACTS: Creator stake follows pool position correctly
+        // This detection handles backward compatibility with old pools
+        const hasCreatorStakeBug = pool.position === 'NO' && pool.agreeStakes > 0 && pool.disagreeStakes === 0;
+
+        let workingPool = pool;
+
+        if (hasCreatorStakeBug) {
+          console.log('[usePoolStaking] 🐛 DETECTED CREATOR STAKE BUG IN NO POOL!');
+          console.log('[usePoolStaking] Pool position:', pool.position, 'but all stakes in agreeStakes');
+          console.log('[usePoolStaking] Pool stakes - agreeStakes:', pool.agreeStakes, 'disagreeStakes:', pool.disagreeStakes);
+
+          // Fix: Move creator stake from agreeStakes to disagreeStakes for NO pools
+          const creatorStakeAmount = pool.agreeStakes;
+
+          workingPool = {
+            ...pool,
+            agreeStakes: 0,  // Remove incorrectly placed creator stake
+            disagreeStakes: creatorStakeAmount  // Put creator stake where it belongs
+          };
+
+          console.log('[usePoolStaking] 🔧 FIXED: Moved', creatorStakeAmount, 'from agreeStakes to disagreeStakes');
+          console.log('[usePoolStaking] Corrected pool - agreeStakes:', workingPool.agreeStakes, 'disagreeStakes:', workingPool.disagreeStakes);
+        } else {
+          console.log('[usePoolStaking] ✅ Pool has correct stake distribution');
+        }
+
+        // FIXED: Initialize variables before use
+        let agreeStakesIncrease = 0;
+        let disagreeStakesIncrease = 0;
+
+        // Contract logic: agreeStakes = users who agree with pool creator's position
+        // disagreeStakes = users who disagree with pool creator's position
+        // Use workingPool (corrected if bug detected) for calculations
+
+        if (position === 'agree') {
+          // User agrees with pool creator's position
+          if (workingPool.position === 'YES') {
+            agreeStakesIncrease = amount; // Pool says YES, user agrees → agreeStakes increase
+          } else {
+            disagreeStakesIncrease = amount; // Pool says NO, user agrees → disagreeStakes increase
+          }
+        } else {
+          // User disagrees with pool creator's position
+          if (workingPool.position === 'YES') {
+            disagreeStakesIncrease = amount; // Pool says YES, user disagrees → disagreeStakes increase
+          } else {
+            agreeStakesIncrease = amount; // Pool says NO, user disagrees → agreeStakes increase
+          }
+        }
 
         const updatedPool = {
-          ...pool,
-          agreeStakes: isSupporting
-            ? pool.agreeStakes + amount  // User position aligns with pool = Support Stakers
-            : pool.agreeStakes,
-          disagreeStakes: !isSupporting
-            ? pool.disagreeStakes + amount  // User position opposes pool = Oppose Stakers
-            : pool.disagreeStakes,
-          totalStaked: pool.totalStaked + amount
+          ...workingPool,
+          agreeStakes: workingPool.agreeStakes + agreeStakesIncrease,
+          disagreeStakes: workingPool.disagreeStakes + disagreeStakesIncrease,
+          totalStaked: workingPool.totalStaked + amount
         };
 
-        console.log('[usePoolStaking] 🎯 Updated pool stakes:', {
+        console.log('[usePoolStaking] 🎯 FIXED OPTIMISTIC UPDATE:', {
           poolId,
-          poolPosition: pool.position,
+          poolPosition: workingPool.position,
           userChoice: position,
-          isSupporting,
           amount,
+          bugDetected: hasCreatorStakeBug,
           oldAgree: pool.agreeStakes,
           oldDisagree: pool.disagreeStakes,
+          correctedAgree: workingPool.agreeStakes,
+          correctedDisagree: workingPool.disagreeStakes,
           newAgree: updatedPool.agreeStakes,
           newDisagree: updatedPool.disagreeStakes,
-          calculation: `Pool ${pool.position} + User ${position} = ${isSupporting ? 'Support Stakers' : 'Oppose Stakers'}`
+          agreeIncrease: agreeStakesIncrease,
+          disagreeIncrease: disagreeStakesIncrease,
+          calculation: `Pool ${workingPool.position} + User ${position} = ${workingPool.position === 'YES' ? 'YES' : 'NO'}+${agreeStakesIncrease}, ${workingPool.position === 'YES' ? 'NO' : 'YES'}+${disagreeStakesIncrease}`,
+          expectedBehavior: workingPool.position === 'YES' ?
+            (position === 'agree' ? 'User agrees with YES pool → goes to GREEN' : 'User disagrees with YES pool → goes to RED') :
+            (position === 'agree' ? 'User agrees with NO pool → goes to RED' : 'User disagrees with NO pool → goes to GREEN')
         });
 
-        // Update pools list with new array reference to force re-render
+        // Store optimistic update data for rollback
+        optimisticPoolUpdate = { oldPool: originalPool, newPool: updatedPool };
+        optimisticStakeUpdate = [...originalStakes, newStake];
+
+        // Apply optimistic updates immediately
         const newPools = [...pools];
-        newPools[poolIndex] = updatedPool;
+
+        // IMPORTANT: If we detected and fixed a creator stake bug, update the pool store immediately
+        if (hasCreatorStakeBug) {
+          console.log('[usePoolStaking] 📢 UPDATING POOL STORE: Fixing creator stake bug permanently');
+          // First update the pool to fix the bug, then apply the new stake
+          newPools[poolIndex] = updatedPool;
+        } else {
+          newPools[poolIndex] = updatedPool;
+        }
+
         setPools(newPools);
+        setPoolStakes(optimisticStakeUpdate);
       } else {
         console.warn('[usePoolStaking] Pool not found for ID:', poolId);
       }
 
-      // Add to user stakes
-      setPoolStakes([...poolStakes, newStake]);
+      // FIXED: Refresh pool data from contract after successful stake
+      try {
+        console.log('[usePoolStaking] 🔄 Refreshing pool data from contract after successful stake');
+
+        const { poolService } = await import('@/lib/services');
+
+        // Extract newsId from poolId format (newsId-poolId)
+        let resolvedNewsId = newsId;
+        if (!resolvedNewsId && pools[poolIndex]?.newsId) {
+          resolvedNewsId = pools[poolIndex].newsId;
+        }
+
+        if (resolvedNewsId && poolId) {
+          const freshStats = await poolService.refreshPoolStats(resolvedNewsId, poolId);
+
+          if (freshStats) {
+            console.log('[usePoolStaking] ✅ Pool stats refreshed from contract:', freshStats);
+
+            // Update pool in global store with fresh data
+            const updatedPools = [...pools];
+            const currentPool = updatedPools[poolIndex];
+
+            if (currentPool) {
+              const refreshedPool = {
+                ...currentPool,
+                agreeStakes: freshStats.agreeStakes,
+                disagreeStakes: freshStats.disagreeStakes,
+                totalStaked: freshStats.totalStaked
+              };
+
+              updatedPools[poolIndex] = refreshedPool;
+              setPools(updatedPools);
+
+              console.log('[usePoolStaking] 📊 Pool updated in global store:', {
+                poolId,
+                agreeStakes: freshStats.agreeStakes,
+                disagreeStakes: freshStats.disagreeStakes,
+                totalStaked: freshStats.totalStaked
+              });
+            }
+          } else {
+            console.warn('[usePoolStaking] ⚠️ Failed to refresh pool stats from contract, using optimistic update');
+          }
+        }
+      } catch (refreshError) {
+        console.warn('[usePoolStaking] ⚠️ Pool refresh failed, but stake succeeded:', refreshError);
+      }
+
+      // FIXED: Refresh user stakes from contract after successful stake
+      try {
+        console.log('[usePoolStaking] 🔄 Refreshing user stakes from contract after successful stake');
+
+        if (address) {
+          const { stakingService } = await import('@/lib/services');
+          const freshUserStakes = await stakingService.refreshUserStakes(address);
+
+          if (freshUserStakes.length > 0) {
+            console.log('[usePoolStaking] ✅ User stakes refreshed from contract:', {
+              userAddress: address,
+              totalStakes: freshUserStakes.length,
+              totalAmount: freshUserStakes.reduce((sum, stake) => sum + stake.amount, 0)
+            });
+
+            // Update user stakes in global store
+            setPoolStakes(freshUserStakes);
+          } else {
+            console.warn('[usePoolStaking] ⚠️ No user stakes returned from contract');
+          }
+        }
+      } catch (stakeRefreshError) {
+        console.warn('[usePoolStaking] ⚠️ User stakes refresh failed, but stake succeeded:', stakeRefreshError);
+      }
 
       console.log('Stake successful:', newStake);
       return newStake;
     } catch (err) {
+      // FIXED: Rollback optimistic updates on error
+      if (optimisticPoolUpdate && optimisticStakeUpdate) {
+        console.log('[usePoolStaking] 🔄 ROLLING BACK optimistic updates due to error:', err instanceof Error ? err.message : 'Failed to stake');
+
+        // Rollback pool state
+        const newPools = [...pools];
+        const poolIndex = newPools.findIndex(p => p.id === poolId);
+        if (poolIndex !== -1) {
+          newPools[poolIndex] = optimisticPoolUpdate.oldPool;
+          setPools(newPools);
+        }
+
+        // Rollback user stakes
+        setPoolStakes(poolStakes); // Restore original state
+      }
+
       console.error('Failed to stake:', err instanceof Error ? err.message : 'Failed to stake');
       console.error('Error staking:', err);
       return null;

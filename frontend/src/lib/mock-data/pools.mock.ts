@@ -30,9 +30,9 @@ export const MOCK_POOLS: Pool[] = [
     imageUrl: 'https://images.unsplash.com/photo-1605792657660-596af9009e82?w=800',
     imageCaption: 'Bitcoin Institutional Adoption Curve',
     creatorStake: 500,
-    agreeStakes: 12000,
+    agreeStakes: 500,    // FIXED: Creator stake in agreeStakes for YES pool
     disagreeStakes: 3200,
-    totalStaked: 15700,
+    totalStaked: 3700,  // FIXED: 500 (creator) + 3200 (disagree) = 3700
     status: 'active',
     outcome: null,
     createdAt: new Date('2025-10-16'),
@@ -52,9 +52,9 @@ export const MOCK_POOLS: Pool[] = [
     imageUrl: 'https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=800',
     imageCaption: 'BTC Technical Resistance Analysis',
     creatorStake: 300,
-    agreeStakes: 5500,
+    agreeStakes: 300,    // FIXED: Creator stake in agreeStakes for YES pool
     disagreeStakes: 8900,
-    totalStaked: 14700,
+    totalStaked: 9200,  // FIXED: 300 (creator) + 8900 (disagree) = 9200
     status: 'active',
     outcome: null,
     createdAt: new Date('2025-10-17')
@@ -75,9 +75,9 @@ export const MOCK_POOLS: Pool[] = [
     imageUrl: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800',
     imageCaption: 'Solana Ecosystem Growth Analysis',
     creatorStake: 800,
-    agreeStakes: 18000,
+    agreeStakes: 800,    // FIXED: Creator stake in agreeStakes for YES pool
     disagreeStakes: 6200,
-    totalStaked: 25000,
+    totalStaked: 7000,  // FIXED: 800 (creator) + 6200 (disagree) = 7000
     status: 'active',
     outcome: null,
     createdAt: new Date('2025-10-19'),
@@ -115,9 +115,9 @@ export const MOCK_POOLS: Pool[] = [
       'https://example.com/openai-leaks'
     ],
     creatorStake: 1200,
-    agreeStakes: 25000,
+    agreeStakes: 1200,   // FIXED: Creator stake in agreeStakes for YES pool
     disagreeStakes: 18000,
-    totalStaked: 44200,
+    totalStaked: 19200, // FIXED: 1200 (creator) + 18000 (disagree) = 19200
     status: 'active',
     outcome: null,
     createdAt: new Date('2025-10-21')

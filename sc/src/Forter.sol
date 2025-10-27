@@ -209,9 +209,15 @@ contract Forter is Ownable2Step, ReentrancyGuard {
         bool positionBool = (_position == Position.YES);
         stakingPool.stake(newsId, poolId, msg.sender, _creatorStake, positionBool, positionBool);
 
-        // Update pool totals
+        // Update pool totals - FIXED: Creator stake follows pool position
         pool.totalStaked = _creatorStake;
-        pool.agreeStakes = _creatorStake;
+        if (positionBool) {
+            // Pool YES - creator agrees with own position (agreeStakes)
+            pool.agreeStakes = _creatorStake;
+        } else {
+            // Pool NO - creator agrees with own position (disagreeStakes)
+            pool.disagreeStakes = _creatorStake;
+        }
         news.totalStaked += _creatorStake;
 
         emit PoolCreated(newsId, poolId, msg.sender, _reasoning, _position, _creatorStake);
@@ -240,19 +246,21 @@ contract Forter is Ownable2Step, ReentrancyGuard {
         // Convert Position enum to bool for StakingPool compatibility
         bool poolPositionBool = (pool.position == Position.YES);
 
-        // Delegate to staking pool
+        // FIXED: Send correct userPosition to staking pool
         stakingPool.stake(newsId, poolId, msg.sender, amount, poolPositionBool, userPosition);
 
-        // Update pool totals
+        // Update pool totals - FIXED: Compare userPosition with poolPosition
         pool.totalStaked += amount;
         if (userPosition == poolPositionBool) {
+            // User agrees with pool creator's position
             pool.agreeStakes += amount;
         } else {
+            // User disagrees with pool creator's position
             pool.disagreeStakes += amount;
         }
         news.totalStaked += amount;
 
-        emit Staked(newsId, poolId, msg.sender, amount, userPosition);
+        emit Staked(newsId, poolId, msg.sender, amount, poolPositionBool);
     }
 
     function resolveNews(

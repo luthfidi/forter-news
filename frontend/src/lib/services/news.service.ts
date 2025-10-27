@@ -111,16 +111,15 @@ class NewsService {
           description: 'This is a test news item for validating the fixed staking system with proper position mapping logic. Created via contract interaction.',
           category: 'Testing',
           resolutionCriteria: 'Any condition for testing purposes',
-          creator: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
+          creatorAddress: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
           status: 'active',
-          outcome: null,
+          outcome: undefined,
           createdAt: new Date(),
-          resolveTime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-          resolvedAt: null,
-          resolvedBy: null,
+          endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+          resolvedAt: undefined,
+          resolvedBy: undefined,
           resolutionSource: '',
           resolutionNotes: '',
-          emergencyResolve: false,
           totalPools: 1,
           totalStaked: 10000000000, // 10,000 USDC creator stake
         }

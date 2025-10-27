@@ -1,7 +1,6 @@
 import { PoolStake, StakeInput } from '@/types';
 import {
   MOCK_POOL_STAKES,
-  getPoolStakesByPoolId as mockGetPoolStakesByPoolId,
   getStakesByUser as mockGetStakesByUser,
 } from '@/lib/mock-data';
 import { isContractsEnabled } from '@/config/contracts';
@@ -113,7 +112,7 @@ class StakingService {
           id: `stake-${userAddress}-${record.newsId}-${record.poolId}-${index}`,
           poolId: `${record.newsId}-${record.poolId}`,
           userAddress: userAddress,
-          position: record.position ? 'agree' : 'disagree', // true = agree, false = disagree
+          position: (record.position ? 'agree' : 'disagree') as 'agree' | 'disagree', // true = agree, false = disagree
           amount: record.amount,
           createdAt: record.timestamp,
           status: 'active' as const,
@@ -165,7 +164,7 @@ class StakingService {
         id: `stake-${userAddress}-${record.newsId}-${record.poolId}-${index}`,
         poolId: `${record.newsId}-${record.poolId}`, // Composite ID
         userAddress: userAddress,
-        position: record.position ? 'agree' : 'disagree', // true = agree, false = disagree
+        position: (record.position ? 'agree' : 'disagree') as 'agree' | 'disagree', // true = agree, false = disagree
         amount: record.amount,
         createdAt: record.timestamp
       }));
@@ -533,7 +532,7 @@ class StakingService {
         id: `stake-${userAddress}-${record.newsId}-${record.poolId}-${index}`,
         poolId: `${record.newsId}-${record.poolId}`,
         userAddress: userAddress,
-        position: record.position ? 'agree' : 'disagree', // true = agree, false = disagree
+        position: (record.position ? 'agree' : 'disagree') as 'agree' | 'disagree', // true = agree, false = disagree
         amount: record.amount,
         createdAt: record.timestamp,
         status: 'active' as const,

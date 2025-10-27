@@ -13,6 +13,10 @@ export function usePoolStaking() {
     amount: number,
     newsId?: string
   ): Promise<PoolStake | null> => {
+    // FIXED: Define rollback variables in function scope (outside try-catch)
+    let optimisticPoolUpdate: { oldPool: Pool; newPool: Pool } | null = null;
+    let optimisticStakeUpdate: PoolStake[] | null = null;
+
     try {
       setLoading('stakes', true);
 
@@ -36,10 +40,6 @@ export function usePoolStaking() {
 
       // FIXED: Implement optimistic updates with rollback
       const poolIndex = pools.findIndex(p => p.id === poolId);
-
-      // Define rollback variables in function scope
-      let optimisticPoolUpdate: { oldPool: Pool; newPool: Pool } | null = null;
-      let optimisticStakeUpdate: PoolStake[] | null = null;
 
       if (poolIndex !== -1) {
         // Store original state for potential rollback

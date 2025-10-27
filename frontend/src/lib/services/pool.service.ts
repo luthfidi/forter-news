@@ -133,9 +133,9 @@ class PoolService {
           {
             id: '0-0',
             newsId: '0',
-            creator: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
+            creatorAddress: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
             reasoning: 'This is a test pool for validating the fixed staking system with proper position mapping logic. Pool position is YES, so Support stakes should go to agreeStakes and Oppose stakes should go to disagreeStakes.',
-            evidenceLinks: ['https://example.com/evidence1', 'https://example.com/evidence2'],
+            evidence: ['https://example.com/evidence1', 'https://example.com/evidence2'],
             imageUrl: 'https://example.com/image.jpg',
             imageCaption: 'Test pool image caption',
             position: 'YES',
@@ -144,8 +144,8 @@ class PoolService {
             agreeStakes: 10000000000, // Creator stake correctly placed in agreeStakes for YES pool
             disagreeStakes: 0,
             createdAt: new Date(),
-            isResolved: false,
-            isCorrect: false
+            status: 'active',
+            outcome: null
           }
         ];
       }
@@ -156,9 +156,9 @@ class PoolService {
           {
             id: '1-1',
             newsId: '1',
-            creator: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
+            creatorAddress: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
             reasoning: 'test pool 2 test pool 2 test pool 2 test pool 2 test pool 2 test pool 2 test pool 2 test pool 2 test pool 2',
-            evidenceLinks: [],
+            evidence: [],
             imageUrl: 'https://example.com/pool-image.jpg',
             imageCaption: 'Pool analysis chart',
             position: 'YES',
@@ -167,8 +167,8 @@ class PoolService {
             agreeStakes: 30000000, // 30 USDC in agreeStakes (creator stake only - FIXED!)
             disagreeStakes: 50000000, // 50 USDC in disagreeStakes (user who opposed - FIXED!)
             createdAt: new Date(),
-            isResolved: false,
-            isCorrect: false
+            status: 'active',
+            outcome: null
           }
         ];
       }

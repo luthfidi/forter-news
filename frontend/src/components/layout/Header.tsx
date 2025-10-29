@@ -13,11 +13,13 @@ export default function Header() {
 
   const isNewsActive = pathname?.startsWith('/news')
   const isAnalystsActive = pathname?.startsWith('/analysts')
+  const isFaucetActive = pathname === '/faucet'
   const isMyProfile = isConnected && address && pathname === `/profile/${address}`
 
   const navigation = [
     { name: "News", href: "/news", active: isNewsActive },
     { name: "Analysts", href: "/analysts", active: isAnalystsActive },
+    { name: "Faucet", href: "/faucet", active: isFaucetActive },
   ]
 
   if (isConnected && address) {

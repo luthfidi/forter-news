@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, TrendingUp, User, NotebookTextIcon } from "lucide-react"
+import { Home, TrendingUp, User, NotebookTextIcon, Droplet } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useWallet } from '@/lib/privy'
@@ -10,31 +10,38 @@ export default function MobileNav() {
   const { address, isConnected } = useWallet()
 
   const navItems = [
-    { 
-      id: "home", 
-      icon: Home, 
-      label: "Home", 
+    {
+      id: "home",
+      icon: Home,
+      label: "Home",
       href: "/",
       active: pathname === "/"
     },
-    { 
-      id: "news", 
-      icon: NotebookTextIcon, 
-      label: "News", 
+    {
+      id: "news",
+      icon: NotebookTextIcon,
+      label: "News",
       href: "/news",
       active: pathname?.startsWith('/news')
     },
-    { 
-      id: "analysts", 
-      icon: TrendingUp, 
-      label: "Analysts", 
+    {
+      id: "analysts",
+      icon: TrendingUp,
+      label: "Analysts",
       href: "/analysts",
       active: pathname?.startsWith('/analysts')
     },
+    {
+      id: "faucet",
+      icon: Droplet,
+      label: "Faucet",
+      href: "/faucet",
+      active: pathname === '/faucet'
+    },
     ...(isConnected && address ? [{
-      id: "profile", 
-      icon: User, 
-      label: "Profile", 
+      id: "profile",
+      icon: User,
+      label: "Profile",
       href: `/profile/${address}`,
       active: pathname === `/profile/${address}`
     }] : [])

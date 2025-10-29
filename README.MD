@@ -307,7 +307,7 @@ cd frontend && pnpm dev
 - **Main App**: <a href="https://forter-news.vercel.app/" target="_blank">forter-news.vercel.app</a>
 - **Farcaster MiniApp**: <a href="https://farcaster.xyz/miniapps/gM4PKvjzcF47/forter" target="_blank">forter</a>
 - **Demo Video**: <a href="https://www.youtube.com/watch?v=Dxlh9GIQCZM" target="_blank">Watch on YouTube</a>
-- **Presentation**: <a href="https://www.canva.com/design/DAG2DT4E5pw/CndHiIzlbRZwgaPH-iOHnw/view?utm_content=DAG2DT4E5pw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h99613be7e9" target="_blank">Canva Design</a>
+- **Presentation**: <a href="https://www.canva.com/design/DAG2DT4E5pw/CndHiIzlbRZwgaPH-iOHnw/view?utm_content=DAG2DT4E5pw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h99613be7e9" target="_blank">Presentation Slides</a>
 - **Devfolio Submission**: <a href="https://devfolio.co/projects/forter-news-33aa" target="_blank">devfolio.co/projects/forter-news-33aa</a>
 
 ### Technical Resources

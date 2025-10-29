@@ -50,15 +50,15 @@ Forter is participating in **Base Batches 002 Builder Track** with a fully funct
 
 ## Deployed Contracts
 
-**Network**: Base Sepolia Testnet | **Deploy Date**: October 23, 2025
+**Network**: Base Sepolia Testnet | **Deploy Date**: October 29, 2025
 
 | Contract          | Address                                                                                                                                                         | Purpose                         |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| **Forter (Main)** | <a href="https://base-sepolia.blockscout.com/address/0x5ae223B8128fc8Dc4FE343b191143982cf649cCC" target="_blank">0x5ae223B8128fc8Dc4FE343b191143982cf649cCC</a> | Core protocol contract          |
-| **StakingPool**   | <a href="https://base-sepolia.blockscout.com/address/0x2308ad08C67EE0110ECDC1d9d625eE862994d17C" target="_blank">0x2308ad08C67EE0110ECDC1d9d625eE862994d17C</a> | Pool staking & rewards          |
-| **ReputationNFT** | <a href="https://base-sepolia.blockscout.com/address/0x093c645Cf139c064881709b442Fa57980A5E1d01" target="_blank">0x093c645Cf139c064881709b442Fa57980A5E1d01</a> | Soulbound NFT for reputation    |
-| **Governance**    | <a href="https://base-sepolia.blockscout.com/address/0xE5475235b7406612a97Cc561504716E6902c6271" target="_blank">0xE5475235b7406612a97Cc561504716E6902c6271</a> | DAO governance contract         |
-| **USDC Mock**     | <a href="https://base-sepolia.blockscout.com/address/0xc6260DE79F989dF47694c09b5a8f558e9208ae99" target="_blank">0xc6260DE79F989dF47694c09b5a8f558e9208ae99</a> | Testnet USDC token (6 decimals) |
+| **Forter (Main)** | <a href="https://base-sepolia.blockscout.com/address/0x73eD7e70CBE1BE6754b6A3030E9713C41c379F1D" target="_blank">0x73eD7e70CBE1BE6754b6A3030E9713C41c379F1D</a> | Core protocol contract          |
+| **StakingPool**   | <a href="https://base-sepolia.blockscout.com/address/0x97B9EbcFBE181366633fAA5BdB462f9B9C2f3D2E" target="_blank">0x97B9EbcFBE181366633fAA5BdB462f9B9C2f3D2E</a> | Pool staking & rewards          |
+| **ReputationNFT** | <a href="https://base-sepolia.blockscout.com/address/0x8B457488FB7Cc0d602FD4C0F27967Ce32B23F57F" target="_blank">0x8B457488FB7Cc0d602FD4C0F27967Ce32B23F57F</a> | Soulbound NFT for reputation    |
+| **Governance**    | <a href="https://base-sepolia.blockscout.com/address/0x70E42B35ba46D2B9D61F423C4B7B410564d6230a" target="_blank">0x70E42B35ba46D2B9D61F423C4B7B410564d6230a</a> | DAO governance contract         |
+| **USDC Mock**     | <a href="https://base-sepolia.blockscout.com/address/0xCD279969EDE0a786899a7B6993c951e04B6F752C" target="_blank">0xCD279969EDE0a786899a7B6993c951e04B6F752C</a> | Testnet USDC token (6 decimals) |
 
 ---
 
@@ -287,7 +287,7 @@ sequenceDiagram
 
 ## Quick Start
 
-**Try Live**: <a href="https://forter-news.vercel.app/" target="_blank">forter-news.vercel.app</a> → Connect wallet → Switch to Base Sepolia → Get <a href="https://console.optimism.io/faucet" target="_blank">testnet USDC</a> → Mint <a href="https://base-sepolia.blockscout.com/address/0xc6260DE79F989dF47694c09b5a8f558e9208ae99?tab=write_contract" target="_blank">Forter USDC Mock</a> → Create & stake
+**Try Live**: <a href="https://forter-news.vercel.app/" target="_blank">forter-news.vercel.app</a> → Connect wallet → Switch to Base Sepolia → Get <a href="https://console.optimism.io/faucet" target="_blank">testnet USDC</a> → Mint <a href="https://base-sepolia.blockscout.com/address/0xCD279969EDE0a786899a7B6993c951e04B6F752C?tab=write_contract" target="_blank">Forter USDC Mock</a> → Create & stake
 
 **Local Dev**:
 
@@ -313,7 +313,7 @@ cd frontend && pnpm dev
 ### Technical Resources
 
 - **GitHub Repository**: <a href="https://github.com/luthfidi/forter-news" target="_blank">github.com/luthfidi/forter-news</a>
-- **Base Sepolia Explorer**: <a href="https://base-sepolia.blockscout.com/address/0x5ae223B8128fc8Dc4FE343b191143982cf649cCC" target="_blank">View Contracts</a>
+- **Base Sepolia Explorer**: <a href="https://base-sepolia.blockscout.com/address/0x73eD7e70CBE1BE6754b6A3030E9713C41c379F1D" target="_blank">View Contracts</a>
 - **Contract Verification**: All contracts verified on Blockscout
 - **Documentation**: Complete contract and API documentation in repository
 

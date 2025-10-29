@@ -248,25 +248,14 @@ export function WalletConnect({ className }: WalletConnectProps) {
         <div className="absolute right-0 mt-2 w-48 bg-card border border-border/40 rounded-lg shadow-lg overflow-hidden z-50">
           {/* Balance */}
           <div className="px-4 py-3 border-b border-border/20">
-            <div className="flex flex-col gap-2">
-              {/* USDC Balance */}
-              <div className="flex items-center gap-2 text-foreground">
-                <Wallet className="w-4 h-4" />
-                <span className="text-sm font-medium">
-                  {isCorrectNetwork && usdcBalance !== undefined
-                    ? `${formatBalance(formattedUsdcBalance)} USDC`
-                    : "Loading..."}
-                </span>
-              </div>
-              {/* ETH Balance */}
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Wallet className="w-3 h-3" />
-                <span className="text-xs">
-                  {isCorrectNetwork && ethBalance !== undefined
-                    ? `${ethBalance.toFixed(4)} ETH`
-                    : "Loading..."}
-                </span>
-              </div>
+            {/* USDC Balance */}
+            <div className="flex items-center gap-2 text-foreground">
+              <Wallet className="w-4 h-4" />
+              <span className="text-sm font-medium">
+                {isCorrectNetwork && usdcBalance !== undefined
+                  ? `${formatBalance(formattedUsdcBalance)} USDC`
+                  : "Loading..."}
+              </span>
             </div>
             {!isCorrectNetwork && (
               <div className="mt-2">

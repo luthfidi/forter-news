@@ -88,7 +88,9 @@ export default function Header() {
                 </div>
               )} */}
 
-              <ChainIndicator />
+              <div className="hidden md:block">
+                <ChainIndicator />
+              </div>
               <WalletConnect />
             </div>
           </div>

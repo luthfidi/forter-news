@@ -61,15 +61,15 @@ export default function RootLayout({
           <div className="min-h-screen">
             {/* Desktop Header */}
             <Header />
-            
+
             {/* Mobile Header */}
             <div className="md:hidden">
               <MobileHeader />
             </div>
-            
+
             {/* Main Content */}
             <main className="pb-24 md:pb-0">{children}</main>
-            
+
             {/* Mobile Navigation */}
             <div className="md:hidden">
               <MobileNav />

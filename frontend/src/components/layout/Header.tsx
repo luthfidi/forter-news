@@ -5,6 +5,7 @@ import Image from "next/image"
 import { usePathname } from 'next/navigation'
 import { WalletConnect, useWallet } from '@/lib/privy'
 import { useFarcaster } from '@/contexts/FarcasterProvider'
+import { ChainIndicator } from '@/components/wallet/ChainIndicator'
 
 export default function Header() {
   const pathname = usePathname()
@@ -85,6 +86,7 @@ export default function Header() {
                 </div>
               )} */}
 
+              <ChainIndicator />
               <WalletConnect />
             </div>
           </div>

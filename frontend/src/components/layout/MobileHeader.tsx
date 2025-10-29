@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { WalletConnect } from '@/lib/privy'
 import { useFarcaster } from '@/contexts/FarcasterProvider'
+import { ChainIndicator } from '@/components/wallet/ChainIndicator'
 
 export default function MobileHeader() {
   const { isInFarcaster, user: farcasterUser, isReady } = useFarcaster()
@@ -48,7 +49,8 @@ export default function MobileHeader() {
             </div>
           )}
 
-          {/* Wallet Connect */}
+          {/* Chain Indicator & Wallet Connect */}
+          <ChainIndicator />
           <WalletConnect />
         </div>
       </div>

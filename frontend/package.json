@@ -16,6 +16,7 @@
     "@paper-design/shaders-react": "^0.0.57",
     "@privy-io/react-auth": "^3.4.1",
     "@privy-io/wagmi": "^2.0.2",
+    "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.3",
     "@rainbow-me/rainbowkit": "^2.2.8",
     "@react-three/drei": "^10.7.6",

@@ -1,24 +1,98 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import { Button } from '@/components/ui/button';
-import { User, AlertCircle } from 'lucide-react';
+import { User, AlertCircle, Copy, Check, LogOut, Wallet } from 'lucide-react';
 import { useWallet } from './useWallet';
+import { baseSepolia } from 'viem/chains';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface WalletConnectProps {
   className?: string;
 }
 
+// Type for Ethereum provider
+interface EthereumProvider {
+  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+  on?: (event: string, handler: (...args: unknown[]) => void) => void;
+  removeListener?: (event: string, handler: (...args: unknown[]) => void) => void;
+}
+
 export function WalletConnect({ className }: WalletConnectProps) {
   const { ready, authenticated, user, login, logout } = usePrivy();
-  const { isCorrectNetwork, switchToBaseSepoliaChain } = useWallet();
+  const { address, ethBalance, isCorrectNetwork, switchToBaseSepoliaChain } = useWallet();
   const [hasMounted, setHasMounted] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [showNetworkWarning, setShowNetworkWarning] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const copyAddress = () => {
+    if (address) {
+      navigator.clipboard.writeText(address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleConnect = async () => {
+    // Check if wallet is available in browser
+    const ethereum = (window as Window & { ethereum?: EthereumProvider }).ethereum;
+
+    if (typeof window !== 'undefined' && ethereum) {
+      try {
+        // Get current chain ID from wallet
+        const currentChainId = await ethereum.request({ method: 'eth_chainId' }) as string;
+        const chainIdDecimal = parseInt(currentChainId, 16);
+
+        // If not on Base Sepolia, show warning first
+        if (chainIdDecimal !== baseSepolia.id) {
+          setShowNetworkWarning(true);
+          return;
+        }
+      } catch (error) {
+        console.log('Could not detect network, proceeding with login:', error);
+      }
+    }
+
+    // Proceed with normal login
+    login();
+  };
+
+  const handleSwitchAndConnect = async () => {
+    const switched = await switchToBaseSepoliaChain();
+    if (switched) {
+      setShowNetworkWarning(false);
+      // Small delay to ensure network switch completes
+      setTimeout(() => login(), 500);
+    }
+  };
 
   // ClientOnly - prevent hydration mismatch
   useEffect(() => {
     setHasMounted(true);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [isOpen]);
 
   if (!hasMounted) {
     return null;
@@ -36,12 +110,47 @@ export function WalletConnect({ className }: WalletConnectProps) {
   // Not connected
   if (!authenticated) {
     return (
-      <Button
-        onClick={login}
-        className={`bg-gradient-to-r from-primary/70 to-accent/70 hover:from-primary hover:to-accent shadow-sm ${className}`}
-      >
-        Connect Wallet
-      </Button>
+      <>
+        {/* Network Warning Dialog */}
+        <Dialog open={showNetworkWarning} onOpenChange={setShowNetworkWarning}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 rounded-full bg-orange-500/10">
+                  <AlertCircle className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                </div>
+                <DialogTitle className="text-xl">Switch to Base Sepolia</DialogTitle>
+              </div>
+              <DialogDescription className="text-base pt-2">
+                This app requires Base Sepolia network. Please switch your wallet network to Base Sepolia before connecting.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex-col sm:flex-col gap-2 sm:gap-2">
+              <Button
+                onClick={handleSwitchAndConnect}
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+              >
+                Switch to Base Sepolia & Connect
+              </Button>
+              <Button
+                onClick={() => setShowNetworkWarning(false)}
+                variant="outline"
+                className="w-full"
+              >
+                Cancel
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Normal Connect Button */}
+        <Button
+          onClick={handleConnect}
+          className={`bg-gradient-to-r from-primary/70 to-accent/70 hover:from-primary hover:to-accent shadow-sm ${className}`}
+        >
+          Connect Wallet
+        </Button>
+      </>
     );
   }
 
@@ -82,19 +191,85 @@ export function WalletConnect({ className }: WalletConnectProps) {
 
   // Connected state (on correct network)
   return (
-    <div className={`flex flex-col gap-2 ${className}`}>
-      {/* Wallet Button */}
+    <div className={`relative ${className}`} ref={dropdownRef}>
       <Button
-        onClick={logout}
+        onClick={() => setIsOpen(!isOpen)}
         variant="outline"
-        className="bg-card border-border/40 hover:bg-card/80 transition-colors"
+        className="bg-card border-border/40 text-foreground hover:bg-card/80 transition-colors rounded-lg px-3 py-2 h-auto flex items-center gap-2"
       >
-        <div className="w-2 h-2 rounded-full bg-gradient-to-br from-primary to-accent mr-2" />
-        <span className="font-mono text-sm font-medium truncate max-w-[120px]">
-          {displayName}
+        {/* Profile Icon */}
+        <User className="w-5 h-5 p-0.5 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-xs font-semibold text-white" />
+
+        {/* Address */}
+        <span className="font-mono text-sm font-medium">
+          {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : displayName}
         </span>
-        <User className="w-4 h-4 ml-1" />
       </Button>
+
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-card border border-border/40 rounded-lg shadow-lg overflow-hidden z-50">
+          {/* Balance */}
+          <div className="px-4 py-3 border-b border-border/20">
+            <div className="flex items-center gap-2 text-foreground">
+              <Wallet className="w-4 h-4" />
+              <span className="text-sm font-medium">
+                {isCorrectNetwork && ethBalance !== undefined 
+                  ? `${ethBalance.toFixed(4)} ETH` 
+                  : "Loading..."}
+              </span>
+            </div>
+            {!isCorrectNetwork && (
+              <div className="mt-2">
+                <Button
+                  onClick={() => {
+                    switchToBaseSepoliaChain();
+                    setIsOpen(false);
+                  }}
+                  size="sm"
+                  className="w-full text-xs bg-orange-500 hover:bg-orange-600"
+                >
+                  Switch Network
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Copy Address */}
+          {address && (
+            <button
+              onClick={() => {
+                copyAddress();
+                setIsOpen(false);
+              }}
+              className="w-full px-4 py-3 flex items-center gap-2 text-foreground hover:bg-background/50 transition-colors text-sm border-b border-border/20"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4 text-accent" />
+                  <span>Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4" />
+                  <span>Copy Address</span>
+                </>
+              )}
+            </button>
+          )}
+
+          {/* Disconnect */}
+          <button
+            onClick={() => {
+              logout();
+              setIsOpen(false);
+            }}
+            className="w-full px-4 py-3 flex items-center gap-2 hover:bg-background/50 transition-colors text-sm text-red-400 hover:text-red-300"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Disconnect</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

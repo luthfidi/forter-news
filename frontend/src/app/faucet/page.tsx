@@ -75,6 +75,23 @@ export default function FaucetPage() {
     setSelectedPreset(0);
   };
 
+  // Format large numbers with K, M, B, T suffixes
+  const formatBalance = (balance: string): string => {
+    const num = parseFloat(balance);
+
+    if (num >= 1_000_000_000_000) {
+      return `${(num / 1_000_000_000_000).toFixed(2)}T`;
+    } else if (num >= 1_000_000_000) {
+      return `${(num / 1_000_000_000).toFixed(2)}B`;
+    } else if (num >= 1_000_000) {
+      return `${(num / 1_000_000).toFixed(2)}M`;
+    } else if (num >= 1_000) {
+      return `${(num / 1_000).toFixed(2)}K`;
+    } else {
+      return num.toFixed(2);
+    }
+  };
+
   if (!isConnected) {
     return (
       <div className="min-h-screen pt-20 md:pt-32 px-4">
@@ -114,7 +131,7 @@ export default function FaucetPage() {
           <div>
             <p className="text-sm text-muted-foreground mb-2">Your USDC Balance</p>
             <p className="text-4xl font-normal">
-              {formattedBalance} <span className="text-foreground">USDC</span>
+              {formatBalance(formattedBalance)} <span className="text-foreground">USDC</span>
             </p>
           </div>
 
@@ -134,7 +151,7 @@ export default function FaucetPage() {
               <div>
                 <p className="text-sm text-muted-foreground mb-2">Your USDC Balance</p>
                 <p className="text-4xl font-medium">
-                  {formattedBalance} <span className="text-2xl font-normal">USDC</span>
+                  {formatBalance(formattedBalance)} <span className="text-2xl font-normal">USDC</span>
                 </p>
               </div>
               {/* Network */}

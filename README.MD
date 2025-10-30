@@ -287,7 +287,7 @@ sequenceDiagram
 
 ## Quick Start
 
-**Try Live**: <a href="https://forter-news.vercel.app/" target="_blank">forter-news.vercel.app</a> → Connect wallet → Switch to Base Sepolia → Get <a href="https://console.optimism.io/faucet" target="_blank">testnet USDC</a> → Mint <a href="https://base-sepolia.blockscout.com/address/0xCD279969EDE0a786899a7B6993c951e04B6F752C?tab=write_contract" target="_blank">Forter USDC Mock</a> → Create & stake
+**Try Live**: <a href="https://forter-news.vercel.app/" target="_blank">forter-news.vercel.app</a> → Connect wallet → Switch to Base Sepolia → Get <a href="https://console.optimism.io/faucet" target="_blank">testnet USDC</a> → Mint <a href="https://forter-news.vercel.app/faucet" target="_blank">Forter USDC Mock</a> → Create & stake
 
 **Local Dev**:
 

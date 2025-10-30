@@ -107,32 +107,32 @@ export default function AnalystsPage() {
         </div>
 
         {/* Stats Banner */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+        <div className="grid grid-cols-3 gap-3 md:gap-6 mb-6 md:mb-8">
           <Card className="border border-border bg-card">
-            <CardContent className="p-4 md:p-6 text-center">
-              <Users className="h-5 w-5 md:h-6 md:w-6 mx-auto mb-2 text-primary" />
-              <div className="text-xl md:text-2xl font-bold text-primary mb-1">
+            <CardContent className="p-3 md:p-6 text-center">
+              <Users className="h-4 w-4 md:h-6 md:w-6 mx-auto mb-1 md:mb-2 text-primary" />
+              <div className="text-base md:text-2xl font-bold text-primary mb-0.5 md:mb-1">
                 {stats.totalAnalysts}
               </div>
-              <div className="text-xs md:text-sm text-muted-foreground">Total Analysts</div>
+              <div className="text-[10px] md:text-sm text-muted-foreground leading-tight">Total Analysts</div>
             </CardContent>
           </Card>
           <Card className="border border-border bg-card">
-            <CardContent className="p-4 md:p-6 text-center">
-              <Target className="h-5 w-5 md:h-6 md:w-6 mx-auto mb-2 text-accent" />
-              <div className="text-xl md:text-2xl font-bold text-accent mb-1">
+            <CardContent className="p-3 md:p-6 text-center">
+              <Target className="h-4 w-4 md:h-6 md:w-6 mx-auto mb-1 md:mb-2 text-accent" />
+              <div className="text-base md:text-2xl font-bold text-accent mb-0.5 md:mb-1">
                 {stats.avgAccuracy}%
               </div>
-              <div className="text-xs md:text-sm text-muted-foreground">Average Accuracy</div>
+              <div className="text-[10px] md:text-sm text-muted-foreground leading-tight">Average Accuracy</div>
             </CardContent>
           </Card>
           <Card className="border border-border bg-card">
-            <CardContent className="p-4 md:p-6 text-center">
-              <Layers className="h-5 w-5 md:h-6 md:w-6 mx-auto mb-2 text-foreground" />
-              <div className="text-xl md:text-2xl font-bold text-foreground mb-1">
+            <CardContent className="p-3 md:p-6 text-center">
+              <Layers className="h-4 w-4 md:h-6 md:w-6 mx-auto mb-1 md:mb-2 text-foreground" />
+              <div className="text-base md:text-2xl font-bold text-foreground mb-0.5 md:mb-1">
                 {stats.mostActiveCategory}
               </div>
-              <div className="text-xs md:text-sm text-muted-foreground">Most Active</div>
+              <div className="text-[10px] md:text-sm text-muted-foreground leading-tight">Most Active</div>
             </CardContent>
           </Card>
         </div>

@@ -5,10 +5,11 @@ import { usePrivy } from '@privy-io/react-auth';
 import { Button } from '@/components/ui/button';
 import { User, AlertCircle, Copy, Check, LogOut, Wallet } from 'lucide-react';
 import { useWallet } from './useWallet';
-import { baseSepolia } from 'viem/chains';
+import { baseSepolia, base } from 'viem/chains';
 import { useReadContract } from 'wagmi';
 import { formatUnits, type Abi } from 'viem';
 import MockTokenABI from '@/abis/MockToken.json';
+import { useFarcaster } from '@/contexts/FarcasterProvider';
 import {
   Dialog,
   DialogContent,
@@ -34,7 +35,8 @@ interface EthereumProvider {
 
 export function WalletConnect({ className }: WalletConnectProps) {
   const { ready, authenticated, user, login, logout } = usePrivy();
-  const { address, ethBalance, isCorrectNetwork, switchToBaseSepoliaChain } = useWallet();
+  const { address, isCorrectNetwork, switchToBaseSepoliaChain } = useWallet();
+  const { isInFarcaster } = useFarcaster();
   const [hasMounted, setHasMounted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -85,13 +87,13 @@ export function WalletConnect({ className }: WalletConnectProps) {
     // Check if wallet is available in browser
     const ethereum = (window as Window & { ethereum?: EthereumProvider }).ethereum;
 
-    if (typeof window !== 'undefined' && ethereum) {
+    if (typeof window !== 'undefined' && ethereum && !isInFarcaster) {
       try {
         // Get current chain ID from wallet
-        const currentChainId = await ethereum.request({ method: 'eth_chainId' }) as string;
+        const currentChainId = (await ethereum.request({ method: 'eth_chainId' })) as string;
         const chainIdDecimal = parseInt(currentChainId, 16);
 
-        // If not on Base Sepolia, show warning first
+        // If not on Base Sepolia, show warning first (strict for non-Farcaster)
         if (chainIdDecimal !== baseSepolia.id) {
           setShowNetworkWarning(true);
           return;
@@ -101,7 +103,7 @@ export function WalletConnect({ className }: WalletConnectProps) {
       }
     }
 
-    // Proceed with normal login
+    // Proceed with normal login (allow any network in Farcaster)
     login();
   };
 

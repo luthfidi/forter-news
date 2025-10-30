@@ -3,7 +3,8 @@
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { useAccount, useBalance, useChainId, useSwitchChain } from 'wagmi';
 import { useCallback, useEffect } from 'react';
-import { baseSepolia } from 'viem/chains';
+import { baseSepolia, base } from 'viem/chains';
+import { useFarcaster } from '@/contexts/FarcasterProvider';
 
 // Get USDC contract address from environment
 const USDC_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`;
@@ -14,15 +15,22 @@ export function useWallet() {
   const { address } = useAccount();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
+  const { isInFarcaster } = useFarcaster();
 
   // Get the active wallet address - either from embedded wallet or connected wallet
   const walletAddress = address || wallets[0]?.address;
-  const isCorrectNetwork = chainId === baseSepolia.id;
+
+  // Allow Base Sepolia and Base mainnet when in Farcaster, only Base Sepolia otherwise
+  const isCorrectNetwork = isInFarcaster
+    ? (chainId === baseSepolia.id || chainId === base.id)
+    : chainId === baseSepolia.id;
+
   const isConnected = authenticated && !!walletAddress;
 
   // Auto-switch to Base Sepolia when wallet is authenticated but on wrong network
+  // Skip auto-switch when in Farcaster (users can use Base or Base Sepolia)
   useEffect(() => {
-    if (authenticated && walletAddress && !isCorrectNetwork && switchChain) {
+    if (authenticated && walletAddress && !isCorrectNetwork && switchChain && !isInFarcaster) {
       // Add a small delay to ensure wallet is fully initialized
       const timer = setTimeout(() => {
         try {
@@ -37,7 +45,7 @@ export function useWallet() {
 
       return () => clearTimeout(timer);
     }
-  }, [authenticated, walletAddress, isCorrectNetwork, switchChain]);
+  }, [authenticated, walletAddress, isCorrectNetwork, switchChain, isInFarcaster]);
 
   const switchToBaseSepoliaChain = useCallback(() => {
     if (switchChain) {

@@ -7,6 +7,7 @@ import { Droplet, Loader2 } from 'lucide-react';
 import { parseUnits, formatUnits, type Abi } from 'viem';
 import { useWriteContract, useReadContract, useWaitForTransactionReceipt } from 'wagmi';
 import MockTokenABI from '@/abis/MockToken.json';
+import FloatingIndicator from '@/components/shared/FloatingIndicator';
 
 const USDC_ADDRESS = process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`;
 const MOCK_TOKEN_ABI = MockTokenABI as Abi;
@@ -17,6 +18,9 @@ export default function FaucetPage() {
   const { address, isConnected, isCorrectNetwork } = useWallet();
   const [mintAmount, setMintAmount] = useState('100');
   const [selectedPreset, setSelectedPreset] = useState(100);
+  const [showIndicator, setShowIndicator] = useState(false);
+  const [indicatorType, setIndicatorType] = useState<'loading' | 'success' | 'error'>('loading');
+  const [indicatorMessage, setIndicatorMessage] = useState('');
 
   // Read USDC balance
   const { data: balance, refetch: refetchBalance } = useReadContract({
@@ -37,12 +41,34 @@ export default function FaucetPage() {
     hash,
   });
 
-  // Refetch balance after successful mint
+  // Handle transaction states
   useEffect(() => {
-    if (isSuccess) {
+    if (isPending) {
+      setShowIndicator(true);
+      setIndicatorType('loading');
+      setIndicatorMessage('Confirming transaction...');
+    } else if (isConfirming) {
+      setIndicatorType('loading');
+      setIndicatorMessage('Minting USDC...');
+    } else if (isSuccess) {
+      setIndicatorType('success');
+      setIndicatorMessage(`Successfully minted ${mintAmount} USDC!`);
       refetchBalance();
+
+      // Hide indicator after 3 seconds
+      setTimeout(() => {
+        setShowIndicator(false);
+      }, 3000);
+    } else if (error) {
+      setIndicatorType('error');
+      setIndicatorMessage(`Error: ${error.message}`);
+
+      // Hide indicator after 5 seconds
+      setTimeout(() => {
+        setShowIndicator(false);
+      }, 5000);
     }
-  }, [isSuccess, refetchBalance]);
+  }, [isPending, isConfirming, isSuccess, error, mintAmount, refetchBalance]);
 
   const formattedBalance = balance
     ? formatUnits(balance as bigint, 6) // USDC has 6 decimals
@@ -123,8 +149,16 @@ export default function FaucetPage() {
   }
 
   return (
-    <div className="min-h-screen pt-20 md:pt-32 px-4 pb-8">
-      <div className="max-w-3xl mx-auto">
+    <>
+      <FloatingIndicator
+        show={showIndicator}
+        type={indicatorType}
+        message={indicatorMessage}
+        txHash={hash}
+      />
+
+      <div className="min-h-screen pt-20 md:pt-32 px-4 pb-8">
+        <div className="max-w-3xl mx-auto">
         {/* Mobile Layout */}
         <div className="md:hidden space-y-8">
           {/* Balance Section */}
@@ -235,27 +269,14 @@ export default function FaucetPage() {
           )}
         </Button>
 
-        {/* Success Message */}
-        {isSuccess && (
-          <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl text-green-600 dark:text-green-400 text-sm text-center mt-4">
-            Successfully minted {mintAmount} USDC!
-          </div>
-        )}
-
-        {/* Error Message */}
-        {error && (
-          <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-600 dark:text-red-400 text-sm mt-4">
-            Error: {error.message}
-          </div>
-        )}
-
         {/* Note */}
         <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl">
           <p className="text-sm text-blue-600 dark:text-blue-400">
             <span className="font-semibold">Note:</span> This is testnet USDC for Base Sepolia only. These tokens have no real value and are meant for testing purposes.
           </p>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

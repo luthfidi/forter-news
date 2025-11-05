@@ -140,15 +140,15 @@ export async function createPool(
 /**
  * Stake on pool (requires USDC approval first)
  *
- * IMPORTANT: userPosition parameter represents whether user agrees with pool creator's position
- * - true = user agrees with pool creator's position (regardless of whether pool is YES or NO)
- * - false = user disagrees with pool creator's position
+ * IMPORTANT: userAgreesWithPool parameter represents whether user agrees with pool creator's position
+ * - true = user agrees with pool creator's position (support the pool)
+ * - false = user disagrees with pool creator's position (oppose the pool)
  *
  * Examples:
- * - Pool position: YES, user chooses "agree" → userPosition = true
- * - Pool position: NO, user chooses "agree" → userPosition = false
- * - Pool position: YES, user chooses "disagree" → userPosition = false
- * - Pool position: NO, user chooses "disagree" → userPosition = true
+ * - Pool position: YES, user chooses "Support" → userAgreesWithPool = true
+ * - Pool position: NO, user chooses "Support" → userAgreesWithPool = true
+ * - Pool position: YES, user chooses "Oppose" → userAgreesWithPool = false
+ * - Pool position: NO, user chooses "Oppose" → userAgreesWithPool = false
  */
 export async function stakeOnPool(
   newsId: string,
@@ -213,15 +213,15 @@ export async function stakeOnPool(
       note: 'true = user agrees with pool creator, false = user disagrees'
     });
 
-    // FIXED: Flip the parameter to match contract expectations
-    // Frontend: userAgreesWithPool (true=agrees, false=disagrees)
-    // Contract expects: userAgreesWithPool flipped due to logic confusion
-    const contractUserPosition = !userAgreesWithPool;
+    // FIXED: No more flipping - send userAgreesWithPool directly
+    // Frontend: userAgreesWithPool (true=agrees with pool position, false=disagrees)
+    // Contract expects: userPosition (true=agrees with pool, false=disagrees with pool)
+    const contractUserPosition = userAgreesWithPool;
 
-    console.log('[Forter/write] 🔧 FIXED Flipping parameter for contract:', {
-      frontendLogic: userAgreesWithPool,
+    console.log('[Forter/write] 🔧 FIXED - No more flipping:', {
+      userAgreesWithPool: userAgreesWithPool,
       contractParameter: contractUserPosition,
-      explanation: 'Flipping due to contract logic confusion'
+      explanation: 'true=user agrees with pool position, false=user disagrees'
     });
 
     // Then stake

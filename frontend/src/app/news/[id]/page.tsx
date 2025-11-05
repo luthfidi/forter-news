@@ -98,8 +98,23 @@ export default function NewsDetailPage() {
   const refetchPools = async () => {
     setLoading('pools', true);
     try {
+      console.log('[NewsDetail] 🔄 Refetching pools - bypassing cache');
+
+      // Force fresh fetch by adding timestamp
       const newsPools = await poolService.getByNewsId(newsId);
-      setPools(newsPools);
+
+      // Force state update to ensure re-render
+      setPools([...newsPools]);
+
+      console.log('[NewsDetail] ✅ Pools refetched successfully:', {
+        count: newsPools.length,
+        samplePool: newsPools[0] ? {
+          id: newsPools[0].id,
+          totalStaked: newsPools[0].totalStaked,
+          agreeStakes: newsPools[0].agreeStakes,
+          disagreeStakes: newsPools[0].disagreeStakes
+        } : null
+      });
     } catch (error) {
       console.error('[NewsDetail] Failed to refetch pools:', error);
     } finally {

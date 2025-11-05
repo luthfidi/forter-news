@@ -34,8 +34,25 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
   // Image click handler state - modal not needed, using new tab
   // const [showImageModal, setShowImageModal] = useState(false);
 
-  // NEW: Calculate percentages WITHOUT including creator stake (20/80 split logic)
-  // Creator is separate from staker pools now
+  // DEBUG: Log raw pool data to identify the issue
+  console.log('[PoolCard] DEBUG - Pool data:', {
+    poolId: pool.id,
+    position: pool.position,
+    creatorStake: pool.creatorStake,
+    agreeStakes: pool.agreeStakes,
+    disagreeStakes: pool.disagreeStakes,
+    totalStaked: pool.totalStaked,
+    math: {
+      agreePlusDisagree: pool.agreeStakes + pool.disagreeStakes,
+      equalsTotal: (pool.agreeStakes + pool.disagreeStakes) === pool.totalStaked,
+      creatorInAgree: pool.position === 'YES' && pool.agreeStakes === pool.creatorStake,
+      creatorInDisagree: pool.position === 'YES' && pool.disagreeStakes === pool.creatorStake
+    }
+  });
+
+  // FIXED: Calculate voting percentages correctly
+  // agreeStakes = stakers who agree with pool position (support pool position)
+  // disagreeStakes = stakers who disagree with pool position (oppose pool position)
 
   const agreePercentage = pool.totalStaked > 0
     ? Math.round((pool.agreeStakes / pool.totalStaked) * 100)
@@ -43,6 +60,26 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
   const disagreePercentage = pool.totalStaked > 0
     ? Math.round((pool.disagreeStakes / pool.totalStaked) * 100)
     : 0;
+
+  // CORRECTED: Support/Oppose logic depends on pool position
+  // Pool YES: Support = agreeStakes (support YES), Oppose = disagreeStakes (oppose YES)
+  // Pool NO: Support = disagreeStakes (support NO), Oppose = agreeStakes (oppose NO)
+
+  let supportPercentage, opposePercentage, supportAmount, opposeAmount;
+
+  if (pool.position === 'YES') {
+    // Pool YES: Support = agree with YES, Oppose = disagree with YES
+    supportPercentage = agreePercentage;
+    opposePercentage = disagreePercentage;
+    supportAmount = pool.agreeStakes;
+    opposeAmount = pool.disagreeStakes;
+  } else {
+    // Pool NO: Support = agree with NO, Oppose = disagree with NO
+    supportPercentage = disagreePercentage;  // Support NO = disagreeStakes
+    opposePercentage = agreePercentage;      // Oppose NO = agreeStakes
+    supportAmount = pool.disagreeStakes;     // Support NO = disagreeStakes
+    opposeAmount = pool.agreeStakes;         // Oppose NO = agreeStakes
+  }
 
   // Mock reputation data
   const getReputationDisplay = (address: string) => {
@@ -291,19 +328,19 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
           <div className="space-y-2">
             {/* Stake amounts above progress bar */}
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-muted-foreground">${pool.agreeStakes.toLocaleString()}</span>
-              <span className="text-muted-foreground">${pool.disagreeStakes.toLocaleString()}</span>
+              <span className="text-muted-foreground">${supportAmount.toLocaleString()}</span>
+              <span className="text-muted-foreground">${opposeAmount.toLocaleString()}</span>
             </div>
 
             {/* Progress Bar */}
             <div className="h-3 bg-muted rounded-full overflow-hidden flex">
               <div
                 className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-500"
-                style={{ width: `${agreePercentage}%` }}
+                style={{ width: `${supportPercentage}%` }}
               />
               <div
                 className="h-full bg-gradient-to-r from-rose-400 to-rose-500 transition-all duration-500"
-                style={{ width: `${disagreePercentage}%` }}
+                style={{ width: `${opposePercentage}%` }}
               />
             </div>
 
@@ -311,10 +348,10 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
             <div className="flex justify-between text-xs">
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                <span className="text-emerald-700 font-medium">{agreePercentage}% Support</span>
+                <span className="text-emerald-700 font-medium">{supportPercentage}% Support {pool.position}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="text-rose-700 font-medium">{disagreePercentage}% Oppose</span>
+                <span className="text-rose-700 font-medium">{opposePercentage}% Oppose {pool.position}</span>
                 <div className="w-2 h-2 rounded-full bg-rose-500"></div>
               </div>
             </div>

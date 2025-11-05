@@ -116,64 +116,34 @@ class PoolService {
 
     try {
       console.log('[PoolService] Fetching pools for news ID from contract:', newsId);
+      console.log('[PoolService] Contract config check:', {
+        useContracts: process.env.NEXT_PUBLIC_USE_CONTRACTS,
+        forterAddress: process.env.NEXT_PUBLIC_FORTER_ADDRESS,
+        isContractsEnabled: require('@/config/contracts').isContractsEnabled()
+      });
 
       const pools = await getPoolsByNewsId(newsId);
-      
-      console.log('[PoolService] Found', pools.length, 'pools for news ID', newsId);
+
+      console.log('[PoolService] ✅ Contract call successful - Found', pools.length, 'pools for news ID', newsId);
+      if (pools.length > 0) {
+        console.log('[PoolService] Pool data sample:', {
+          poolId: pools[0].id,
+          position: pools[0].position,
+          agreeStakes: pools[0].agreeStakes,
+          disagreeStakes: pools[0].disagreeStakes,
+          totalStaked: pools[0].totalStaked,
+          creatorStake: pools[0].creatorStake
+        });
+      }
       return pools;
 
-    } catch (error) {
+      } catch (error) {
       console.error('[PoolService] Contract getByNewsId failed:', error);
       console.error('[PoolService] Error details:', error instanceof Error ? error.message : 'Unknown error');
 
-      // TEMPORARY: Return simulated contract data for testing
-      if (newsId === '0') {
-        console.log('[PoolService] Using simulated pool data for testing purposes');
-        return [
-          {
-            id: '0-0',
-            newsId: '0',
-            creatorAddress: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
-            reasoning: 'This is a test pool for validating the fixed staking system with proper position mapping logic. Pool position is YES, so Support stakes should go to agreeStakes and Oppose stakes should go to disagreeStakes.',
-            evidence: ['https://example.com/evidence1', 'https://example.com/evidence2'],
-            imageUrl: 'https://example.com/image.jpg',
-            imageCaption: 'Test pool image caption',
-            position: 'YES',
-            creatorStake: 10000000000, // 10,000 USDC
-            totalStaked: 10000000000,
-            agreeStakes: 10000000000, // Creator stake correctly placed in agreeStakes for YES pool
-            disagreeStakes: 0,
-            createdAt: new Date(),
-            status: 'active',
-            outcome: null
-          }
-        ];
-      }
-
-      if (newsId === '1') {
-        console.log('[PoolService] Using FIXED simulated pool data for news ID 1 - Bitcoin $100k pool');
-        return [
-          {
-            id: '1-1',
-            newsId: '1',
-            creatorAddress: '0x580B01f8CDf7606723c3BE0dD2AaD058F5aECa3d',
-            reasoning: 'test pool 2 test pool 2 test pool 2 test pool 2 test pool 2 test pool 2 test pool 2 test pool 2 test pool 2',
-            evidence: [],
-            imageUrl: 'https://example.com/pool-image.jpg',
-            imageCaption: 'Pool analysis chart',
-            position: 'YES',
-            creatorStake: 30000000, // 30 USDC - correctly placed in agreeStakes for YES pool
-            totalStaked: 80000000, // 80 USDC total (30 creator + 50 user)
-            agreeStakes: 30000000, // 30 USDC in agreeStakes (creator stake only - FIXED!)
-            disagreeStakes: 50000000, // 50 USDC in disagreeStakes (user who opposed - FIXED!)
-            createdAt: new Date(),
-            status: 'active',
-            outcome: null
-          }
-        ];
-      }
-
-      console.log('[PoolService] Returning empty array for unknown news ID - NO MOCK FALLBACK');
+      // REMOVED: Bad simulated data that was causing 100% Oppose issue
+      // Let contract errors surface properly instead of returning incorrect fallback data
+      console.log('[PoolService] Contract call failed - returning empty array instead of incorrect fallback data');
       return [];
     }
   }

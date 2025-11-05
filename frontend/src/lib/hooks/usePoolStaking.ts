@@ -154,6 +154,10 @@ export function usePoolStaking() {
       try {
         console.log('[usePoolStaking] 🔄 Refreshing pool data from contract after successful stake');
 
+        // Wait for blockchain state to settle (prevent race condition)
+        console.log('[usePoolStaking] ⏳ Waiting for blockchain state to settle...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
         const { poolService } = await import('@/lib/services');
 
         // Extract newsId from poolId format (newsId-poolId)
@@ -163,35 +167,41 @@ export function usePoolStaking() {
         }
 
         if (resolvedNewsId && poolId) {
-          const freshStats = await poolService.refreshPoolStats(resolvedNewsId, poolId);
+          console.log('[usePoolStaking] 🔄 Using Forter data refresh (StakingPool unavailable)');
 
-          if (freshStats) {
-            console.log('[usePoolStaking] ✅ Pool stats refreshed from contract:', freshStats);
+          // FIXED: Use Forter data refresh since StakingPool returns zeros
+          const freshPools = await poolService.getByNewsId(resolvedNewsId);
 
-            // Update pool in global store with fresh data
+          const refreshedPool = freshPools.find(p => p.id === poolId);
+
+          if (refreshedPool) {
+            console.log('[usePoolStaking] ✅ Pool data refreshed from Forter:', {
+              poolId,
+              agreeStakes: refreshedPool.agreeStakes,
+              disagreeStakes: refreshedPool.disagreeStakes,
+              totalStaked: refreshedPool.totalStaked,
+              position: refreshedPool.position
+            });
+
+            // CRITICAL: Force update pool in global store with fresh contract data
+            // This MUST override any optimistic updates
             const updatedPools = [...pools];
-            const currentPool = updatedPools[poolIndex];
+            updatedPools[poolIndex] = refreshedPool;
 
-            if (currentPool) {
-              const refreshedPool = {
-                ...currentPool,
-                agreeStakes: freshStats.agreeStakes,
-                disagreeStakes: freshStats.disagreeStakes,
-                totalStaked: freshStats.totalStaked
-              };
+            // Force state update by creating new reference
+            setPools([...updatedPools]);
 
-              updatedPools[poolIndex] = refreshedPool;
-              setPools(updatedPools);
-
-              console.log('[usePoolStaking] 📊 Pool updated in global store:', {
-                poolId,
-                agreeStakes: freshStats.agreeStakes,
-                disagreeStakes: freshStats.disagreeStakes,
-                totalStaked: freshStats.totalStaked
-              });
-            }
+            console.log('[usePoolStaking] 📊 Pool updated in global store (OVERRIDE OPTIMISTIC):', {
+              poolId,
+              oldTotal: pools[poolIndex]?.totalStaked || 0,
+              newTotal: refreshedPool.totalStaked,
+              agreeStakes: refreshedPool.agreeStakes,
+              disagreeStakes: refreshedPool.disagreeStakes,
+              totalStaked: refreshedPool.totalStaked,
+              overrideReason: 'Fresh contract data overrides optimistic update'
+            });
           } else {
-            console.warn('[usePoolStaking] ⚠️ Failed to refresh pool stats from contract, using optimistic update');
+            console.warn('[usePoolStaking] ⚠️ Failed to refresh pool data from Forter, using optimistic update');
           }
         }
       } catch (refreshError) {

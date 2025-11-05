@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useAccount } from 'wagmi';
 import { usePoolStaking } from '@/lib/hooks/usePoolStaking';
 import { useTransactionFeedback } from '@/lib/hooks/useTransactionFeedback';
+import { useReputationData } from '@/lib/hooks/useReputationData';
 import FloatingIndicator from '@/components/shared/FloatingIndicator';
 import { tokenService } from '@/lib/services';
 import { Award, Trophy, Crown, Gem, Medal, HelpCircle, CheckCircle, XCircle, ZoomIn, DollarSign, Lock } from 'lucide-react';
@@ -81,23 +82,6 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
     opposeAmount = pool.agreeStakes;         // Oppose NO = agreeStakes
   }
 
-  // Mock reputation data
-  const getReputationDisplay = (address: string) => {
-    const mockReputations: Record<string, { accuracy: number; tier: string }> = {
-      '0x1234...5678': { accuracy: 87, tier: 'Master' },
-      '0xabcd...efgh': { accuracy: 72, tier: 'Expert' },
-      '0x2222...3333': { accuracy: 91, tier: 'Legend' },
-      '0x4444...5555': { accuracy: 65, tier: 'Analyst' },
-      '0x6666...7777': { accuracy: 78, tier: 'Expert' },
-      '0x8888...9999': { accuracy: 70, tier: 'Expert' },
-      '0xaaaa...bbbb': { accuracy: 88, tier: 'Master' },
-      '0xcccc...dddd': { accuracy: 75, tier: 'Expert' },
-      '0x9999...1111': { accuracy: 82, tier: 'Master' }
-    };
-
-    return mockReputations[address] || { accuracy: 0, tier: 'Novice' };
-  };
-
   const getTierIcon = (tier: string) => {
     switch (tier) {
       case 'Novice': return <Medal className="w-3.5 h-3.5 text-amber-700" />;
@@ -109,7 +93,7 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
     }
   };
 
-  const reputation = getReputationDisplay(pool.creatorAddress);
+  const reputation = useReputationData(pool.creatorAddress);
 
   const handleStakeButtonClick = (position: 'agree' | 'disagree') => {
     setSelectedPosition(position);
@@ -238,9 +222,15 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
                   {getTierIcon(reputation.tier)} {reputation.tier}
                 </Badge>
               </div>
-              <span className="text-xs text-muted-foreground hidden md:block">
-                {reputation.accuracy}% accuracy
-              </span>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground hidden md:block mt-1">
+                {reputation.isLoading ? (
+                  <span className="text-amber-600">Loading reputation...</span>
+                ) : (
+                  <span className="text-xs">
+                    {reputation.accuracy}% accuracy • {reputation.points} points
+                  </span>
+                )}
+              </div>
             </div>
           </Link>
           <Badge

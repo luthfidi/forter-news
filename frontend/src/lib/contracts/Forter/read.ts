@@ -166,7 +166,7 @@ export async function getPoolsByNewsId(newsId: string): Promise<Pool[]> {
         evidenceLinks: result[2],
         imageUrl: result[3],
         imageCaption: result[4],
-        position: result[5] ? 'YES' : 'NO', // Position as boolean (true=YES, false=NO) - FIXED: Handle enum conversion correctly
+        position: result[5] as boolean, // Position as boolean (true=YES, false=NO) - FIXED: Handle enum conversion correctly
         creatorStake: result[6],
         totalStaked: result[7],
         agreeStakes: result[8],

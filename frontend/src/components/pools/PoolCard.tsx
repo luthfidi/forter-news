@@ -70,15 +70,13 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
   // Pool YES: Support = agreeStakes (users who support YES), Oppose = disagreeStakes (users who oppose YES)
   // Pool NO: Support = agreeStakes (users who support NO), Oppose = disagreeStakes (users who oppose NO)
 
-  let supportPercentage, opposePercentage, supportAmount, opposeAmount;
-
   // FIXED: Support/Oppose logic is now straightforward
   // Support = users who agree with pool position = agreeStakes
   // Oppose = users who disagree with pool position = disagreeStakes
-  supportPercentage = agreePercentage;
-  opposePercentage = disagreePercentage;
-  supportAmount = pool.agreeStakes;
-  opposeAmount = pool.disagreeStakes;
+  const supportPercentage = agreePercentage;
+  const opposePercentage = disagreePercentage;
+  const supportAmount = pool.agreeStakes;
+  const opposeAmount = pool.disagreeStakes;
 
   const getTierIcon = (tier: string) => {
     switch (tier) {

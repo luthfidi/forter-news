@@ -6,7 +6,7 @@
 
 import type { News, Pool } from '@/types';
 import type { NewsContractData, PoolContractData } from '../types';
-import { formatUSDC, timestampToDate } from '../utils';
+import { formatUSDC, timestampToDate, positionToString } from '../utils';
 
 /**
  * Map contract news data to frontend News interface
@@ -121,7 +121,7 @@ export function mapContractToPool(
       id: poolId,
       newsId: newsId,
       creatorAddress: creator || '0x0',
-      position: position ? 'YES' : 'NO', // Boolean position (true=YES, false=NO)
+      position: positionToString(position), // Use utility to handle inverted boolean from contract
       reasoning: reasoning || '',
       evidence: evidenceLinks || [],
       imageUrl: imageUrl || undefined,
@@ -142,7 +142,7 @@ export function mapContractToPool(
       id: poolId,
       newsId: newsId,
       creatorAddress: contractData.creator || '0x0',
-      position: contractData.position ? 'YES' : 'NO', // Boolean position (true=YES, false=NO)
+      position: positionToString(contractData.position), // Use utility to handle inverted boolean from contract
       reasoning: contractData.reasoning || '',
       evidence: contractData.evidenceLinks || [],
       imageUrl: contractData.imageUrl || undefined,

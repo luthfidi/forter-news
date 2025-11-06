@@ -144,26 +144,35 @@ export default function NewsDetailPage() {
     }, 500);
   };
 
-  const handleEmergencyResolveNews = (outcome: 'YES' | 'NO', resolutionSource: string, resolutionNotes?: string) => {
-    // Emergency resolve using newsService.emergencyResolve()
-    console.log('Emergency resolving news:', { newsId, outcome, resolutionSource, resolutionNotes, resolvedBy: address });
+  const handleEmergencyResolveNews = async (outcome: 'YES' | 'NO', resolutionSource: string, resolutionNotes?: string) => {
+    console.log('[NewsDetail] handleEmergencyResolveNews called with:', {
+      newsId, outcome, resolutionSource, resolutionNotes, resolvedBy: address
+    });
 
-    // For now, just close modal and show success message
-    // In production, this would update news status, resolve all pools, distribute rewards, etc.
-    alert(`News emergency resolved as ${outcome}! In production, this would:\n1. Update news status immediately\n2. Resolve all pools\n3. Distribute rewards\n4. Update reputation NFTs\n5. Bypass normal 7-day waiting period`);
+    try {
+      console.log('[NewsDetail] Starting data refresh after emergency resolve...');
 
-    setShowEmergencyResolveModal(false);
+      // Refresh news data immediately after emergency resolve
+      const updatedNews = await newsService.getById(newsId);
+      console.log('[NewsDetail] Updated news from service:', updatedNews);
 
-    // Refresh news data
-    setTimeout(async () => {
+      setCurrentNews(updatedNews || null);
+      console.log('[NewsDetail] News state updated');
+
+      await refetchPools();
+      console.log('[NewsDetail] Pools refetched');
+
+      console.log('[NewsDetail] Emergency resolve completed and data refreshed successfully');
+    } catch (error) {
+      console.error('[NewsDetail] Failed to refresh news data after emergency resolve:', error);
+      // Still try to refresh pools even if news refresh fails
       try {
-        const updatedNews = await newsService.getById(newsId);
-        setCurrentNews(updatedNews || null);
         await refetchPools();
-      } catch (error) {
-        console.error('[NewsDetail] Failed to refresh news data:', error);
+        console.log('[NewsDetail] Pools refreshed despite news refresh failure');
+      } catch (poolError) {
+        console.error('[NewsDetail] Failed to refresh pools:', poolError);
       }
-    }, 500);
+    }
   };
 
   return (

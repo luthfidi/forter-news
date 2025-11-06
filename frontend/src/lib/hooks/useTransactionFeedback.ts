@@ -82,19 +82,27 @@ export function useTransactionFeedback() {
       variant?: IndicatorVariant
     ): Promise<T | null> => {
       try {
+        console.log('[useTransactionFeedback] executeTransaction starting...');
         showLoading(loadingMessage);
 
         const result = await transactionFn();
+        console.log('[useTransactionFeedback] transactionFn result:', result);
 
         if (result.success) {
+          console.log('[useTransactionFeedback] Transaction successful, showing success feedback');
           showSuccess(successMessage, result.hash, variant);
-          return result.data || (null as T | null);
+
+          const returnValue = result.data || (null as T | null);
+          console.log('[useTransactionFeedback] Returning from executeTransaction:', returnValue);
+          return returnValue;
         } else {
+          console.log('[useTransactionFeedback] Transaction failed:', result.error);
           showError(result.error || 'Transaction failed');
           return null;
         }
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+        console.log('[useTransactionFeedback] Exception in executeTransaction:', errorMessage);
         showError(errorMessage);
         return null;
       }

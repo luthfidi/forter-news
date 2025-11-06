@@ -407,9 +407,17 @@ contract Forter is Ownable2Step, ReentrancyGuard {
         address[] memory stakers = stakingPool.getPoolStakers(newsId, poolId);
 
         // Calculate total winning stakes (EXCLUDE creator stake from agree pool)
-        uint256 winningTotal = agreeWins
-            ? pool.agreeStakes - pool.creatorStake  // Agree wins, exclude creator
-            : pool.disagreeStakes;                   // Disagree wins
+        // FIXED: Add bounds checking to prevent underflow
+        uint256 winningTotal;
+        if (agreeWins) {
+            // Agree wins, exclude creator stake - prevent underflow
+            winningTotal = pool.agreeStakes >= pool.creatorStake
+                ? pool.agreeStakes - pool.creatorStake
+                : 0; // Edge case: if agreeStakes < creatorStake, set to 0
+        } else {
+            // Disagree wins
+            winningTotal = pool.disagreeStakes;
+        }
 
         // Note: winningTotal == 0 case is now handled in _distributePoolRewards
         // This function only handles distribution to actual stakers

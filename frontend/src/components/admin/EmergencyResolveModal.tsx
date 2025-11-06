@@ -47,8 +47,16 @@ export default function EmergencyResolveModal({ news, onClose, onEmergencyResolv
     setIsSubmitting(true);
 
     try {
-      const result = await executeTransaction(
+      console.log('[EmergencyResolveModal] Starting emergency resolve with params:', {
+        newsId: news.id,
+        selectedOutcome,
+        resolutionSource,
+        resolutionNotes
+      });
+
+      const transactionResult = await executeTransaction(
         async () => {
+          console.log('[EmergencyResolveModal] Calling newsService.emergencyResolve...');
           const resolveResult = await newsService.emergencyResolve(
             news.id,
             selectedOutcome,
@@ -56,25 +64,38 @@ export default function EmergencyResolveModal({ news, onClose, onEmergencyResolv
             resolutionNotes
           );
 
-          return {
+          console.log('[EmergencyResolveModal] newsService.emergencyResolve result:', resolveResult);
+
+          const returnValue = {
             success: resolveResult.success,
             hash: resolveResult.txHash,
-            error: resolveResult.error
+            error: resolveResult.error,
+            data: { success: true } // Add dummy data to ensure executeTransaction returns non-null
           };
+
+          console.log('[EmergencyResolveModal] Returning from transaction function:', returnValue);
+          return returnValue;
         },
         'Emergency resolving NEWS on blockchain...',
         `NEWS emergency resolved as ${selectedOutcome}! Rewards auto-distributed.`,
         selectedOutcome === 'YES' ? 'primary' : 'destructive'
       );
 
-      if (result !== null) {
-        // Call parent callback
+      console.log('[EmergencyResolveModal] executeTransaction returned:', transactionResult);
+
+      // Since we added dummy data, result should not be null if transaction succeeded
+      // The success feedback will be shown by executeTransaction automatically
+      if (transactionResult !== null) {
+        console.log('[EmergencyResolveModal] Transaction successful, calling parent callback...');
+
+        // Call parent callback for data refresh
         onEmergencyResolve(selectedOutcome, resolutionSource, resolutionNotes);
 
-        // Close modal after short delay
-        setTimeout(() => {
-          onClose();
-        }, 2000);
+        console.log('[EmergencyResolveModal] Closing modal...');
+        // Close modal immediately after successful transaction
+        onClose();
+      } else {
+        console.log('[EmergencyResolveModal] Transaction failed or returned null');
       }
     } catch (error) {
       console.error('Failed to emergency resolve news:', error);

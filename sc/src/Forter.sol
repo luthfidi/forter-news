@@ -321,9 +321,12 @@ contract Forter is Ownable2Step, ReentrancyGuard {
 
             pool.isResolved = true;
 
-            // Check if pool position matches news outcome
-            bool poolCorrect = (pool.position == Position.YES && outcome == Outcome.YES) ||
-                              (pool.position == Position.NO && outcome == Outcome.NO);
+            // FIXED: Check if pool position matches news outcome
+            // Convert both to numeric values for reliable comparison
+            // Position.YES = 0, Position.NO = 1
+            // Outcome.YES = 1, Outcome.NO = 2
+            // So poolCorrect when Position + 1 = Outcome
+            bool poolCorrect = (uint256(pool.position) + 1) == uint256(outcome);
             pool.isCorrect = poolCorrect;
 
             // Record pool result with total stake for reputation system
@@ -358,6 +361,14 @@ contract Forter is Ownable2Step, ReentrancyGuard {
         if (poolCorrect) {
             // Pool creator was CORRECT
 
+            // FIXED: Check if only creator participated
+            if (pool.agreeStakes == pool.creatorStake && pool.disagreeStakes == 0) {
+                // Only creator participated - give creator full remaining pool (98% after 2% fee)
+                stakingPool.transferReward(pool.creator, remaining);
+                emit CreatorRewardDistributed(newsId, poolId, pool.creator, remaining);
+                return; // Skip calling _distributeToStakers
+            }
+
             // 1. Creator gets 20% of remaining pool
             uint256 creatorReward = (remaining * 2000) / 10000; // 20%
             stakingPool.transferReward(pool.creator, creatorReward);
@@ -369,6 +380,13 @@ contract Forter is Ownable2Step, ReentrancyGuard {
 
         } else {
             // Pool creator was WRONG
+
+            // FIXED: Check if only creator participated
+            if (pool.disagreeStakes == pool.creatorStake && pool.agreeStakes == 0) {
+                // Only creator participated and they were wrong - no rewards to distribute
+                // All remaining pool stays in contract (no stakers to reward)
+                return; // Skip calling _distributeToStakers
+            }
 
             // 1. Creator gets NOTHING
 
@@ -393,7 +411,9 @@ contract Forter is Ownable2Step, ReentrancyGuard {
             ? pool.agreeStakes - pool.creatorStake  // Agree wins, exclude creator
             : pool.disagreeStakes;                   // Disagree wins
 
-        if (winningTotal == 0) return; // No winning stakers
+        // Note: winningTotal == 0 case is now handled in _distributePoolRewards
+        // This function only handles distribution to actual stakers
+        if (winningTotal == 0) return; // No winning stakers to distribute to
 
         // Distribute to each winning staker
         for (uint256 i = 0; i < stakers.length; i++) {
@@ -408,10 +428,13 @@ contract Forter is Ownable2Step, ReentrancyGuard {
 
             if (isWithdrawn || stakeAmount == 0) continue;
 
-            // Check if this staker is a winner
-            bool poolPositionBool = (pool.position == Position.YES);
-            bool stakerWon = (position == poolPositionBool && agreeWins) ||
-                            (position != poolPositionBool && !agreeWins);
+            // FIXED: Check if this staker is a winner
+            // agreeWins = true: stakers who agree with pool position win
+            // agreeWins = false: stakers who disagree with pool position win
+            bool stakerWon = (position == agreeWins); // position == true (agree) when agreeWins is true
+                                              // position == false (disagree) when agreeWins is false
+
+            // DEBUG: Removed debug event for production
 
             if (stakerWon) {
                 // Calculate proportional reward
@@ -441,6 +464,7 @@ contract Forter is Ownable2Step, ReentrancyGuard {
         uint256 amount
     );
 
+    
     // View functions
     function getNewsCount() external view returns (uint256) {
         return newsCount;

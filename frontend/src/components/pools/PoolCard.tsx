@@ -43,6 +43,8 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
     agreeStakes: pool.agreeStakes,
     disagreeStakes: pool.disagreeStakes,
     totalStaked: pool.totalStaked,
+    status: pool.status,
+    outcome: pool.outcome,
     math: {
       agreePlusDisagree: pool.agreeStakes + pool.disagreeStakes,
       equalsTotal: (pool.agreeStakes + pool.disagreeStakes) === pool.totalStaked,
@@ -62,25 +64,21 @@ export default function PoolCard({ pool, onStakeSuccess }: PoolCardProps) {
     ? Math.round((pool.disagreeStakes / pool.totalStaked) * 100)
     : 0;
 
-  // CORRECTED: Support/Oppose logic depends on pool position
-  // Pool YES: Support = agreeStakes (support YES), Oppose = disagreeStakes (oppose YES)
-  // Pool NO: Support = disagreeStakes (support NO), Oppose = agreeStakes (oppose NO)
+  // FIXED: Support/Oppose logic depends on pool position
+  // agreeStakes = users who agree with pool creator's position
+  // disagreeStakes = users who disagree with pool creator's position
+  // Pool YES: Support = agreeStakes (users who support YES), Oppose = disagreeStakes (users who oppose YES)
+  // Pool NO: Support = agreeStakes (users who support NO), Oppose = disagreeStakes (users who oppose NO)
 
   let supportPercentage, opposePercentage, supportAmount, opposeAmount;
 
-  if (pool.position === 'YES') {
-    // Pool YES: Support = agree with YES, Oppose = disagree with YES
-    supportPercentage = agreePercentage;
-    opposePercentage = disagreePercentage;
-    supportAmount = pool.agreeStakes;
-    opposeAmount = pool.disagreeStakes;
-  } else {
-    // Pool NO: Support = agree with NO, Oppose = disagree with NO
-    supportPercentage = disagreePercentage;  // Support NO = disagreeStakes
-    opposePercentage = agreePercentage;      // Oppose NO = agreeStakes
-    supportAmount = pool.disagreeStakes;     // Support NO = disagreeStakes
-    opposeAmount = pool.agreeStakes;         // Oppose NO = agreeStakes
-  }
+  // FIXED: Support/Oppose logic is now straightforward
+  // Support = users who agree with pool position = agreeStakes
+  // Oppose = users who disagree with pool position = disagreeStakes
+  supportPercentage = agreePercentage;
+  opposePercentage = disagreePercentage;
+  supportAmount = pool.agreeStakes;
+  opposeAmount = pool.disagreeStakes;
 
   const getTierIcon = (tier: string) => {
     switch (tier) {

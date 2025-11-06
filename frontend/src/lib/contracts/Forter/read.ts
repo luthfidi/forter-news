@@ -166,7 +166,7 @@ export async function getPoolsByNewsId(newsId: string): Promise<Pool[]> {
         evidenceLinks: result[2],
         imageUrl: result[3],
         imageCaption: result[4],
-        position: result[5], // Position as boolean (true=YES, false=NO)
+        position: result[5] ? 'YES' : 'NO', // Position as boolean (true=YES, false=NO) - FIXED: Handle enum conversion correctly
         creatorStake: result[6],
         totalStaked: result[7],
         agreeStakes: result[8],
@@ -202,13 +202,17 @@ export async function getPoolsByNewsId(newsId: string): Promise<Pool[]> {
         if (stakingPoolData && stakingPoolData.totalStaked > 0) {
           console.log('[Forter/read] ✅ StakingPool data available:', stakingPoolData);
 
-          // Combine creator stake + user stakes
+          // FIXED: Combine creator stake + user stakes
+          // CRITICAL FIX: Creator ALWAYS agrees with their own position, so creator stake goes to agreeStakes
           if (poolPosition === 'YES') {
+            // Pool YES: creator stake + user agree stakes = agreeStakes
             poolData.agreeStakes = BigInt(creatorStake * 10**6) + BigInt(stakingPoolData.agreeStakes * 10**6);
             poolData.disagreeStakes = BigInt(stakingPoolData.disagreeStakes * 10**6);
           } else {
-            poolData.agreeStakes = BigInt(stakingPoolData.agreeStakes * 10**6);
-            poolData.disagreeStakes = BigInt(creatorStake * 10**6) + BigInt(stakingPoolData.disagreeStakes * 10**6);
+            // FIXED: Pool NO - creator stake + user agree stakes = agreeStakes (users who agree with NO position)
+            // disagreeStakes = users who disagree with NO position (users who want YES)
+            poolData.agreeStakes = BigInt(creatorStake * 10**6) + BigInt(stakingPoolData.agreeStakes * 10**6);
+            poolData.disagreeStakes = BigInt(stakingPoolData.disagreeStakes * 10**6);
           }
           poolData.totalStaked = BigInt((creatorStake + stakingPoolData.totalStaked) * 10**6);
 
@@ -234,24 +238,26 @@ export async function getPoolsByNewsId(newsId: string): Promise<Pool[]> {
               source: 'Forter.totalStaked'
             });
 
-            // Distribute user stakes based on transaction history or reasonable assumption
-            // For now, assume all user stakes went to oppose the creator (common scenario)
+            // FIXED: Distribute user stakes based on contract logic
+            // Creator ALWAYS agrees with their own position
             if (poolPosition === 'YES') {
               poolData.agreeStakes = BigInt(creatorStake * 10**6);
               poolData.disagreeStakes = BigInt(userStakesTotal * 10**6);
             } else {
-              poolData.agreeStakes = BigInt(userStakesTotal * 10**6);
-              poolData.disagreeStakes = BigInt(creatorStake * 10**6);
+              // Pool NO: creator stake goes to agreeStakes (creator agrees with NO position)
+              poolData.agreeStakes = BigInt(creatorStake * 10**6);
+              poolData.disagreeStakes = BigInt(userStakesTotal * 10**6);
             }
             poolData.totalStaked = BigInt(totalFromContract * 10**6);
           } else {
-            // Only creator stake
+            // FIXED: Only creator stake - creator ALWAYS agrees with their own position
             if (poolPosition === 'YES') {
               poolData.agreeStakes = BigInt(creatorStake * 10**6);
               poolData.disagreeStakes = BigInt(0);
             } else {
-              poolData.agreeStakes = BigInt(0);
-              poolData.disagreeStakes = BigInt(creatorStake * 10**6);
+              // Pool NO: creator stake goes to agreeStakes (creator agrees with NO position)
+              poolData.agreeStakes = BigInt(creatorStake * 10**6);
+              poolData.disagreeStakes = BigInt(0);
             }
             poolData.totalStaked = BigInt(creatorStake * 10**6);
           }
@@ -262,17 +268,38 @@ export async function getPoolsByNewsId(newsId: string): Promise<Pool[]> {
         const totalFromContract = Number(formatUSDC(result[7]));
         const userStakesTotal = totalFromContract - creatorStake;
 
+        // FIXED: Creator ALWAYS agrees with their own position
         if (poolPosition === 'YES') {
           poolData.agreeStakes = BigInt(creatorStake * 10**6);
           poolData.disagreeStakes = BigInt(userStakesTotal * 10**6);
         } else {
-          poolData.agreeStakes = BigInt(userStakesTotal * 10**6);
-          poolData.disagreeStakes = BigInt(creatorStake * 10**6);
+          // Pool NO: creator stake goes to agreeStakes (creator agrees with NO position)
+          poolData.agreeStakes = BigInt(creatorStake * 10**6);
+          poolData.disagreeStakes = BigInt(userStakesTotal * 10**6);
         }
         poolData.totalStaked = BigInt(totalFromContract * 10**6);
       }
 
       const mappedPool = mapContractToPool(poolData, poolId.toString(), newsId);
+
+      // DEBUG: Add detailed logging for pool resolution
+      console.log('[Forter/read] Pool mapping result:', {
+        poolId: poolId.toString(),
+        poolPosition: mappedPool.position,
+        poolStatus: mappedPool.status,
+        poolOutcome: mappedPool.outcome,
+        creatorStake: mappedPool.creatorStake,
+        agreeStakes: mappedPool.agreeStakes,
+        disagreeStakes: mappedPool.disagreeStakes,
+        totalStaked: mappedPool.totalStaked,
+        contractIsCorrect: result[12],
+        mappedOutcome: mappedPool.outcome,
+        rawContractData: {
+          position: result[5],
+          isResolved: result[11],
+          isCorrect: result[12]
+        }
+      });
 
       // Add timestamp to force re-render
       (mappedPool as Pool & { _lastUpdated?: number })._lastUpdated = Date.now();

@@ -139,4 +139,42 @@ contract ForterTestSetup is Test {
         vm.stopPrank();
         return forter.getPoolCount(newsId) - 1;
     }
+
+    // Helper function to create a NO pool
+    function _createNoPool(uint256 newsId, address creator) internal returns (uint256) {
+        vm.startPrank(creator);
+
+        string[] memory evidence = new string[](2);
+        evidence[0] = "https://example.com/evidence1";
+        evidence[1] = "https://example.com/evidence2";
+
+        forter.createPool(
+            newsId,
+            "This is a NO position pool with more than 100 characters to satisfy the minimum length requirement for the reasoning field.",
+            evidence,
+            "https://example.com/image.jpg",
+            "Chart showing price trend downwards",
+            Forter.Position.NO, // position: NO
+            MIN_STAKE // creator stake
+        );
+        vm.stopPrank();
+        return forter.getPoolCount(newsId) - 1;
+    }
+
+    // Helper function to fast forward time and resolve news
+    function _resolveNews(uint256 newsId, Forter.Outcome outcome) internal {
+        // Fast forward time
+        vm.warp(block.timestamp + 8 days);
+
+        // Resolve the news
+        vm.prank(owner);
+        forter.resolveNews(newsId, outcome, "https://coingecko.com", "Test resolution");
+    }
+
+    // Helper function to emergency resolve news
+    function _emergencyResolveNews(uint256 newsId, Forter.Outcome outcome) internal {
+        // Emergency resolve the news
+        vm.prank(owner);
+        forter.emergencyResolve(newsId, outcome, "https://emergency.com", "Emergency test resolution");
+    }
 }

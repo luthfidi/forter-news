@@ -39,12 +39,20 @@ export function dateToTimestamp(date: Date): bigint {
 
 // Convert boolean position to string
 export function positionToString(position: boolean): 'YES' | 'NO' {
-  return position ? 'YES' : 'NO';
+  // FIXED: Handle inverted boolean from contract
+  // Contract sends: YES = false, NO = true (due to inverted logic)
+  // Frontend should reverse: false = YES, true = NO
+  return position ? 'NO' : 'YES';
 }
 
 // Convert string position to boolean
 export function stringToPosition(position: 'YES' | 'NO'): boolean {
-  return position === 'YES';
+  // FIXED: Contract has inverted logic
+  // Position.YES = 0, Position.NO = 1
+  // Contract: positionBool = (_position == Position.YES)
+  // So YES (0) == YES (0) = false, NO (1) == YES (0) = true
+  // Frontend should send inverted boolean to match contract logic
+  return position === 'NO';
 }
 
 // Convert string/number ID to BigInt (safe conversion)

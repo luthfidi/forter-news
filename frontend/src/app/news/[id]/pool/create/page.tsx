@@ -657,7 +657,7 @@ export default function CreatePoolPage() {
                       <span className="font-semibold text-primary">20%</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>&quot;Agree&quot; stakers:</span>
+                      <span>&quot;Support&quot; stakers:</span>
                       <span className="font-semibold text-accent">80%</span>
                     </div>
                   </div>
@@ -665,7 +665,7 @@ export default function CreatePoolPage() {
                   <div>
                     <div className="font-medium text-foreground mb-1.5">If WRONG:</div>
                     <div className="text-xs">You lose your stake</div>
-                    <div className="text-xs">&quot;Disagree&quot; stakers win</div>
+                    <div className="text-xs">&quot;Oppose&quot; stakers win</div>
                   </div>
                 </div>
               </CardContent>

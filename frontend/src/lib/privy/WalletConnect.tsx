@@ -58,21 +58,18 @@ export function WalletConnect({ className }: WalletConnectProps) {
     ? formatUnits(usdcBalance as bigint, 6) // USDC has 6 decimals
     : '0.00';
 
-  // Format large numbers with K, M, B, T suffixes
+  // Format USDC balance with proper decimal places and commas
   const formatBalance = (balance: string): string => {
     const num = parseFloat(balance);
 
-    if (num >= 1_000_000_000_000) {
-      return `${(num / 1_000_000_000_000).toFixed(2)}T`;
-    } else if (num >= 1_000_000_000) {
-      return `${(num / 1_000_000_000).toFixed(2)}B`;
-    } else if (num >= 1_000_000) {
-      return `${(num / 1_000_000).toFixed(2)}M`;
-    } else if (num >= 1_000) {
-      return `${(num / 1_000).toFixed(2)}K`;
-    } else {
-      return num.toFixed(2);
-    }
+    // Always show with 2 decimal places and proper comma formatting
+    const formatted = num.toFixed(2);
+
+    // Add commas for thousands separator
+    const parts = formatted.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    return parts.join('.');
   };
 
   const copyAddress = () => {
@@ -235,7 +232,7 @@ export function WalletConnect({ className }: WalletConnectProps) {
       <Button
         onClick={() => setIsOpen(!isOpen)}
         variant="outline"
-        className="bg-card border-border/40 text-foreground hover:bg-card/80 transition-colors rounded-lg px-3 py-2 h-auto flex items-center gap-2"
+        className="bg-card border-border/40 text-foreground hover:bg-background hover:text-foreground transition-colors rounded-lg px-3 py-2 h-auto flex items-center gap-2"
       >
         {/* Profile Icon */}
         <User className="w-5 h-5 p-0.5 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-xs font-semibold text-white" />

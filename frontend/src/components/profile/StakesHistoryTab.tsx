@@ -130,7 +130,7 @@ export default function StakesHistoryTab({ stakes, isOwnProfile }: StakesHistory
                             ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
                             : 'bg-rose-100 text-rose-700 border-rose-200'
                         }>
-                          {stake.position === 'agree' ? 'Agree' : 'Disagree'}
+                          {stake.position === 'agree' ? 'Support' : 'Oppose'}
                         </Badge>
                         <Badge variant="outline" className="text-xs">
                           {stake.poolInfo?.position} Pool
@@ -187,7 +187,7 @@ export default function StakesHistoryTab({ stakes, isOwnProfile }: StakesHistory
                               ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
                               : 'bg-rose-100 text-rose-700 border-rose-200'
                           }>
-                            {stake.position === 'agree' ? 'Agree' : 'Disagree'}
+                            {stake.position === 'agree' ? 'Support' : 'Oppose'}
                           </Badge>
                           <Badge variant="outline" className="text-xs">
                             {stake.poolInfo?.position} Pool

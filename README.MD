@@ -50,15 +50,22 @@ Forter is participating in **Base Batches 002 Builder Track** with a fully funct
 
 ## Deployed Contracts
 
-**Network**: Base Sepolia Testnet | **Deploy Date**: October 29, 2025
+**Network**: Base Sepolia Testnet | **Deploy Date**: November 6, 2025 (Latest Deployment - All Fixes Applied)
 
 | Contract          | Address                                                                                                                                                         | Purpose                         |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| **Forter (Main)** | <a href="https://base-sepolia.blockscout.com/address/0x73eD7e70CBE1BE6754b6A3030E9713C41c379F1D" target="_blank">0x73eD7e70CBE1BE6754b6A3030E9713C41c379F1D</a> | Core protocol contract          |
-| **StakingPool**   | <a href="https://base-sepolia.blockscout.com/address/0x97B9EbcFBE181366633fAA5BdB462f9B9C2f3D2E" target="_blank">0x97B9EbcFBE181366633fAA5BdB462f9B9C2f3D2E</a> | Pool staking & rewards          |
-| **ReputationNFT** | <a href="https://base-sepolia.blockscout.com/address/0x8B457488FB7Cc0d602FD4C0F27967Ce32B23F57F" target="_blank">0x8B457488FB7Cc0d602FD4C0F27967Ce32B23F57F</a> | Soulbound NFT for reputation    |
-| **Governance**    | <a href="https://base-sepolia.blockscout.com/address/0x70E42B35ba46D2B9D61F423C4B7B410564d6230a" target="_blank">0x70E42B35ba46D2B9D61F423C4B7B410564d6230a</a> | DAO governance contract         |
-| **USDC Mock**     | <a href="https://base-sepolia.blockscout.com/address/0xCD279969EDE0a786899a7B6993c951e04B6F752C" target="_blank">0xCD279969EDE0a786899a7B6993c951e04B6F752C</a> | Testnet USDC token (6 decimals) |
+| **Forter (Main)** | <a href="https://base-sepolia.blockscout.com/address/0xc650e7B0c5a9E99c90c027fE1A394EC88c5F6CE5" target="_blank">0xc650e7B0c5a9E99c90c027fE1A394EC88c5F6CE5</a> | Core protocol contract (Fixed)  |
+| **StakingPool**   | <a href="https://base-sepolia.blockscout.com/address/0x4210770f8535EEffD515482E5aEc19a8469A202C" target="_blank">0x4210770f8535EEffD515482E5aEc19a8469A202C</a> | Pool staking & rewards (Fixed)  |
+| **ReputationNFT** | <a href="https://base-sepolia.blockscout.com/address/0xD218663e46739DbAFe6C2DF7506735a29fcDE5e3" target="_blank">0xD218663e46739DbAFe6C2DF7506735a29fcDE5e3</a> | Soulbound NFT for reputation    |
+| **Governance**    | <a href="https://base-sepolia.blockscout.com/address/0x1E53D7dF7cdeBf2C2Ab2ffe72CEC2f26e82A0C46" target="_blank">0x1E53D7dF7cdeBf2C2Ab2ffe72CEC2f26e82A0C46</a> | DAO governance contract         |
+| **USDC Mock**     | <a href="https://base-sepolia.blockscout.com/address/" target="_blank"></a>                                                                                     | Testnet USDC token (6 decimals) |
+
+### Latest Fixes Applied (November 6, 2025)
+
+✅ **Critical Smart Contract Bug Fixed**: Arithmetic underflow in emergency resolve function
+✅ **UI Improvements**: USDC formatting, wallet hover states, terminology consistency
+✅ **Security**: Enhanced bounds checking for all arithmetic operations
+✅ **User Experience**: Consistent decimal formatting across all interfaces
 
 ---
 
@@ -313,7 +320,7 @@ cd frontend && pnpm dev
 ### Technical Resources
 
 - **GitHub Repository**: <a href="https://github.com/luthfidi/forter-news" target="_blank">github.com/luthfidi/forter-news</a>
-- **Base Sepolia Explorer**: <a href="https://base-sepolia.blockscout.com/address/0x73eD7e70CBE1BE6754b6A3030E9713C41c379F1D" target="_blank">View Contracts</a>
+- **Base Sepolia Explorer**: <a href="https://base-sepolia.blockscout.com/address/0xc650e7B0c5a9E99c90c027fE1A394EC88c5F6CE5" target="_blank">View Contracts</a>
 - **Contract Verification**: All contracts verified on Blockscout
 - **Documentation**: Complete contract and API documentation in repository
 

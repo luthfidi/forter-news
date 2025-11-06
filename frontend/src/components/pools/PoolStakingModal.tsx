@@ -122,7 +122,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
               </div>
               <div className="flex gap-2 text-xs">
                 <div className="flex-1">
-                  <div className="text-emerald-600 mb-1">Agree: {agreePercentage}%</div>
+                  <div className="text-emerald-600 mb-1">Support: {agreePercentage}%</div>
                   <div className="h-1 bg-muted rounded-full overflow-hidden">
                     <div
                       className="h-full bg-emerald-500"
@@ -131,7 +131,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                   </div>
                 </div>
                 <div className="flex-1">
-                  <div className="text-rose-600 mb-1">Disagree: {disagreePercentage}%</div>
+                  <div className="text-rose-600 mb-1">Oppose: {disagreePercentage}%</div>
                   <div className="h-1 bg-muted rounded-full overflow-hidden">
                     <div
                       className="h-full bg-rose-500"
@@ -155,7 +155,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                     : 'border-border hover:border-emerald-500/50'
                 }`}
               >
-                <div className="font-bold mb-1">Agree</div>
+                <div className="font-bold mb-1">Support</div>
                 <div className="text-xs opacity-75">Back this pool&apos;s position</div>
               </button>
               <button
@@ -166,7 +166,7 @@ export default function PoolStakingModal({ pool, onClose, onSuccess }: PoolStaki
                     : 'border-border hover:border-rose-500/50'
                 }`}
               >
-                <div className="font-bold mb-1">Disagree</div>
+                <div className="font-bold mb-1">Oppose</div>
                 <div className="text-xs opacity-75">Bet against this pool</div>
               </button>
             </div>

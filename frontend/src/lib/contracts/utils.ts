@@ -16,12 +16,22 @@ export function parseUSDC(amount: string | number): bigint {
   return parseUnits(amount.toString(), config.USDC_DECIMALS);
 }
 
-// Convert USDC wei to readable amount
+// Convert USDC wei to readable amount with proper formatting
 export function formatUSDC(amount: bigint | undefined | null): string {
   if (amount === undefined || amount === null) {
-    return '0';
+    return '0.00';
   }
-  return formatUnits(amount, config.USDC_DECIMALS);
+  const formatted = formatUnits(amount, config.USDC_DECIMALS);
+
+  // Ensure we have exactly 2 decimal places
+  if (!formatted.includes('.')) {
+    return `${formatted}.00`;
+  }
+
+  const [wholePart, decimalPart = ''] = formatted.split('.');
+  const paddedDecimal = decimalPart.padEnd(2, '0').slice(0, 2);
+
+  return `${wholePart}.${paddedDecimal}`;
 }
 
 // Convert Unix timestamp to Date

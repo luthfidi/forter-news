@@ -101,21 +101,18 @@ export default function FaucetPage() {
     setSelectedPreset(0);
   };
 
-  // Format large numbers with K, M, B, T suffixes
+  // Format USDC balance with proper decimal places and commas
   const formatBalance = (balance: string): string => {
     const num = parseFloat(balance);
 
-    if (num >= 1_000_000_000_000) {
-      return `${(num / 1_000_000_000_000).toFixed(2)}T`;
-    } else if (num >= 1_000_000_000) {
-      return `${(num / 1_000_000_000).toFixed(2)}B`;
-    } else if (num >= 1_000_000) {
-      return `${(num / 1_000_000).toFixed(2)}M`;
-    } else if (num >= 1_000) {
-      return `${(num / 1_000).toFixed(2)}K`;
-    } else {
-      return num.toFixed(2);
-    }
+    // Always show with 2 decimal places and proper comma formatting
+    const formatted = num.toFixed(2);
+
+    // Add commas for thousands separator
+    const parts = formatted.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    return parts.join('.');
   };
 
   if (!isConnected) {

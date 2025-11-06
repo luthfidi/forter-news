@@ -629,13 +629,13 @@ export default function ProfilePage() {
                                 {stake.position === 'agree' ? (
                                   <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/30 text-xs">
                                     <span className="flex items-center gap-1">
-                                      <CheckCircle className="h-3 w-3" /> Agreed
+                                      <CheckCircle className="h-3 w-3" /> Supported
                                     </span>
                                   </Badge>
                                 ) : (
                                   <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/30 text-xs">
                                     <span className="flex items-center gap-1">
-                                      <XCircle className="h-3 w-3" /> Disagreed
+                                      <XCircle className="h-3 w-3" /> Opposed
                                     </span>
                                   </Badge>
                                 )}

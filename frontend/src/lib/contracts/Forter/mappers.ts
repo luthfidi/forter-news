@@ -135,14 +135,6 @@ export function mapContractToPool(
         ? (isCorrect ? 'creator_correct' : 'creator_wrong')
         : null,
       createdAt: timestampToDate(createdAt),
-
-      // DEBUG: Log mapping logic
-      _debug: {
-        isResolved,
-        isCorrect,
-        position,
-        outcomeLogic: `isResolved=${isResolved}, isCorrect=${isCorrect}, position=${position}`
-      },
     };
   } else {
     // Object format (future compatibility)

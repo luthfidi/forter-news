@@ -119,7 +119,7 @@ class PoolService {
       console.log('[PoolService] Contract config check:', {
         useContracts: process.env.NEXT_PUBLIC_USE_CONTRACTS,
         forterAddress: process.env.NEXT_PUBLIC_FORTER_ADDRESS,
-        isContractsEnabled: require('@/config/contracts').isContractsEnabled()
+        isContractsEnabled: isContractsEnabled()
       });
 
       const pools = await getPoolsByNewsId(newsId);

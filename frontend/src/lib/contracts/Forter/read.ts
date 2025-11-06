@@ -275,7 +275,7 @@ export async function getPoolsByNewsId(newsId: string): Promise<Pool[]> {
       const mappedPool = mapContractToPool(poolData, poolId.toString(), newsId);
 
       // Add timestamp to force re-render
-      (mappedPool as any)._lastUpdated = Date.now();
+      (mappedPool as Pool & { _lastUpdated?: number })._lastUpdated = Date.now();
 
       return mappedPool;
     });

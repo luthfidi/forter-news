@@ -58,14 +58,7 @@ Forter is participating in **Base Batches 002 Builder Track** with a fully funct
 | **StakingPool**   | <a href="https://base-sepolia.blockscout.com/address/0x4210770f8535EEffD515482E5aEc19a8469A202C" target="_blank">0x4210770f8535EEffD515482E5aEc19a8469A202C</a> | Pool staking & rewards (Fixed)  |
 | **ReputationNFT** | <a href="https://base-sepolia.blockscout.com/address/0xD218663e46739DbAFe6C2DF7506735a29fcDE5e3" target="_blank">0xD218663e46739DbAFe6C2DF7506735a29fcDE5e3</a> | Soulbound NFT for reputation    |
 | **Governance**    | <a href="https://base-sepolia.blockscout.com/address/0x1E53D7dF7cdeBf2C2Ab2ffe72CEC2f26e82A0C46" target="_blank">0x1E53D7dF7cdeBf2C2Ab2ffe72CEC2f26e82A0C46</a> | DAO governance contract         |
-| **USDC Mock**     | <a href="https://base-sepolia.blockscout.com/address/" target="_blank"></a>                                                                                     | Testnet USDC token (6 decimals) |
-
-### Latest Fixes Applied (November 6, 2025)
-
-✅ **Critical Smart Contract Bug Fixed**: Arithmetic underflow in emergency resolve function
-✅ **UI Improvements**: USDC formatting, wallet hover states, terminology consistency
-✅ **Security**: Enhanced bounds checking for all arithmetic operations
-✅ **User Experience**: Consistent decimal formatting across all interfaces
+| **USDC Mock**     | <a href="https://base-sepolia.blockscout.com/address/0xa10A3DA146e529071A3dC3441843FFD905654Ad8" target="_blank">0xa10A3DA146e529071A3dC3441843FFD905654Ad8</a>                                                                                     | Testnet USDC token (6 decimals) |
 
 ---
 
